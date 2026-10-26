@@ -36,16 +36,10 @@ jobs:
               # .npmrc (ignore-scripts) stays untouched and the clean-tree gate
               # below stays honest.
               #
-              # Two lanes, picked by whether this run holds the GitHub Packages
-              # token. With it, `@ezclassify` resolves from the GitHub Packages
-              # development mirror. Without it, which is every fork pull request and
-              # every Dependabot pull request, the scope resolves from public npm
-              # with no credential at all. That is the install path CONTRIBUTING and
-              # the README promise an outside contributor, and it is what lets a fork
-              # or a Dependabot bump reach the gates below instead of dying at
-              # install.
+              # Same-repository runs use the scoped Actions package reader. Fork
+              # pull requests retain the anonymous public-registry lane.
               env:
-                  EZ_GHPKG_TOKEN: ${{ secrets.EZ_GHPKG_TOKEN }}
+                  EZ_GHPKG_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (secrets.EZ_GHPKG_TOKEN || github.token) || '' }}
               run: |
                   set -euo pipefail
                   if [ -n "$EZ_GHPKG_TOKEN" ]; then
@@ -62,7 +56,7 @@ jobs:
 
             - name: Install
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.EZ_GHPKG_TOKEN }}
+                  NODE_AUTH_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (secrets.EZ_GHPKG_TOKEN || github.token) || '' }}
               # The public repo intentionally has no committed lock before its first
               # publication. Generate the date-bounded portable lock from empty state
               # and prove those exact bytes with a frozen install.
