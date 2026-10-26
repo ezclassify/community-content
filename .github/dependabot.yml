@@ -1,47 +1,58 @@
+# Routine updates preserve the supported compatibility lines.
+# Major upgrades are deliberate; security updates retain their separate policy.
+
 version: 2
 
 updates:
-  - package-ecosystem: npm
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-    # No production group: the published package declares no `dependencies`,
-    # so a production group would never match anything.
-    cooldown:
-      # The repository refuses any third-party release published inside a
-      # seven-day window (`npm run check:dependency-age`). Without a matching
-      # cooldown here, Dependabot opens a bump the moment it lands and the
-      # pull request fails its own quarantine gate.
-      default-days: 7
-    groups:
-      npm-development:
-        dependency-type: development
-        update-types:
-          - minor
-          - patch
-    ignore:
-      # First-party packages are versioned in lockstep across the EzClassify
-      # family, so their versions here move with each family release rather
-      # than with a bump pull request. Nothing else is ignored: a major bump
-      # opens its own pull request and is reviewed like any other change.
-      - dependency-name: '@ezclassify/*'
-    open-pull-requests-limit: 10
-    labels:
-      - dependencies
+    - package-ecosystem: npm
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+      # No production group: the published package declares no `dependencies`,
+      # so a production group would never match anything.
+      cooldown:
+          # The repository refuses any third-party release published inside a
+          # seven-day window (`npm run check:dependency-age`). Without a matching
+          # cooldown here, Dependabot opens a bump the moment it lands and the
+          # pull request fails its own quarantine gate.
+          default-days: 7
+      groups:
+          npm-development:
+              dependency-type: development
+              update-types:
+                  - minor
+                  - patch
+      ignore:
+          - dependency-name: '@ezclassify/*'
+      open-pull-requests-limit: 2
+      labels:
+          - dependencies
+      allow:
+          - dependency-name: '*'
+            update-types:
+                - version-update:semver-minor
+                - version-update:semver-patch
+      versioning-strategy: increase-if-necessary
 
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-    groups:
-      github-actions:
-        patterns:
-          - '*'
-        update-types:
-          - minor
-          - patch
-    labels:
-      - dependencies
-      - ci
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+      groups:
+          github-actions:
+              patterns:
+                  - '*'
+              update-types:
+                  - minor
+                  - patch
+      labels:
+          - dependencies
+          - ci
+      allow:
+          - dependency-name: '*'
+            update-types:
+                - version-update:semver-minor
+                - version-update:semver-patch
+      open-pull-requests-limit: 2
