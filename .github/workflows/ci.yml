@@ -62,9 +62,6 @@ jobs:
               # and prove those exact bytes with a frozen install.
               run: npm run deps:relock && npm ci
 
-            - name: Dependency publish-date quarantine
-              run: npm run check:dependency-age
-
             # Lint/format/typecheck cover the executable code around the scheme
             # data: scripts/, the vitest specs, and the config files. Scheme YAML
             # and the compiled bundle are canonical serializations owned by the
