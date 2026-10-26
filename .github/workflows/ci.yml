@@ -6,26 +6,37 @@ on:
         branches: [main]
     pull_request:
         branches: [main]
+        types:
+            - opened
+            - synchronize
+            - reopened
+            - ready_for_review
+    workflow_dispatch: null
 
 permissions:
     contents: read
     packages: read
 
 concurrency:
-    group: ${{ github.workflow }}-${{ github.ref }}
+    group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
     cancel-in-progress: true
 
 jobs:
+    policy:
+        uses: ezclassify/.github/.github/workflows/ci-policy.yml@a42ece80f520858a2926723d12bba2af2dca0474
+        with:
+            primary-version: '22'
+            full-versions: '["22","24"]'
     test:
         runs-on: ubuntu-latest
         timeout-minutes: 20
         strategy:
             matrix:
-                node-version: [22, 24]
+                node-version: ${{ fromJSON(needs.policy.outputs.versions) }}
         steps:
             - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-            - uses: ezclassify/.github/actions/setup-node-npm@0c105ab5340fb612d18e3f745f160a43e4b34f7f
+            - uses: ezclassify/.github/actions/setup-node-npm@a42ece80f520858a2926723d12bba2af2dca0474
               with:
                   node-version: ${{ matrix.node-version }}
 
@@ -55,10 +66,10 @@ jobs:
             - name: Install
               env:
                   NODE_AUTH_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (secrets.EZ_GHPKG_TOKEN || github.token) || '' }}
-              # The public repo intentionally has no committed lock before its first
-              # publication. Generate the date-bounded portable lock from empty state
-              # and prove those exact bytes with a frozen install.
-              run: npm run deps:relock && npm ci
+              uses: ezclassify/.github/actions/install-node-dependencies@a42ece80f520858a2926723d12bba2af2dca0474
+              with:
+                  mode: generated
+                  relock-installs: 'false'
 
             # Validate and build from the dependency tree used by the tests.
             - name: Dependency license compliance
@@ -120,6 +131,7 @@ jobs:
               # consumer would. This verifies package consumption independently
               # of the checkout's installed dependencies.
               run: npm run verify:pack-consume
+              if: ${{ needs.policy.outputs.full == 'true' }}
 
             - name: Retain the validated dependency snapshot
               uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -128,10 +140,16 @@ jobs:
                   path: package-lock.json
                   if-no-files-found: error
                   retention-days: 1
+              if: ${{ needs.policy.outputs.full == 'true' }}
+        needs:
+            - policy
+        if: ${{ needs.policy.result == 'success' }}
 
     qualified-artifacts:
-        needs: test
-        if: ${{ always() && !cancelled() }}
+        needs:
+            - policy
+            - test
+        if: ${{ needs.policy.result == 'success' && needs.policy.outputs.full == 'true' && (always() && !cancelled()) }}
         runs-on: ubuntu-latest
         timeout-minutes: 5
         steps:
@@ -163,3 +181,29 @@ jobs:
                       dist/sbom-node22.json
                       dist/sbom-node24.json
                   if-no-files-found: error
+    qualification:
+        needs:
+            - policy
+            - test
+            - qualified-artifacts
+        if: ${{ always() && !cancelled() && needs.policy.result == 'success' && needs.policy.outputs.full == 'true' }}
+        uses: ezclassify/.github/.github/workflows/ci-result.yml@a42ece80f520858a2926723d12bba2af2dca0474
+        with:
+            results: ${{ toJSON(needs) }}
+            full: ${{ needs.policy.outputs.full == 'true' }}
+            full-only: '[]'
+            optional: '[]'
+    ci:
+        needs:
+            - policy
+            - test
+            - qualified-artifacts
+            - qualification
+        if: ${{ always() && !cancelled() }}
+        uses: ezclassify/.github/.github/workflows/ci-result.yml@a42ece80f520858a2926723d12bba2af2dca0474
+        with:
+            results: ${{ toJSON(needs) }}
+            full: ${{ needs.policy.outputs.full == 'true' }}
+            full-only: '["qualified-artifacts","qualification"]'
+            optional: '[]'
+run-name: CI · ${{ github.event_name }} · ${{ github.ref_name }}
