@@ -1,0 +1,159 @@
+scheme:
+  id: cedar-valley-protection
+  version: 1.0.0
+  name: 'Cedar Valley: Protection'
+  description: >-
+    Start here. Four protection levels describe how closely a Cedar Valley file
+    must be protected and roll up by maximum sensitivity. The companion access
+    policy separately compares a trusted host-provided clearance. This is a
+    fictional teaching example, not district policy.
+  vocabulary:
+    marking:
+      singular: File Marking
+      plural: File Markings
+  default_scope: marking
+  scopes:
+    - id: marking
+      label: File marking
+  data:
+    categories:
+      - id: level
+        label: Protection
+        required: true
+        single: true
+        rollup: max
+        position: 0
+    concepts:
+      inline:
+        - id: PUBLIC
+          name: Public
+          definition: >-
+            This exact version is approved for anyone to read or share. An
+            unmarked file is not automatically public.
+          guidance: Use for a published lunch menu, school calendar, or released practice
+            questions.
+          views:
+            default: PUBLIC
+            short: P
+            long: PUBLIC
+          aliases:
+            - public
+          categories:
+            - level
+          color:
+            background: '#2e7d32'
+            text: '#ffffff'
+          rank: bottom
+        - id: INTERNAL
+          name: Internal
+          definition: Routine Cedar Valley business that has not been approved for public
+            distribution.
+          guidance: >-
+            Use for a staff plan, district memo, or bus operations schedule
+            without student names or home addresses.
+          views:
+            default: INTERNAL
+            short: I
+            long: INTERNAL
+          aliases:
+            - internal
+          categories:
+            - level
+          color:
+            background: '#1565c0'
+            text: '#ffffff'
+          rank:
+            above: PUBLIC
+        - id: CONFIDENTIAL
+          name: Confidential
+          definition: Private information that must be protected from unauthorized
+            disclosure.
+          guidance: >-
+            Use for student records, employee evaluations, or nonpublic
+            purchasing information. The host application still verifies the
+            reader’s record relationship or approved business purpose.
+          views:
+            default: CONFIDENTIAL
+            short: C
+            long: CONFIDENTIAL
+          aliases:
+            - confidential
+          categories:
+            - level
+          color:
+            background: '#6a1b9a'
+            text: '#ffffff'
+          rank:
+            above: INTERNAL
+        - id: RESTRICTED
+          name: Restricted
+          definition: >-
+            Information needing the strongest protection because disclosure
+            could compromise safety, an investigation, or an assessment.
+          guidance: >-
+            Use for building access codes, an active investigation file, or live
+            assessment questions. The host application verifies explicit
+            assignment to the file, case, assessment, or team.
+          views:
+            default: RESTRICTED
+            short: R
+            long: RESTRICTED
+          aliases:
+            - restricted
+          categories:
+            - level
+          color:
+            background: '#c62828'
+            text: '#ffffff'
+          rank: top
+  rules:
+    - id: protection-level-required
+      name: Protection Level Required
+      action: cardinality
+      category: level
+      min: 1
+      message: Choose a protection level.
+    - id: one-protection-level
+      name: One Protection Level
+      action: exclusive
+      target:
+        - PUBLIC
+        - INTERNAL
+        - CONFIDENTIAL
+        - RESTRICTED
+      message: Choose exactly one protection level.
+  parse:
+    case_sensitive: false
+    strip_whitespace: true
+  render:
+    color_from: level
+    default: default
+    formats:
+      - id: default
+        view: default
+        surface: marking
+        mode: inline
+        separator: //
+        separator_aliases: [',']
+        fields:
+          - category: level
+            separator: /
+            separator_aliases: [',']
+      - id: short
+        view: short
+        surface: marking
+        mode: inline
+        separator: //
+        separator_aliases: [',']
+        fields:
+          - category: level
+            separator: /
+            separator_aliases: [',']
+      - id: instructions
+        view: long
+        surface: marking
+        mode: inline
+        separator: ' // '
+        fields:
+          - category: level
+            separator: ', '

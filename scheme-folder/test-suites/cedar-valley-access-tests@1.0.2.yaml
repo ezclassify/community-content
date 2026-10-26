@@ -1,0 +1,264 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cedar-valley-access-tests
+  version: 1.0.2
+  name: cedar valley access tests
+  description: >-
+    Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are
+    authored separately from execution.
+  composition:
+    scheme:
+      id: cedar-valley
+      version: 1.0.0
+    access:
+      id: cedar-valley-access
+      version: 1.0.0
+  cases:
+    - id: public-needs-no-clearance
+      operation: checkAccess
+      input:
+        marking: PUBLIC
+        userAttributes: {}
+      name: PUBLIC needs no clearance
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: clearance-allows-internal
+      operation: checkAccess
+      input:
+        marking: INTERNAL
+        userAttributes:
+          clearance: INTERNAL
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+      name: INTERNAL clearance allows INTERNAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: missing-clearance-refuses-internal
+      operation: checkAccess
+      input:
+        marking: INTERNAL
+        userAttributes:
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+      name: Missing clearance denies INTERNAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: clearance-allows-confidential
+      operation: checkAccess
+      input:
+        marking: CONFIDENTIAL
+        userAttributes:
+          clearance: CONFIDENTIAL
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+      name: CONFIDENTIAL clearance allows CONFIDENTIAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: missing-clearance-refuses-confidential
+      operation: checkAccess
+      input:
+        marking: CONFIDENTIAL
+        userAttributes:
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+      name: Missing clearance denies CONFIDENTIAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: clearance-allows-restricted
+      operation: checkAccess
+      input:
+        marking: RESTRICTED
+        userAttributes:
+          clearance: RESTRICTED
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+      name: RESTRICTED clearance allows RESTRICTED
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: missing-clearance-refuses-restricted
+      operation: checkAccess
+      input:
+        marking: RESTRICTED
+        userAttributes:
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+      name: Missing clearance denies RESTRICTED
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: lower-clearance-refused
+      operation: checkAccess
+      input:
+        marking: CONFIDENTIAL
+        userAttributes:
+          clearance: INTERNAL
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+      name: INTERNAL clearance cannot read CONFIDENTIAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: one-permitted-school-suffices
+      operation: checkAccess
+      input:
+        marking: CONFIDENTIAL//FINANCIAL INFORMATION/STUDENT INFORMATION//OAKWOOD/PINECREST
+        userAttributes:
+          clearance: CONFIDENTIAL
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+          sensitive_content_permissions:
+            - FINANCIAL_INFORMATION
+            - STUDENT_INFORMATION
+          school_memberships:
+            - OAKWOOD
+      name: An Oakwood member can read an Oakwood/Pinecrest file
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: unpermitted-school-refused
+      operation: checkAccess
+      input:
+        marking: CONFIDENTIAL//FINANCIAL INFORMATION/STUDENT INFORMATION//OAKWOOD/PINECREST
+        userAttributes:
+          clearance: CONFIDENTIAL
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+          sensitive_content_permissions:
+            - FINANCIAL_INFORMATION
+            - STUDENT_INFORMATION
+          school_memberships:
+            - RIVERSIDE
+      name: A Riverside member cannot read an Oakwood/Pinecrest file
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: every-content-permission-required
+      operation: checkAccess
+      input:
+        marking: CONFIDENTIAL//FINANCIAL INFORMATION/STUDENT INFORMATION//OAKWOOD/PINECREST
+        userAttributes:
+          clearance: CONFIDENTIAL
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+          sensitive_content_permissions:
+            - FINANCIAL_INFORMATION
+          school_memberships:
+            - OAKWOOD
+      name: Every sensitive-content permission is required
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: all-includes-pinecrest
+      operation: checkAccess
+      input:
+        marking: INTERNAL//ALL
+        userAttributes:
+          clearance: INTERNAL
+          recipient_organizations:
+            - CEDAR_VALLEY_DISTRICT
+          school_memberships:
+            - PINECREST
+      name: ALL permits a Pinecrest member
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: external-recipient-explicitly-permitted
+      operation: checkAccess
+      input:
+        marking: INTERNAL//STUDENT TRANSPORTATION SERVICES
+        userAttributes:
+          clearance: INTERNAL
+          recipient_organizations:
+            - STUDENT_TRANSPORTATION_SERVICES
+      name: An explicit transportation recipient is allowed
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: other-external-recipient-refused
+      operation: checkAccess
+      input:
+        marking: INTERNAL//STUDENT TRANSPORTATION SERVICES
+        userAttributes:
+          clearance: INTERNAL
+          recipient_organizations:
+            - COMMONWEALTH_EDUCATION_DEPARTMENT
+      name: A different external recipient is denied
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: blank-sharing-is-district-only
+      operation: checkAccess
+      input:
+        marking: INTERNAL
+        userAttributes:
+          clearance: INTERNAL
+          recipient_organizations:
+            - STUDENT_TRANSPORTATION_SERVICES
+      name: Blank sharing limits access to the district
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: unmarked-document-not-evaluated
+      operation: assessDocumentAccess
+      input:
+        text: Narrative without a marking.
+        userAttributes: {}
+      name: Unmarked documents have no authored access decision
+      assertions:
+        - path:
+            - result
+            - authored
+            - status
+          matcher: equals
+          value: not-evaluated

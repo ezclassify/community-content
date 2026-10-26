@@ -1,0 +1,624 @@
+scheme:
+  id: cedar-valley
+  version: 1.0.0
+  name: Cedar Valley District Files
+  description: >-
+    A district-wide fictional example for files across Oakwood, Pinecrest, Riverside, and the
+    district office. Protection rolls up by maximum sensitivity; sensitive content and handling
+    combine; school and external-recipient permissions intersect. Markings describe policy inputs
+    while the host application supplies identity, record relationships, assignments, and delivery
+    facts.
+  vocabulary:
+    marking:
+      singular: File Marking
+      plural: File Markings
+  role_detection:
+    whole:
+      - long
+    part:
+      - short
+  default_scope: marking
+  scopes:
+    - id: marking
+      label: File marking
+  data:
+    categories:
+      - id: level
+        label: Protection
+        required: true
+        single: true
+        rollup: max
+        position: 0
+      - id: sensitive_content
+        label: Sensitive content
+        required: false
+        single: false
+        sort: alphabetical
+        rollup: union
+        position: 1
+      - id: permitted_schools
+        label: Permitted schools
+        required: false
+        single: false
+        sort: alphabetical
+        collapse_groups: true
+        rollup: pipeline
+        position: 2
+      - id: allow_sharing_with
+        label: Allow sharing with
+        required: false
+        single: false
+        sort: alphabetical
+        rollup: pipeline
+        position: 3
+      - id: handling
+        label: Handling
+        required: false
+        single: false
+        sort: alphabetical
+        rollup: union
+        position: 4
+    concepts:
+      inline:
+        - id: PUBLIC
+          name: Public
+          definition: >-
+            This exact version is approved for anyone to read or share. An unmarked file is not
+            automatically public.
+          guidance: Use for a published lunch menu, school calendar, or released practice questions.
+          views:
+            default: PUBLIC
+            short: P
+            long: PUBLIC
+          aliases:
+            - public
+          categories:
+            - level
+          color:
+            background: '#2e7d32'
+            text: '#ffffff'
+          rank: bottom
+        - id: INTERNAL
+          name: Internal
+          definition: Routine Cedar Valley business that has not been approved for public distribution.
+          guidance: >-
+            Use for a staff plan, district memo, or bus operations schedule without student names or
+            home addresses.
+          views:
+            default: INTERNAL
+            short: I
+            long: INTERNAL
+          aliases:
+            - internal
+          categories:
+            - level
+          color:
+            background: '#1565c0'
+            text: '#ffffff'
+          rank:
+            above: PUBLIC
+        - id: CONFIDENTIAL
+          name: Confidential
+          definition: Private information that must be protected from unauthorized disclosure.
+          guidance: >-
+            Use for student records, employee evaluations, or nonpublic purchasing information. The
+            host application still verifies the reader’s record relationship or approved business
+            purpose.
+          views:
+            default: CONFIDENTIAL
+            short: C
+            long: CONFIDENTIAL
+          aliases:
+            - confidential
+          categories:
+            - level
+          color:
+            background: '#6a1b9a'
+            text: '#ffffff'
+          rank:
+            above: INTERNAL
+        - id: RESTRICTED
+          name: Restricted
+          definition: >-
+            Information needing the strongest protection because disclosure could compromise safety,
+            an investigation, or an assessment.
+          guidance: >-
+            Use for building access codes, an active investigation file, or live assessment
+            questions. The host application verifies explicit assignment to the file, case,
+            assessment, or team.
+          views:
+            default: RESTRICTED
+            short: R
+            long: RESTRICTED
+          aliases:
+            - restricted
+          categories:
+            - level
+          color:
+            background: '#c62828'
+            text: '#ffffff'
+          rank: top
+        - id: STUDENT_INFORMATION
+          name: Student information
+          definition: >-
+            Protected information about identifiable students, including learning, support,
+            attendance, or individual results.
+          guidance: >-
+            Access to one student’s information does not grant access to every student. The host
+            application supplies the record relationship.
+          views:
+            default: STUDENT INFORMATION
+            short: STUDENT
+            long: STUDENT INFORMATION
+          aliases:
+            - student information
+            - student record
+          categories:
+            - sensitive_content
+        - id: EMPLOYEE_INFORMATION
+          name: Employee information
+          definition: Private information about individual employees or personnel matters.
+          guidance: >-
+            Use for an employee evaluation or personnel investigation. The host application supplies
+            the record or case authorization.
+          views:
+            default: EMPLOYEE INFORMATION
+            short: EMPLOYEE
+            long: EMPLOYEE INFORMATION
+          aliases:
+            - employee information
+            - personnel
+          categories:
+            - sensitive_content
+        - id: FINANCIAL_INFORMATION
+          name: Financial information
+          definition: Nonpublic purchasing, payment, or financial information.
+          guidance: >-
+            Use for supplier bids or evaluation notes during an active purchasing review. A
+            published budget does not need this tag.
+          views:
+            default: FINANCIAL INFORMATION
+            short: FINANCIAL
+            long: FINANCIAL INFORMATION
+          aliases:
+            - financial information
+            - purchasing notes
+          categories:
+            - sensitive_content
+        - id: SECURE_ASSESSMENTS
+          name: Secure assessments
+          definition: Unreleased questions, answer keys, and other controlled assessment material.
+          guidance: >-
+            Use for a live assessment booklet or its answer key. The host application verifies
+            assignment to the assessment.
+          views:
+            default: SECURE ASSESSMENTS
+            short: ASSESSMENT
+            long: SECURE ASSESSMENTS
+          aliases:
+            - secure assessments
+            - live exam
+            - answer key
+          categories:
+            - sensitive_content
+        - id: SECURITY_INFORMATION
+          name: Security information
+          definition: Details that could expose people, buildings, or systems to harm.
+          guidance: >-
+            Use for door access codes or security-system blind spots. The host application verifies
+            a reader’s operational need.
+          views:
+            default: SECURITY INFORMATION
+            short: SECURITY
+            long: SECURITY INFORMATION
+          aliases:
+            - security information
+            - access code
+          categories:
+            - sensitive_content
+        - id: ALL
+          name: All three schools
+          definition: >-
+            A finite group containing Oakwood Middle School, Pinecrest Middle School, and Riverside
+            High School. It is not a wildcard or an access grant.
+          guidance: >-
+            Use ALL by itself for a file permitted at all three schools. Combined markings retain
+            only schools permitted by every contributing marking; permission for all three
+            is displayed as ALL.
+          views:
+            default: ALL
+            short: ALL
+            long: ALL SCHOOLS
+          aliases:
+            - all
+            - all schools
+          categories:
+            - permitted_schools
+          members:
+            - OAKWOOD
+            - PINECREST
+            - RIVERSIDE
+        - id: OAKWOOD
+          name: Oakwood Middle School
+          definition: >-
+            Permitted for Oakwood Middle School. Other protection and access requirements still
+            apply.
+          guidance: >-
+            Use for an Oakwood staffing plan or include it with another school when both may receive
+            the file.
+          views:
+            default: OAKWOOD
+            short: OAK
+            long: OAKWOOD MIDDLE SCHOOL
+          aliases:
+            - oakwood
+            - oakwood middle school
+          categories:
+            - permitted_schools
+        - id: PINECREST
+          name: Pinecrest Middle School
+          definition: >-
+            Permitted for Pinecrest Middle School. Other protection and access requirements still
+            apply.
+          guidance: >-
+            Use for a Pinecrest file or include it with another school when both may receive the
+            file.
+          views:
+            default: PINECREST
+            short: PINE
+            long: PINECREST MIDDLE SCHOOL
+          aliases:
+            - pinecrest
+            - pinecrest middle school
+          categories:
+            - permitted_schools
+        - id: RIVERSIDE
+          name: Riverside High School
+          definition: >-
+            Permitted for Riverside High School. Other protection and access requirements still
+            apply.
+          guidance: >-
+            Use for a Riverside file or include it with another school when both may receive the
+            file.
+          views:
+            default: RIVERSIDE
+            short: RIVER
+            long: RIVERSIDE HIGH SCHOOL
+          aliases:
+            - riverside
+            - riverside high school
+          categories:
+            - permitted_schools
+        - id: CEDAR_VALLEY_DISTRICT
+          name: Cedar Valley District (implicit)
+          definition: >-
+            The implicit internal recipient for every nonpublic Cedar Valley file. Authors do not
+            select it; the scheme derives it from Internal, Confidential, or Restricted protection.
+          guidance: >-
+            Its presence makes blank external sharing district-only and preserves district access
+            when an external organization is also permitted.
+          views:
+            default: CEDAR VALLEY DISTRICT
+            short: DISTRICT
+            long: CEDAR VALLEY DISTRICT
+          aliases: []
+          categories:
+            - allow_sharing_with
+        - id: COMMONWEALTH_EDUCATION_DEPARTMENT
+          name: Commonwealth Education Department
+          definition: >-
+            Allows delivery to authorized staff of the fictional state education department, in
+            addition to authorized Cedar Valley recipients.
+          guidance: >-
+            Use only when this exact nonpublic file may be shared with the department. The marking
+            does not establish a recipient’s identity or business need.
+          views:
+            default: COMMONWEALTH EDUCATION DEPARTMENT
+            short: EDUCATION DEPARTMENT
+            long: COMMONWEALTH EDUCATION DEPARTMENT
+          aliases:
+            - commonwealth education department
+            - education department
+          categories:
+            - allow_sharing_with
+        - id: STUDENT_TRANSPORTATION_SERVICES
+          name: Student Transportation Services
+          definition: >-
+            Allows delivery to authorized staff of Cedar Valley’s contracted transportation
+            provider, in addition to authorized Cedar Valley recipients.
+          guidance: >-
+            Use for an approved provider copy such as a bus operations plan without student names or
+            home addresses. The marking does not verify the recipient.
+          views:
+            default: STUDENT TRANSPORTATION SERVICES
+            short: TRANSPORTATION
+            long: STUDENT TRANSPORTATION SERVICES
+          aliases:
+            - student transportation services
+            - transportation services
+          categories:
+            - allow_sharing_with
+        - id: DO_NOT_FORWARD
+          name: Do not forward
+          definition: Do not pass this copy on. Ask the owner before distributing it further.
+          guidance: >-
+            A human instruction for material such as an internal purchasing memo circulated for
+            review. The marking does not technically block forwarding.
+          views:
+            default: DO NOT FORWARD
+            short: NO FWD
+            long: DO NOT FORWARD
+          aliases:
+            - do not forward
+            - no forward
+          categories:
+            - handling
+        - id: REDACT_BEFORE_RELEASE
+          name: Redact before release
+          definition: >-
+            Remove protected information and obtain approval for a separate public version. This
+            copy stays protected.
+          guidance: >-
+            A human instruction for material such as a purchasing report with private contact or
+            payment information. The marking does not perform redaction.
+          views:
+            default: REDACT BEFORE RELEASE
+            short: REDACT
+            long: REDACT BEFORE RELEASE
+          aliases:
+            - redact before release
+            - redact
+          categories:
+            - handling
+        - id: KEEP_SEALED
+          name: Keep sealed
+          definition: Keep the packet closed until its authorized opening time or event.
+          guidance: >-
+            A human instruction for a live assessment packet awaiting its scheduled session. The
+            marking does not run a clock or verify the seal.
+          views:
+            default: KEEP SEALED
+            short: SEALED
+            long: KEEP SEALED
+          aliases:
+            - keep sealed
+            - sealed
+          categories:
+            - handling
+        - id: COLLECT_AFTER_USE
+          name: Collect after use
+          definition: Collect every issued copy after the authorized activity and return it to its custodian.
+          guidance: >-
+            A human instruction for controlled packets or temporary plans. The marking does not
+            prove that every copy was returned.
+          views:
+            default: COLLECT AFTER USE
+            short: COLLECT
+            long: COLLECT AFTER USE
+          aliases:
+            - collect after use
+            - collect
+          categories:
+            - handling
+  rules:
+    - id: protection-level-required
+      name: Protection Level Required
+      action: cardinality
+      category: level
+      min: 1
+      message: Choose a protection level.
+    - id: one-protection-level
+      name: One Protection Level
+      action: exclusive
+      target:
+        - PUBLIC
+        - INTERNAL
+        - CONFIDENTIAL
+        - RESTRICTED
+      message: Choose exactly one protection level.
+    - id: public-has-no-handling
+      name: Public Has No Handling Instructions
+      when: PUBLIC
+      action: cardinality
+      category: handling
+      max: 0
+      message: PUBLIC is an approved public version and cannot carry handling instructions.
+    - id: public-has-no-sensitive-content
+      name: Public Has No Sensitive Content
+      when: PUBLIC
+      action: cardinality
+      category: sensitive_content
+      max: 0
+      message: PUBLIC cannot carry sensitive-content tags.
+    - id: public-has-no-school-limit
+      name: Public Has No School Limit
+      when: PUBLIC
+      action: cardinality
+      category: permitted_schools
+      max: 0
+      message: PUBLIC cannot be limited to selected schools.
+    - id: public-has-no-external-allow-list
+      name: Public Has No External Allow List
+      when: PUBLIC
+      action: cardinality
+      category: allow_sharing_with
+      max: 0
+      message: PUBLIC is already approved for anyone and cannot carry an external allow list.
+    - id: financial-information-is-confidential
+      name: Financial Information Is Confidential
+      when: FINANCIAL_INFORMATION
+      action: require_any
+      category: level
+      target:
+        - CONFIDENTIAL
+        - RESTRICTED
+      phases:
+        - validate
+      message: Financial information is confidential at minimum.
+    - id: security-information-is-restricted
+      name: Security Information Is Restricted
+      when: SECURITY_INFORMATION
+      action: require_any
+      category: level
+      target:
+        - RESTRICTED
+      phases:
+        - validate
+      message: Security information is restricted.
+    - id: expand-all-schools
+      name: Expand All Schools
+      action: expand_group
+      category: permitted_schools
+      explanation: Expand the finite ALL group before school-scope intersection.
+    - id: nonpublic-is-internal-by-default
+      name: Nonpublic Files Include Cedar Valley
+      when:
+        any:
+          - { category: level, has: INTERNAL }
+          - { category: level, has: CONFIDENTIAL }
+          - { category: level, has: RESTRICTED }
+      action: require
+      category: allow_sharing_with
+      target: CEDAR_VALLEY_DISTRICT
+      explanation: >-
+        Choosing Internal, Confidential, or Restricted adds the implicit Cedar Valley District
+        recipient. All protection levels remain available before a recipient is present.
+    - id: school-intersection-must-not-empty
+      name: School Intersection Must Not Be Empty
+      when:
+        all:
+          - category: permitted_schools
+            is: count_eq 0
+          - target: contributors
+            quantifier: any
+            all:
+              - category: permitted_schools
+                is: has_content
+      action: cardinality
+      category: permitted_schools
+      min: 1
+      phases:
+        - post-merge
+      message: The contributing school limits have no school in common; do not share the combined file.
+  filters:
+    - id: hide-implicit-district
+      in:
+        - render
+        - suggest
+      remove:
+        - CEDAR_VALLEY_DISTRICT
+      when:
+        all:
+          - category: allow_sharing_with
+            has: CEDAR_VALLEY_DISTRICT
+      explanation: >-
+        The district is implicit for nonpublic files; authors choose only additional external
+        recipients.
+  rollup_pipelines:
+    - id: school-scope-intersection
+      categories:
+        - permitted_schools
+      explanation: >-
+        Blank school scope is neutral. Explicit school scopes intersect; an empty intersection is
+        invalidated by a post-merge rule.
+      steps:
+        - when:
+            any:
+              - category_id: permitted_schools
+                operator: has_content
+          then:
+            intersect:
+              category: permitted_schools
+        - then:
+            union: true
+    - id: external-sharing-intersection
+      categories:
+        - allow_sharing_with
+      explanation: >-
+        Every nonpublic portion includes the implicit district recipient. External permissions
+        survive only when every nonpublic portion permits them; Public portions are neutral.
+      steps:
+        - when:
+            any:
+              - category_id: allow_sharing_with
+                operator: has_content
+          then:
+            intersect:
+              category: allow_sharing_with
+        - then:
+            union: true
+  embedded_marking:
+    - pattern: "\\((.+)\\)"
+      template: '({marking}) '
+      auto_insert: every-paragraph
+  # Separators belong to the fields that write them: `//` between categories
+  # and `/` between a category's values. A comma an author typed instead is
+  # still read through separator_aliases: the tolerant pass substitutes the
+  # declared separator and reports the correction.
+  parse:
+    case_sensitive: false
+    strip_whitespace: true
+  render:
+    color_from: level
+    default: long
+    formats:
+      - id: long
+        surface: marking
+        mode: inline
+        view: default
+        separator: //
+        separator_aliases: [',']
+        fields:
+          - category: level
+            separator: /
+            separator_aliases: [',']
+          - category: sensitive_content
+            separator: /
+            separator_aliases: [',']
+          - category: permitted_schools
+            separator: /
+            separator_aliases: [',']
+          - category: allow_sharing_with
+            separator: /
+            separator_aliases: [',']
+          - category: handling
+            separator: /
+            separator_aliases: [',']
+      - id: short
+        surface: marking
+        mode: inline
+        view: short
+        separator: //
+        separator_aliases: [',']
+        fields:
+          - category: level
+            separator: /
+            separator_aliases: [',']
+          - category: sensitive_content
+            separator: /
+            separator_aliases: [',']
+          - category: permitted_schools
+            separator: /
+            separator_aliases: [',']
+          - category: allow_sharing_with
+            separator: /
+            separator_aliases: [',']
+          - category: handling
+            separator: /
+            separator_aliases: [',']
+      - id: instructions
+        surface: marking
+        mode: inline
+        view: long
+        separator: ' // '
+        fields:
+          - category: level
+            separator: ', '
+          - category: sensitive_content
+            separator: ', '
+          - category: permitted_schools
+            separator: ', '
+          - category: allow_sharing_with
+            separator: ', '
+          - category: handling
+            separator: ', '

@@ -1,0 +1,10 @@
+{
+    "extends": "../tsconfig.lib.json",
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": false,
+        "noEmit": true,
+        "rootDir": ".."
+    },
+    "include": ["../src/**/*.ts", "../scripts/**/*.mjs", "../vite.config.ts"]
+}

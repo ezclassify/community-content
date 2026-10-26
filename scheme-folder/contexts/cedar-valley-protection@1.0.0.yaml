@@ -1,0 +1,15 @@
+context:
+  id: cedar-valley-protection
+  version: 1.0.0
+  description: >-
+    Start with Cedar Valley protection: one scheme, one guide, and an access policy that compares a
+    trusted host-provided clearance.
+  scheme:
+    id: cedar-valley-protection
+    version: 1.0.0
+  guides:
+    - id: cedar-valley-protection-guide
+      version: 1.0.0
+  access:
+    id: cedar-valley-protection-access
+    version: 1.0.0

@@ -1,0 +1,13 @@
+{
+    "$comment": "The optional EzClassify CLI pin for licensed maintainers running this repository's behavioral suites locally. CI checks this pin's shape; it does not download the engine. A source is only usable when it carries a checksum or digest, so a change here is a change to what CI trusts and needs code-owner review. See CONTRIBUTING.md.",
+    "minimumVersion": "1.0.0",
+    "testedVersion": "1.0.0",
+    "archive": {
+        "url": null,
+        "sha256": null
+    },
+    "image": {
+        "ref": null,
+        "digest": null
+    }
+}

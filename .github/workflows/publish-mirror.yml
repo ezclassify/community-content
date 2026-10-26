@@ -1,0 +1,107 @@
+name: Publish mirror (GitHub Packages)
+
+# Nightly publish of @ezclassify/schemes to the GitHub Packages development
+# mirror, so a consumer building against unreleased first-party packages gets
+# a real artifact from the same registry as its other @ezclassify/* packages.
+# Gated on "did a commit land in the last 24h" so idle days publish nothing.
+# Releases to public npm are a separate process; this workflow never touches
+# them.
+
+on:
+  schedule:
+    - cron: '45 6 * * *' # 06:45 UTC nightly, after the first-party packages this repository builds against
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Publish even if no commit landed in the last 24h
+        type: boolean
+        default: false
+
+permissions:
+  packages: write
+  contents: read
+
+concurrency:
+  group: publish-mirror
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # Publication authority is repository configuration, not repository
+    # identity: the job runs only where this variable is set, so moving the
+    # variable and the token secret moves the publisher with no code change.
+    if: vars.EZ_DEVELOPMENT_MIRROR_PUBLISHER == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Gate on a commit in the last 24h
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force }}" = "true" ]; then
+            echo "forced publish"; echo "run=yes" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          age=$(( $(date +%s) - $(git show -s --format=%ct HEAD) ))
+          if [ "$age" -lt 86400 ]; then
+            echo "HEAD is ${age}s old (<24h): publishing"; echo "run=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "HEAD is ${age}s old (>=24h): nothing landed today, skipping"; echo "run=no" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: steps.gate.outputs.run == 'yes'
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@ezclassify'
+
+      - name: Configure registry
+        # Same split as ci.yml: auth in a user-level npmrc so the tracked
+        # project .npmrc (ignore-scripts) stays untouched.
+        if: steps.gate.outputs.run == 'yes'
+        run: |
+          cat > "$RUNNER_TEMP/mirror-npmrc" << 'NPMRC'
+          @ezclassify:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          NPMRC
+          echo "NPM_CONFIG_USERCONFIG=$RUNNER_TEMP/mirror-npmrc" >> "$GITHUB_ENV"
+
+      - name: Install
+        # npm install, not npm ci: the development lockfile is deliberately
+        # untracked (see AGENTS.md).
+        #
+        # `--tag=dev` because this mirror publishes every build under `dev` and
+        # leaves `latest` behind, and npm takes the version under its default
+        # tag over the highest one whenever that version satisfies the range.
+        # Without it this job built against the first-party packages last
+        # published under `latest`. The first resolve runs with the first-party
+        # ranges stripped, so every third-party version is chosen under npm's
+        # default tag and locked. The second puts them back and adds only the
+        # first-party packages under `dev`.
+        if: steps.gate.outputs.run == 'yes'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.EZ_GHPKG_TOKEN }}
+        run: |
+          set -euo pipefail
+          node scripts/relock.mjs --strip
+          npm install --package-lock-only
+          node scripts/relock.mjs --restore
+          npm install --tag=dev
+
+      - name: Stamp mirror version
+        if: steps.gate.outputs.run == 'yes'
+        run: npm pkg set "version=1.0.0-mirror.${{ github.run_number }}"
+
+      - name: Build
+        # dist/ is what `files` publishes; ignore-scripts means no hook builds it.
+        if: steps.gate.outputs.run == 'yes'
+        run: npm run build
+
+      # `--access restricted` asks npm not to publish a public package. These
+      # builds are development snapshots, not releases.
+      - name: Publish to GitHub Packages
+        if: steps.gate.outputs.run == 'yes'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.EZ_GHPKG_TOKEN }}
+        run: npm publish --tag dev --access restricted

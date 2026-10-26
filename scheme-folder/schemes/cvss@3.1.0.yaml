@@ -1,0 +1,694 @@
+scheme:
+    id: cvss
+    version: 3.1.0
+    name: CVSS v3.1
+    description: >
+        Common Vulnerability Scoring System (CVSS) v3.1 Base, Temporal, and Environmental Metrics as defined by FIRST.org.
+        Encodes the full CVSS vector string including optional Temporal and Environmental metric groups.
+    guidance: >-
+        The vector string is the transport form of an assessment: one value per metric, in a fixed order, short enough to paste
+        into a ticket and machine readable on the other end. Source: FIRST CVSS v3.1 Specification Document,
+        https://www.first.org/cvss/v3.1/specification-document.
+    data:
+        categories:
+            - id: attack_vector
+              label: Attack Vector (AV)
+              citation: FIRST CVSS v3.1 Specification Document, Section 2.1.1, https://www.first.org/cvss/v3.1/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 0
+            - id: attack_complexity
+              label: Attack Complexity (AC)
+              citation: FIRST CVSS v3.1 Specification Document, Section 2.1.2, https://www.first.org/cvss/v3.1/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 1
+            - id: privileges_required
+              label: Privileges Required (PR)
+              citation: FIRST CVSS v3.1 Specification Document, Section 2.1.3, https://www.first.org/cvss/v3.1/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 2
+            - id: user_interaction
+              label: User Interaction (UI)
+              citation: FIRST CVSS v3.1 Specification Document, Section 2.1.4, https://www.first.org/cvss/v3.1/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 3
+            - id: scope
+              label: Scope (S)
+              citation: FIRST CVSS v3.1 Specification Document, Section 2.2, https://www.first.org/cvss/v3.1/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 4
+            - id: confidentiality
+              label: Confidentiality Impact (C)
+              citation: FIRST CVSS v3.1 Specification Document, Section 2.3.1, https://www.first.org/cvss/v3.1/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 5
+            - id: integrity
+              label: Integrity Impact (I)
+              citation: FIRST CVSS v3.1 Specification Document, Section 2.3.2, https://www.first.org/cvss/v3.1/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 6
+            - id: availability
+              label: Availability Impact (A)
+              citation: FIRST CVSS v3.1 Specification Document, Section 2.3.3, https://www.first.org/cvss/v3.1/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 7
+            - id: exploit_code_maturity
+              label: Exploit Code Maturity (E)
+              citation: FIRST CVSS v3.1 Specification Document, Section 3.1, https://www.first.org/cvss/v3.1/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 8
+            - id: remediation_level
+              label: Remediation Level (RL)
+              citation: FIRST CVSS v3.1 Specification Document, Section 3.2, https://www.first.org/cvss/v3.1/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 9
+            - id: report_confidence
+              label: Report Confidence (RC)
+              citation: FIRST CVSS v3.1 Specification Document, Section 3.3, https://www.first.org/cvss/v3.1/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 10
+            - id: confidentiality_requirement
+              label: Confidentiality Requirement (CR)
+              citation: FIRST CVSS v3.1 Specification Document, Section 4.1, https://www.first.org/cvss/v3.1/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 11
+            - id: integrity_requirement
+              label: Integrity Requirement (IR)
+              citation: FIRST CVSS v3.1 Specification Document, Section 4.2, https://www.first.org/cvss/v3.1/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 12
+            - id: availability_requirement
+              label: Availability Requirement (AR)
+              citation: FIRST CVSS v3.1 Specification Document, Section 4.3, https://www.first.org/cvss/v3.1/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 13
+        concepts:
+            inline:
+                - id: AV_N
+                  name: 'Attack Vector: Network'
+                  views:
+                      default: 'AV:N'
+                      metric: 'N'
+                  categories:
+                      - attack_vector
+                  position: 3
+                  rank: 3
+                - id: AV_A
+                  name: 'Attack Vector: Adjacent'
+                  views:
+                      default: 'AV:A'
+                      metric: A
+                  categories:
+                      - attack_vector
+                  position: 2
+                  rank: 2
+                - id: AV_L
+                  name: 'Attack Vector: Local'
+                  views:
+                      default: 'AV:L'
+                      metric: L
+                  categories:
+                      - attack_vector
+                  position: 1
+                  rank: 1
+                - id: AV_P
+                  name: 'Attack Vector: Physical'
+                  views:
+                      default: 'AV:P'
+                      metric: P
+                  categories:
+                      - attack_vector
+                  position: 0
+                  rank: 0
+                - id: AC_L
+                  name: 'Attack Complexity: Low'
+                  views:
+                      default: 'AC:L'
+                      metric: L
+                  categories:
+                      - attack_complexity
+                  position: 1
+                  rank: 1
+                - id: AC_H
+                  name: 'Attack Complexity: High'
+                  views:
+                      default: 'AC:H'
+                      metric: H
+                  categories:
+                      - attack_complexity
+                  position: 0
+                  rank: 0
+                - id: PR_N
+                  name: 'Privileges Required: None'
+                  views:
+                      default: 'PR:N'
+                      metric: 'N'
+                  categories:
+                      - privileges_required
+                  position: 2
+                  rank: 2
+                - id: PR_L
+                  name: 'Privileges Required: Low'
+                  views:
+                      default: 'PR:L'
+                      metric: L
+                  categories:
+                      - privileges_required
+                  position: 1
+                  rank: 1
+                - id: PR_H
+                  name: 'Privileges Required: High'
+                  views:
+                      default: 'PR:H'
+                      metric: H
+                  categories:
+                      - privileges_required
+                  position: 0
+                  rank: 0
+                - id: UI_N
+                  name: 'User Interaction: None'
+                  views:
+                      default: 'UI:N'
+                      metric: 'N'
+                  categories:
+                      - user_interaction
+                  position: 1
+                  rank: 1
+                - id: UI_R
+                  name: 'User Interaction: Required'
+                  views:
+                      default: 'UI:R'
+                      metric: R
+                  categories:
+                      - user_interaction
+                  position: 0
+                  rank: 0
+                - id: S_U
+                  name: 'Scope: Unchanged'
+                  views:
+                      default: 'S:U'
+                      metric: U
+                  categories:
+                      - scope
+                  position: 0
+                  rank: 0
+                - id: S_C
+                  name: 'Scope: Changed'
+                  views:
+                      default: 'S:C'
+                      metric: C
+                  categories:
+                      - scope
+                  position: 1
+                  rank: 1
+                - id: C_N
+                  name: 'Confidentiality Impact: None'
+                  views:
+                      default: 'C:N'
+                      metric: 'N'
+                  categories:
+                      - confidentiality
+                  position: 0
+                  rank: 0
+                - id: C_L
+                  name: 'Confidentiality Impact: Low'
+                  views:
+                      default: 'C:L'
+                      metric: L
+                  categories:
+                      - confidentiality
+                  position: 1
+                  rank: 1
+                - id: C_H
+                  name: 'Confidentiality Impact: High'
+                  views:
+                      default: 'C:H'
+                      metric: H
+                  categories:
+                      - confidentiality
+                  position: 2
+                  rank: 2
+                - id: I_N
+                  name: 'Integrity Impact: None'
+                  views:
+                      default: 'I:N'
+                      metric: 'N'
+                  categories:
+                      - integrity
+                  position: 0
+                  rank: 0
+                - id: I_L
+                  name: 'Integrity Impact: Low'
+                  views:
+                      default: 'I:L'
+                      metric: L
+                  categories:
+                      - integrity
+                  position: 1
+                  rank: 1
+                - id: I_H
+                  name: 'Integrity Impact: High'
+                  views:
+                      default: 'I:H'
+                      metric: H
+                  categories:
+                      - integrity
+                  position: 2
+                  rank: 2
+                - id: A_N
+                  name: 'Availability Impact: None'
+                  views:
+                      default: 'A:N'
+                      metric: 'N'
+                  categories:
+                      - availability
+                  position: 0
+                  rank: 0
+                - id: A_L
+                  name: 'Availability Impact: Low'
+                  views:
+                      default: 'A:L'
+                      metric: L
+                  categories:
+                      - availability
+                  position: 1
+                  rank: 1
+                - id: A_H
+                  name: 'Availability Impact: High'
+                  views:
+                      default: 'A:H'
+                      metric: H
+                  categories:
+                      - availability
+                  position: 2
+                  rank: 2
+                - id: E_X
+                  name: 'Exploit Code Maturity: Not Defined'
+                  views:
+                      default: 'E:X'
+                      metric: X
+                  categories:
+                      - exploit_code_maturity
+                  position: 0
+                  rank: 5
+                - id: E_U
+                  name: 'Exploit Code Maturity: Unproven'
+                  views:
+                      default: 'E:U'
+                      metric: U
+                  categories:
+                      - exploit_code_maturity
+                  position: 1
+                  rank: 1
+                - id: E_P
+                  name: 'Exploit Code Maturity: Proof-of-Concept'
+                  views:
+                      default: 'E:P'
+                      metric: P
+                  categories:
+                      - exploit_code_maturity
+                  position: 2
+                  rank: 2
+                - id: E_F
+                  name: 'Exploit Code Maturity: Functional'
+                  views:
+                      default: 'E:F'
+                      metric: F
+                  categories:
+                      - exploit_code_maturity
+                  position: 3
+                  rank: 3
+                - id: E_H
+                  name: 'Exploit Code Maturity: High'
+                  views:
+                      default: 'E:H'
+                      metric: H
+                  categories:
+                      - exploit_code_maturity
+                  position: 4
+                  rank: 4
+                - id: RL_X
+                  name: 'Remediation Level: Not Defined'
+                  views:
+                      default: 'RL:X'
+                      metric: X
+                  categories:
+                      - remediation_level
+                  position: 0
+                  rank: 5
+                - id: RL_O
+                  name: 'Remediation Level: Official Fix'
+                  views:
+                      default: 'RL:O'
+                      metric: O
+                  categories:
+                      - remediation_level
+                  position: 1
+                  rank: 1
+                - id: RL_T
+                  name: 'Remediation Level: Temporary Fix'
+                  views:
+                      default: 'RL:T'
+                      metric: T
+                  categories:
+                      - remediation_level
+                  position: 2
+                  rank: 2
+                - id: RL_W
+                  name: 'Remediation Level: Workaround'
+                  views:
+                      default: 'RL:W'
+                      metric: W
+                  categories:
+                      - remediation_level
+                  position: 3
+                  rank: 3
+                - id: RL_U
+                  name: 'Remediation Level: Unavailable'
+                  views:
+                      default: 'RL:U'
+                      metric: U
+                  categories:
+                      - remediation_level
+                  position: 4
+                  rank: 4
+                - id: RC_X
+                  name: 'Report Confidence: Not Defined'
+                  views:
+                      default: 'RC:X'
+                      metric: X
+                  categories:
+                      - report_confidence
+                  position: 0
+                  rank: 4
+                - id: RC_U
+                  name: 'Report Confidence: Unknown'
+                  views:
+                      default: 'RC:U'
+                      metric: U
+                  categories:
+                      - report_confidence
+                  position: 1
+                  rank: 1
+                - id: RC_R
+                  name: 'Report Confidence: Reasonable'
+                  views:
+                      default: 'RC:R'
+                      metric: R
+                  categories:
+                      - report_confidence
+                  position: 2
+                  rank: 2
+                - id: RC_C
+                  name: 'Report Confidence: Confirmed'
+                  views:
+                      default: 'RC:C'
+                      metric: C
+                  categories:
+                      - report_confidence
+                  position: 3
+                  rank: 3
+                - id: CR_X
+                  name: 'Confidentiality Requirement: Not Defined'
+                  views:
+                      default: 'CR:X'
+                      metric: X
+                  categories:
+                      - confidentiality_requirement
+                  position: 0
+                  rank: 2
+                - id: CR_L
+                  name: 'Confidentiality Requirement: Low'
+                  views:
+                      default: 'CR:L'
+                      metric: L
+                  categories:
+                      - confidentiality_requirement
+                  position: 1
+                  rank: 1
+                - id: CR_M
+                  name: 'Confidentiality Requirement: Medium'
+                  views:
+                      default: 'CR:M'
+                      metric: M
+                  categories:
+                      - confidentiality_requirement
+                  position: 2
+                  rank: 3
+                - id: CR_H
+                  name: 'Confidentiality Requirement: High'
+                  views:
+                      default: 'CR:H'
+                      metric: H
+                  categories:
+                      - confidentiality_requirement
+                  position: 3
+                  rank: 4
+                - id: IR_X
+                  name: 'Integrity Requirement: Not Defined'
+                  views:
+                      default: 'IR:X'
+                      metric: X
+                  categories:
+                      - integrity_requirement
+                  position: 0
+                  rank: 2
+                - id: IR_L
+                  name: 'Integrity Requirement: Low'
+                  views:
+                      default: 'IR:L'
+                      metric: L
+                  categories:
+                      - integrity_requirement
+                  position: 1
+                  rank: 1
+                - id: IR_M
+                  name: 'Integrity Requirement: Medium'
+                  views:
+                      default: 'IR:M'
+                      metric: M
+                  categories:
+                      - integrity_requirement
+                  position: 2
+                  rank: 3
+                - id: IR_H
+                  name: 'Integrity Requirement: High'
+                  views:
+                      default: 'IR:H'
+                      metric: H
+                  categories:
+                      - integrity_requirement
+                  position: 3
+                  rank: 4
+                - id: AR_X
+                  name: 'Availability Requirement: Not Defined'
+                  views:
+                      default: 'AR:X'
+                      metric: X
+                  categories:
+                      - availability_requirement
+                  position: 0
+                  rank: 2
+                - id: AR_L
+                  name: 'Availability Requirement: Low'
+                  views:
+                      default: 'AR:L'
+                      metric: L
+                  categories:
+                      - availability_requirement
+                  position: 1
+                  rank: 1
+                - id: AR_M
+                  name: 'Availability Requirement: Medium'
+                  views:
+                      default: 'AR:M'
+                      metric: M
+                  categories:
+                      - availability_requirement
+                  position: 2
+                  rank: 3
+                - id: AR_H
+                  name: 'Availability Requirement: High'
+                  views:
+                      default: 'AR:H'
+                      metric: H
+                  categories:
+                      - availability_requirement
+                  position: 3
+                  rank: 4
+    rules:
+        - id: exclusive-av
+          action: exclusive
+          message: Only one Attack Vector value may be specified
+          target:
+              - AV_N
+              - AV_A
+              - AV_L
+              - AV_P
+        - id: exclusive-ac
+          action: exclusive
+          message: Only one Attack Complexity value may be specified
+          target:
+              - AC_L
+              - AC_H
+        - id: exclusive-pr
+          action: exclusive
+          message: Only one Privileges Required value may be specified
+          target:
+              - PR_N
+              - PR_L
+              - PR_H
+        - id: exclusive-ui
+          action: exclusive
+          message: Only one User Interaction value may be specified
+          target:
+              - UI_N
+              - UI_R
+        - id: exclusive-s
+          action: exclusive
+          message: Only one Scope value may be specified
+          target:
+              - S_U
+              - S_C
+        - id: exclusive-c
+          action: exclusive
+          message: Only one Confidentiality Impact value may be specified
+          target:
+              - C_N
+              - C_L
+              - C_H
+        - id: exclusive-i
+          action: exclusive
+          message: Only one Integrity Impact value may be specified
+          target:
+              - I_N
+              - I_L
+              - I_H
+        - id: exclusive-a
+          action: exclusive
+          message: Only one Availability Impact value may be specified
+          target:
+              - A_N
+              - A_L
+              - A_H
+        - id: exclusive-e
+          action: exclusive
+          message: Only one Exploit Code Maturity value may be specified
+          target:
+              - E_X
+              - E_U
+              - E_P
+              - E_F
+              - E_H
+        - id: exclusive-rl
+          action: exclusive
+          message: Only one Remediation Level value may be specified
+          target:
+              - RL_X
+              - RL_O
+              - RL_T
+              - RL_W
+              - RL_U
+        - id: exclusive-rc
+          action: exclusive
+          message: Only one Report Confidence value may be specified
+          target:
+              - RC_X
+              - RC_U
+              - RC_R
+              - RC_C
+        - id: exclusive-cr
+          action: exclusive
+          message: Only one Confidentiality Requirement value may be specified
+          target:
+              - CR_X
+              - CR_L
+              - CR_M
+              - CR_H
+        - id: exclusive-ir
+          action: exclusive
+          message: Only one Integrity Requirement value may be specified
+          target:
+              - IR_X
+              - IR_L
+              - IR_M
+              - IR_H
+        - id: exclusive-ar
+          action: exclusive
+          message: Only one Availability Requirement value may be specified
+          target:
+              - AR_X
+              - AR_L
+              - AR_M
+              - AR_H
+    parse:
+        case_sensitive: false
+        strip_whitespace: true
+        normalize:
+            - id: fix-case
+              type: case
+              description: CVSS metric values are uppercase
+              correction: upper
+              confidence: safe
+              explanation: Converted metric value to uppercase
+              pattern: '(av|ac|pr|ui|s|c|i|a|e|rl|rc|cr|ir|ar):[a-z]'
+            - id: fix-redundant
+              type: dedup
+              description: Remove duplicate metric values
+              confidence: safe
+              explanation: Removed duplicate metric value
+    render:
+        default: vector
+        formats:
+            - id: vector
+              view: default
+              surface: default
+              mode: inline
+              prefix: 'CVSS:3.1/'
+              separator: /
+              fields:
+                  - category: attack_vector
+                  - category: attack_complexity
+                  - category: privileges_required
+                  - category: user_interaction
+                  - category: scope
+                  - category: confidentiality
+                  - category: integrity
+                  - category: availability
+                  - category: exploit_code_maturity
+                  - category: remediation_level
+                  - category: report_confidence
+                  - category: confidentiality_requirement
+                  - category: integrity_requirement
+                  - category: availability_requirement
+    default_scope: default
+    scopes:
+        - id: default
+          label: Default

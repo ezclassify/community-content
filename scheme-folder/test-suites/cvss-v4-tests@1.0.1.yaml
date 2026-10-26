@@ -1,0 +1,381 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cvss-v4-tests
+  version: 1.0.1
+  name: CVSS v4.0 tests
+  description: >-
+    CVSS v4.0 vector strings and qualitative ratings, round-tripped and
+    combined. Cases trace to the FIRST.org CVSS v4.0 specification; see
+    schemes/security-vectors/cvss-v4/docs/.
+  composition:
+    scheme:
+      id: cvss-v4
+      version: 4.0.0
+  cases:
+    - id: base-vector-round-trip
+      description: >-
+        v4.0 splits impact into vulnerable-system and subsequent-system metrics
+        and adds Attack Requirements. A complete base vector round-trips, and
+        a vector reads and renders in the default vector format.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - path: [rendered]
+          matcher: equals
+          value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N'
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: AT_N, categoryId: attack_requirements }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: VC_H, categoryId: vc_impact }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: SC_N, categoryId: sc_impact }
+
+    - id: metric-order-is-canonical
+      description: >-
+        The specification fixes metric order, so a shuffled vector normalizes
+        back to the defined sequence.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/SA:N/SI:N/SC:N/VA:H/VI:H/VC:H/UI:N/PR:N/AT:N/AC:L/AV:N'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - path: [rendered]
+          matcher: equals
+          value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N'
+
+    - id: unknown-metric-value-refused
+      description: Attack Requirements takes N or P. Z is not defined.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:Z/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+
+    - id: partial-base-vector-is-invalid
+      description: >-
+        There is no partial Base score in v4.0: all eleven Base metrics are
+        required. A vector missing Subsequent System Availability parses the
+        metrics it carries and names the one it does not.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - path: [errors]
+          matcher: contains
+          value: { constraintId: 'required-category:sa_impact' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: VC_H, categoryId: vc_impact }
+        - { path: [assertions], matcher: excludes, value: { categoryId: sa_impact } }
+
+    - id: threat-and-supplemental-metrics-are-optional-and-kept
+      description: >-
+        Only the Base group is required. A vector that also carries Exploit
+        Maturity and a Supplemental metric keeps both, in the order the
+        specification fixes.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:L/AC:H/AT:P/PR:H/UI:A/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N/E:P/AU:Y'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - path: [rendered]
+          matcher: equals
+          value: 'CVSS:4.0/AV:L/AC:H/AT:P/PR:H/UI:A/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N/E:P/AU:Y'
+
+    - id: lowercase-vector-is-normalized
+      description: >-
+        Metric values are uppercase. A lowercase vector is a case correction,
+        not a parse failure, and renders back canonically.
+      operation: process
+      input:
+        marking: 'cvss:4.0/av:n/ac:l/at:n/pr:n/ui:n/vc:h/vi:h/va:h/sc:n/si:n/sa:n'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - path: [rendered]
+          matcher: equals
+          value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N'
+
+    - id: critical-rating-round-trip
+      description: >-
+        A qualitative rating is a separate surface from the vector it
+        summarizes. Reading the rating does not require the Base metric values
+        its output never writes.
+      operation: process
+      input:
+        marking: Critical
+      options:
+        inputFormat: severity
+        outputFormat: severity
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: Critical }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: SEV_CRITICAL, categoryId: severity }
+
+    - id: high-rating-round-trip
+      operation: process
+      input:
+        marking: High
+      options:
+        inputFormat: severity
+        outputFormat: severity
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: High }
+
+    - id: medium-rating-round-trip
+      operation: process
+      input:
+        marking: Medium
+      options:
+        inputFormat: severity
+        outputFormat: severity
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: Medium }
+
+    - id: low-rating-round-trip
+      operation: process
+      input:
+        marking: Low
+      options:
+        inputFormat: severity
+        outputFormat: severity
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: Low }
+
+    - id: none-rating-round-trip
+      operation: process
+      input:
+        marking: None
+      options:
+        inputFormat: severity
+        outputFormat: severity
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: None }
+
+    - id: rating-does-not-complete-a-vector
+      description: Vector validation still requires all Base metrics.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - path: [errors]
+          matcher: contains
+          value: { constraintId: 'required-category:attack_requirements' }
+
+    - id: worst-value-wins-per-metric
+      description: >-
+        Per-metric rollup, including the split impact metrics. Vulnerable
+        System and Subsequent System roll up independently, so a pair of
+        assessments that disagree about where the damage lands keeps the worse
+        value on both sides.
+      operation: aggregate
+      input:
+        markings:
+          - 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N'
+          - 'CVSS:4.0/AV:L/AC:H/AT:P/PR:H/UI:A/VC:N/VI:N/VA:N/SC:H/SI:H/SA:H'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - path: [rendered]
+          matcher: equals
+          value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H'
+
+    - id: identical-vectors-aggregate-to-themselves
+      operation: aggregate
+      input:
+        markings:
+          - 'CVSS:4.0/AV:A/AC:H/AT:P/PR:L/UI:P/VC:L/VI:N/VA:N/SC:L/SI:N/SA:N'
+          - 'CVSS:4.0/AV:A/AC:H/AT:P/PR:L/UI:P/VC:L/VI:N/VA:N/SC:L/SI:N/SA:N'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - path: [rendered]
+          matcher: equals
+          value: 'CVSS:4.0/AV:A/AC:H/AT:P/PR:L/UI:P/VC:L/VI:N/VA:N/SC:L/SI:N/SA:N'
+
+    - id: explicit-not-defined-e-round-trip
+      description: FIRST permits an explicit Not Defined value for Exploit Maturity; preserve its identity.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: E_X, categoryId: exploit_maturity }
+
+    - id: explicit-not-defined-s-round-trip
+      description: FIRST permits an explicit Not Defined value for Safety; preserve its identity.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/S:X'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/S:X' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: S_X, categoryId: safety }
+
+    - id: explicit-not-defined-au-round-trip
+      description: FIRST permits an explicit Not Defined value for Automatable; preserve its identity.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/AU:X'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/AU:X' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: AU_X, categoryId: automatable }
+
+    - id: explicit-not-defined-r-round-trip
+      description: FIRST permits an explicit Not Defined value for Recovery; preserve its identity.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/R:X'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/R:X' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: R_X, categoryId: recovery }
+
+    - id: explicit-not-defined-v-round-trip
+      description: FIRST permits an explicit Not Defined value for Value Density; preserve its identity.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/V:X'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/V:X' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: V_X, categoryId: value_density }
+
+    - id: explicit-not-defined-re-round-trip
+      description: FIRST permits an explicit Not Defined value for Vulnerability Response Effort; preserve its identity.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/RE:X'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/RE:X' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: RE_X, categoryId: response_effort }
+
+    - id: explicit-not-defined-u-round-trip
+      description: FIRST permits an explicit Not Defined value for Provider Urgency; preserve its identity.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/U:X'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/U:X' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: U_X, categoryId: provider_urgency }
+
+    - id: all-optional-not-defined-values-round-trip
+      description: Every optional metric accepts explicit X; preserve all 21 identities in canonical order.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X' }
+        - { path: [assertions], matcher: contains, value: { conceptId: E_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: CR_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: IR_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: AR_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MAV_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MAC_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MAT_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MPR_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MUI_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MVC_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MVI_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MVA_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MSC_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MSI_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: MSA_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: S_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: AU_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: R_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: V_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: RE_X } }
+        - { path: [assertions], matcher: contains, value: { conceptId: U_X } }
+
+    - id: not-defined-conflicts-with-evaluated-e
+      description: X is a metric value, not permission to include two different values for the same metric.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/E:A'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [errors], matcher: contains, value: { constraintId: exclusive-exploit-maturity } }
+
+    - id: not-defined-conflicts-with-evaluated-s
+      description: X is a metric value, not permission to include two different values for the same metric.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/S:X/S:N'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [errors], matcher: contains, value: { constraintId: exclusive-safety } }
+
+    - id: not-defined-conflicts-with-evaluated-au
+      description: X is a metric value, not permission to include two different values for the same metric.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/AU:X/AU:N'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [errors], matcher: contains, value: { constraintId: exclusive-automatable } }
+
+    - id: not-defined-conflicts-with-evaluated-r
+      description: X is a metric value, not permission to include two different values for the same metric.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/R:X/R:A'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [errors], matcher: contains, value: { constraintId: exclusive-recovery } }
+
+    - id: not-defined-conflicts-with-evaluated-v
+      description: X is a metric value, not permission to include two different values for the same metric.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/V:X/V:D'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [errors], matcher: contains, value: { constraintId: exclusive-value-density } }
+
+    - id: not-defined-conflicts-with-evaluated-re
+      description: X is a metric value, not permission to include two different values for the same metric.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/RE:X/RE:L'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [errors], matcher: contains, value: { constraintId: exclusive-response-effort } }
+
+    - id: not-defined-conflicts-with-evaluated-u
+      description: X is a metric value, not permission to include two different values for the same metric.
+      operation: process
+      input:
+        marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/U:X/U:Clear'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [errors], matcher: contains, value: { constraintId: exclusive-provider-urgency } }

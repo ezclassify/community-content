@@ -1,0 +1,116 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cedar-valley-protection-access-tests
+  version: 1.0.2
+  name: cedar valley protection access tests
+  description: >-
+    Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are
+    authored separately from execution.
+  composition:
+    scheme:
+      id: cedar-valley-protection
+      version: 1.0.0
+    access:
+      id: cedar-valley-protection-access
+      version: 1.0.0
+  cases:
+    - id: public-needs-no-clearance
+      operation: checkAccess
+      input:
+        marking: PUBLIC
+        userAttributes: {}
+      name: PUBLIC needs no clearance
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: clearance-allows-internal
+      operation: checkAccess
+      input:
+        marking: INTERNAL
+        userAttributes:
+          clearance: INTERNAL
+      name: INTERNAL clearance allows INTERNAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: missing-clearance-refuses-internal
+      operation: checkAccess
+      input:
+        marking: INTERNAL
+        userAttributes: {}
+      name: Missing clearance denies INTERNAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: clearance-allows-confidential
+      operation: checkAccess
+      input:
+        marking: CONFIDENTIAL
+        userAttributes:
+          clearance: CONFIDENTIAL
+      name: CONFIDENTIAL clearance allows CONFIDENTIAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: missing-clearance-refuses-confidential
+      operation: checkAccess
+      input:
+        marking: CONFIDENTIAL
+        userAttributes: {}
+      name: Missing clearance denies CONFIDENTIAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: clearance-allows-restricted
+      operation: checkAccess
+      input:
+        marking: RESTRICTED
+        userAttributes:
+          clearance: RESTRICTED
+      name: RESTRICTED clearance allows RESTRICTED
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: true
+    - id: missing-clearance-refuses-restricted
+      operation: checkAccess
+      input:
+        marking: RESTRICTED
+        userAttributes: {}
+      name: Missing clearance denies RESTRICTED
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false
+    - id: lower-clearance-refused
+      operation: checkAccess
+      input:
+        marking: CONFIDENTIAL
+        userAttributes:
+          clearance: INTERNAL
+      name: INTERNAL clearance cannot read CONFIDENTIAL
+      assertions:
+        - path:
+            - result
+            - granted
+          matcher: equals
+          value: false

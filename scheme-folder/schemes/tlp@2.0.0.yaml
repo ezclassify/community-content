@@ -1,0 +1,214 @@
+scheme:
+    id: tlp
+    version: 2.0.0
+    name: Traffic Light Protocol
+    description: >
+        Traffic Light Protocol (TLP) v2.0 from FIRST.org. Defines information sharing boundaries for cybersecurity
+        intelligence and incident response.
+    definition: >-
+        TLP labels a report with how far its recipient may pass it on. It is a sharing convention rather than a classification
+        system, and it is deliberately small: four labels, with AMBER+STRICT for organization-only sharing.
+    guidance: >-
+        Apply the label the producer of the material chose, and expect every later holder to honor it. Rank runs from TLP:CLEAR
+        up to TLP:RED, so a rollup across several inputs lands on the most restrictive label present. Source: FIRST Traffic Light
+        Protocol v2.0, https://www.first.org/tlp/.
+    data:
+        categories:
+            - id: tlp_level
+              label: TLP Level
+              citation: 'FIRST Traffic Light Protocol v2.0, TLP Definitions, https://www.first.org/tlp/'
+              required: true
+              single: true
+              rollup: max
+              position: 0
+        concepts:
+            inline:
+                - id: TLP_RED
+                  name: 'TLP:RED'
+                  citation: 'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:RED), https://www.first.org/tlp/'
+                  definition: >-
+                      The recipient may not pass the material on. It stops with the people who received it directly.
+                  guidance: >-
+                      Producers reach for this label when a wider release would create real harm to the privacy, reputation, or
+                      operations of the parties involved. In a meeting, the label covers the people in the room and no one else.
+                  views:
+                      default: 'TLP:RED'
+                      short: RED
+                  aliases:
+                      - RED
+                      - 'TLP:RED'
+                  categories:
+                      - tlp_level
+                  color:
+                      background: '#000000'
+                      text: '#ff2b2b'
+                  position: 4
+                  rank: 4
+                - id: TLP_AMBER_STRICT
+                  name: 'TLP:AMBER+STRICT'
+                  citation: 'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:AMBER+STRICT), https://www.first.org/tlp/'
+                  definition: >-
+                      The recipient may share within its own organization on a need-to-know basis, and no further.
+                  guidance: >-
+                      Use this label when acting on the material needs support inside the recipient's organization, but the
+                      organization boundary has to be hard. It exists because plain TLP:AMBER lets a recipient include its clients.
+                  views:
+                      default: 'TLP:AMBER+STRICT'
+                      short: AMBER+STRICT
+                  aliases:
+                      - AMBER+STRICT
+                      - 'TLP:AMBER+STRICT'
+                  categories:
+                      - tlp_level
+                  color:
+                      background: '#000000'
+                      text: '#ffc000'
+                  position: 3
+                  rank: 3
+                - id: TLP_AMBER
+                  name: 'TLP:AMBER'
+                  citation: 'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:AMBER), https://www.first.org/tlp/'
+                  definition: >-
+                      The recipient may share within its own organization and with that organization's clients, on a need-to-know
+                      basis.
+                  guidance: >-
+                      Use this label when acting on the material needs help from the recipient's clients, and exposure beyond that
+                      circle would still carry risk to the parties involved.
+                  views:
+                      default: 'TLP:AMBER'
+                      short: AMBER
+                  aliases:
+                      - AMBER
+                      - 'TLP:AMBER'
+                  categories:
+                      - tlp_level
+                  color:
+                      background: '#000000'
+                      text: '#ffc000'
+                  position: 2
+                  rank: 2
+                - id: TLP_GREEN
+                  name: 'TLP:GREEN'
+                  citation: 'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:GREEN), https://www.first.org/tlp/'
+                  definition: >-
+                      The recipient may share with peers and partner organizations in its community, but not publicly.
+                  guidance: >-
+                      Use this label when the material helps the wider community or sector stay aware. Publicly accessible channels,
+                      web sites and social media included, are out of bounds.
+                  views:
+                      default: 'TLP:GREEN'
+                      short: GREEN
+                  aliases:
+                      - GREEN
+                      - 'TLP:GREEN'
+                  categories:
+                      - tlp_level
+                  color:
+                      background: '#000000'
+                      text: '#33ff00'
+                  position: 1
+                  rank: 1
+                - id: TLP_CLEAR
+                  name: 'TLP:CLEAR'
+                  citation: 'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:CLEAR), https://www.first.org/tlp/'
+                  definition: >-
+                      The recipient may share the material with anyone. There is no limit on disclosure.
+                  guidance: >-
+                      Use this label when release carries little or no foreseeable risk of misuse and the ordinary rules for public
+                      release are met. Standard copyright terms still apply.
+                  views:
+                      default: 'TLP:CLEAR'
+                      short: CLEAR
+                  aliases:
+                      - CLEAR
+                      - 'TLP:CLEAR'
+                      - WHITE
+                      - 'TLP:WHITE'
+                  categories:
+                      - tlp_level
+                  color:
+                      background: '#000000'
+                      text: '#ffffff'
+                  position: 0
+                  rank: 0
+    rules:
+        - id: exclusive-tlp
+          action: exclusive
+          message: Only one TLP level may be specified
+          target:
+              - TLP_RED
+              - TLP_AMBER_STRICT
+              - TLP_AMBER
+              - TLP_GREEN
+              - TLP_CLEAR
+    parse:
+        case_sensitive: false
+        strip_whitespace: true
+        normalize:
+            - id: fix-case
+              type: case
+              description: TLP levels are uppercase
+              correction: upper
+              confidence: safe
+              explanation: Converted TLP level to uppercase
+              pattern: 'tlp[:\s]?(red|amber\+strict|amber|green|clear|white)'
+            - id: fix-redundant
+              type: dedup
+              description: Remove duplicate TLP levels
+              confidence: safe
+              explanation: Removed duplicate TLP level
+    render:
+        color_from: tlp_level
+        default: default
+        formats:
+            - id: default
+              view: default
+              surface: default
+              mode: inline
+              separator: ''
+              fields:
+                  - category: tlp_level
+            - id: short
+              view: short
+              surface: default
+              mode: inline
+              separator: ''
+              fields:
+                  - category: tlp_level
+    default_scope: default
+    scopes:
+        - id: default
+          label: Default
+
+    ui:
+        label_presets:
+            - id: tlp-clear
+              label: 'TLP:CLEAR'
+              marking: 'TLP:CLEAR'
+              description: No restriction on disclosure
+              tags:
+                  - common
+            - id: tlp-green
+              label: 'TLP:GREEN'
+              marking: 'TLP:GREEN'
+              description: 'Community-wide, no public posting'
+              tags:
+                  - common
+            - id: tlp-amber
+              label: 'TLP:AMBER'
+              marking: 'TLP:AMBER'
+              description: Limited to organization and clients
+              tags:
+                  - common
+            - id: tlp-amber-strict
+              label: 'TLP:AMBER+STRICT'
+              marking: 'TLP:AMBER+STRICT'
+              description: Limited to organization only
+              tags:
+                  - common
+            - id: tlp-red
+              label: 'TLP:RED'
+              marking: 'TLP:RED'
+              description: 'Personal recipients only, not for further disclosure'
+              tags:
+                  - common

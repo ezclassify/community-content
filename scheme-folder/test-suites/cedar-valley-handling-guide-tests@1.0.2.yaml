@@ -1,0 +1,180 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cedar-valley-handling-guide-tests
+  version: 1.0.2
+  name: cedar valley handling guide tests
+  description: >-
+    Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are
+    authored separately from execution.
+  composition:
+    scheme:
+      id: cedar-valley-handling
+      version: 1.0.0
+    guides:
+      - id: cedar-valley-handling-guide
+        version: 1.0.0
+  cases:
+    - id: find-public
+      operation: guideScan
+      input:
+        guideId: cedar-valley-handling-guide
+        text: approved for public release
+      name: Find PUBLIC in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: public
+    - id: find-internal
+      operation: guideScan
+      input:
+        guideId: cedar-valley-handling-guide
+        text: staff plan
+      name: Find INTERNAL in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: internal
+    - id: find-confidential
+      operation: guideScan
+      input:
+        guideId: cedar-valley-handling-guide
+        text: supplier bid
+      name: Find CONFIDENTIAL in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: confidential
+    - id: find-restricted
+      operation: guideScan
+      input:
+        guideId: cedar-valley-handling-guide
+        text: answer key
+      name: Find RESTRICTED in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: restricted
+    - id: find-do-not-forward
+      operation: guideScan
+      input:
+        guideId: cedar-valley-handling-guide
+        text: do not forward
+      name: Find Do not forward in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: do-not-forward
+    - id: find-redact-before-release
+      operation: guideScan
+      input:
+        guideId: cedar-valley-handling-guide
+        text: redact before release
+      name: Find Redact before release in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: redact-before-release
+    - id: find-keep-sealed
+      operation: guideScan
+      input:
+        guideId: cedar-valley-handling-guide
+        text: keep sealed
+      name: Find Keep sealed in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: keep-sealed
+    - id: find-collect-after-use
+      operation: guideScan
+      input:
+        guideId: cedar-valley-handling-guide
+        text: collect after use
+      name: Find Collect after use in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: collect-after-use
+    - id: evaluate-public
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-handling-guide
+        ruleIds:
+          - public
+      name: Recommend PUBLIC from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: PUBLIC
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: public
+    - id: evaluate-internal
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-handling-guide
+        ruleIds:
+          - internal
+      name: Recommend INTERNAL from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: INTERNAL
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: internal
+    - id: evaluate-confidential
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-handling-guide
+        ruleIds:
+          - confidential
+      name: Recommend CONFIDENTIAL from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: CONFIDENTIAL
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: confidential
+    - id: evaluate-restricted
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-handling-guide
+        ruleIds:
+          - restricted
+      name: Recommend RESTRICTED from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: RESTRICTED
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: restricted

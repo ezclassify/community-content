@@ -1,0 +1,132 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cedar-valley-protection-guide-tests
+  version: 1.0.2
+  name: cedar valley protection guide tests
+  description: >-
+    Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are
+    authored separately from execution.
+  composition:
+    scheme:
+      id: cedar-valley-protection
+      version: 1.0.0
+    guides:
+      - id: cedar-valley-protection-guide
+        version: 1.0.0
+  cases:
+    - id: find-public
+      operation: guideScan
+      input:
+        guideId: cedar-valley-protection-guide
+        text: approved for public release
+      name: Find PUBLIC in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: public
+    - id: find-internal
+      operation: guideScan
+      input:
+        guideId: cedar-valley-protection-guide
+        text: staff plan
+      name: Find INTERNAL in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: internal
+    - id: find-confidential
+      operation: guideScan
+      input:
+        guideId: cedar-valley-protection-guide
+        text: supplier bid
+      name: Find CONFIDENTIAL in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: confidential
+    - id: find-restricted
+      operation: guideScan
+      input:
+        guideId: cedar-valley-protection-guide
+        text: answer key
+      name: Find RESTRICTED in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: restricted
+    - id: evaluate-public
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-protection-guide
+        ruleIds:
+          - public
+      name: Recommend PUBLIC from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: PUBLIC
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: public
+    - id: evaluate-internal
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-protection-guide
+        ruleIds:
+          - internal
+      name: Recommend INTERNAL from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: INTERNAL
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: internal
+    - id: evaluate-confidential
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-protection-guide
+        ruleIds:
+          - confidential
+      name: Recommend CONFIDENTIAL from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: CONFIDENTIAL
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: confidential
+    - id: evaluate-restricted
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-protection-guide
+        ruleIds:
+          - restricted
+      name: Recommend RESTRICTED from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: RESTRICTED
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: restricted

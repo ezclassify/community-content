@@ -1,0 +1,390 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cedar-valley-guide-tests
+  version: 1.0.2
+  name: cedar valley guide tests
+  description: >-
+    Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are
+    authored separately from execution.
+  composition:
+    scheme:
+      id: cedar-valley
+      version: 1.0.0
+    guides:
+      - id: cedar-valley-guide
+        version: 1.0.0
+  cases:
+    - id: find-public
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: approved for public release
+      name: Find PUBLIC in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: public
+    - id: find-internal
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: staff plan
+      name: Find INTERNAL in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: internal
+    - id: find-confidential
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: supplier bid
+      name: Find CONFIDENTIAL in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: confidential
+    - id: find-restricted
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: answer key
+      name: Find RESTRICTED in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: restricted
+    - id: find-do-not-forward
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: do not forward
+      name: Find Do not forward in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: do-not-forward
+    - id: find-redact-before-release
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: redact before release
+      name: Find Redact before release in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: redact-before-release
+    - id: find-keep-sealed
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: keep sealed
+      name: Find Keep sealed in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: keep-sealed
+    - id: find-collect-after-use
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: collect after use
+      name: Find Collect after use in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: collect-after-use
+    - id: find-student-information
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: student record
+      name: Find student information in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: student-information
+    - id: find-employee-information
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: employee evaluation
+      name: Find employee information in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: employee-information
+    - id: find-financial-information
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: payment information
+      name: Find financial information in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: financial-information
+    - id: find-secure-assessments
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: live assessment
+      name: Find secure assessments in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: secure-assessments
+    - id: find-security-information
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: building access code
+      name: Find security information in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: security-information
+    - id: find-all-schools
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: all three schools
+      name: Find all three schools in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: all-schools
+    - id: find-oakwood
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: Oakwood
+      name: Find Oakwood in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: oakwood
+    - id: find-pinecrest
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: Pinecrest
+      name: Find Pinecrest in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: pinecrest
+    - id: find-riverside
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: Riverside
+      name: Find Riverside in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: riverside
+    - id: find-education-department
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: Commonwealth Education Department
+      name: Find Commonwealth Education Department in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: education-department
+    - id: find-transportation-services
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: Student Transportation Services
+      name: Find Student Transportation Services in text
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: transportation-services
+    - id: evaluate-public
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-guide
+        ruleIds:
+          - public
+      name: Recommend PUBLIC from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: PUBLIC
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: public
+    - id: evaluate-internal
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-guide
+        ruleIds:
+          - internal
+      name: Recommend INTERNAL from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: INTERNAL
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: internal
+    - id: evaluate-confidential
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-guide
+        ruleIds:
+          - confidential
+      name: Recommend CONFIDENTIAL from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: CONFIDENTIAL
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: confidential
+    - id: evaluate-restricted
+      operation: guideEvaluate
+      input:
+        guideId: cedar-valley-guide
+        ruleIds:
+          - restricted
+      name: Recommend RESTRICTED from its guide rule
+      assertions:
+        - path:
+            - aggregatedMarking
+          matcher: equals
+          value: RESTRICTED
+        - path:
+            - selectedRules
+          matcher: contains
+          value:
+            id: restricted
+    - id: district-file-recommendations
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: >-
+          Oakwood supplier bid. Share with Student Transportation Services and redact before
+          release.
+      name: Recommend markings for an Oakwood supplier bid
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: confidential
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: financial-information
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: oakwood
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: transportation-services
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: redact-before-release
+    - id: financial-floor-recommendation
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: Payment information for the bus contract.
+      name: Payment information recommends CONFIDENTIAL
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: confidential
+        - path: []
+          matcher: excludes
+          value:
+            rule:
+              id: internal
+        - path: []
+          matcher: excludes
+          value:
+            rule:
+              id: restricted
+    - id: security-floor-recommendation
+      operation: guideScan
+      input:
+        guideId: cedar-valley-guide
+        text: Map of the security blind spot by the gym.
+      name: A security blind spot recommends RESTRICTED
+      assertions:
+        - path: []
+          matcher: contains
+          value:
+            rule:
+              id: restricted
+        - path: []
+          matcher: excludes
+          value:
+            rule:
+              id: internal
+        - path: []
+          matcher: excludes
+          value:
+            rule:
+              id: confidential

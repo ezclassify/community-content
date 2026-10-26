@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "declarationMap": false,
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "noEmit": false,
+        "outDir": "dist/out-tsc",
+        "rootDir": "src"
+    },
+    "extends": "./tsconfig.base.json",
+    "include": ["src/**/*.ts", "src/**/*.d.ts"]
+}

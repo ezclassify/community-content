@@ -1,0 +1,249 @@
+scheme:
+  id: cedar-valley-handling
+  version: 1.0.0
+  name: 'Cedar Valley: Protection and Handling'
+  description: >-
+    Adds four human handling instructions to the four protection levels.
+    Handling instructions combine by union and do not themselves forward,
+    redact, seal, collect, or prove a host action. This is a standalone
+    fictional teaching example.
+  vocabulary:
+    marking:
+      singular: File Marking
+      plural: File Markings
+  default_scope: marking
+  scopes:
+    - id: marking
+      label: File marking
+  data:
+    categories:
+      - id: level
+        label: Protection
+        required: true
+        single: true
+        rollup: max
+        position: 0
+      - id: handling
+        label: Handling
+        required: false
+        single: false
+        sort: alphabetical
+        rollup: union
+        position: 1
+    concepts:
+      inline:
+        - id: PUBLIC
+          name: Public
+          definition: >-
+            This exact version is approved for anyone to read or share. An
+            unmarked file is not automatically public.
+          guidance: Use for a published lunch menu, school calendar, or released practice
+            questions.
+          views:
+            default: PUBLIC
+            short: P
+            long: PUBLIC
+          aliases:
+            - public
+          categories:
+            - level
+          color:
+            background: '#2e7d32'
+            text: '#ffffff'
+          rank: bottom
+        - id: INTERNAL
+          name: Internal
+          definition: Routine Cedar Valley business that has not been approved for public
+            distribution.
+          guidance: >-
+            Use for a staff plan, district memo, or bus operations schedule
+            without student names or home addresses.
+          views:
+            default: INTERNAL
+            short: I
+            long: INTERNAL
+          aliases:
+            - internal
+          categories:
+            - level
+          color:
+            background: '#1565c0'
+            text: '#ffffff'
+          rank:
+            above: PUBLIC
+        - id: CONFIDENTIAL
+          name: Confidential
+          definition: Private information that must be protected from unauthorized
+            disclosure.
+          guidance: >-
+            Use for student records, employee evaluations, or nonpublic
+            purchasing information. The host application still verifies the
+            reader’s record relationship or approved business purpose.
+          views:
+            default: CONFIDENTIAL
+            short: C
+            long: CONFIDENTIAL
+          aliases:
+            - confidential
+          categories:
+            - level
+          color:
+            background: '#6a1b9a'
+            text: '#ffffff'
+          rank:
+            above: INTERNAL
+        - id: RESTRICTED
+          name: Restricted
+          definition: >-
+            Information needing the strongest protection because disclosure
+            could compromise safety, an investigation, or an assessment.
+          guidance: >-
+            Use for building access codes, an active investigation file, or live
+            assessment questions. The host application verifies explicit
+            assignment to the file, case, assessment, or team.
+          views:
+            default: RESTRICTED
+            short: R
+            long: RESTRICTED
+          aliases:
+            - restricted
+          categories:
+            - level
+          color:
+            background: '#c62828'
+            text: '#ffffff'
+          rank: top
+        - id: DO_NOT_FORWARD
+          name: Do not forward
+          definition: Do not pass this copy on. Ask the owner before distributing it
+            further.
+          guidance: >-
+            A human instruction for material such as an internal purchasing memo
+            circulated for review. The marking does not technically block
+            forwarding.
+          views:
+            default: DO NOT FORWARD
+            short: NO FWD
+            long: DO NOT FORWARD
+          aliases:
+            - do not forward
+            - no forward
+          categories:
+            - handling
+        - id: REDACT_BEFORE_RELEASE
+          name: Redact before release
+          definition: >-
+            Remove protected information and obtain approval for a separate
+            public version. This copy stays protected.
+          guidance: >-
+            A human instruction for material such as a purchasing report with
+            private contact or payment information. The marking does not perform
+            redaction.
+          views:
+            default: REDACT BEFORE RELEASE
+            short: REDACT
+            long: REDACT BEFORE RELEASE
+          aliases:
+            - redact before release
+            - redact
+          categories:
+            - handling
+        - id: KEEP_SEALED
+          name: Keep sealed
+          definition: Keep the packet closed until its authorized opening time or event.
+          guidance: >-
+            A human instruction for a live assessment packet awaiting its
+            scheduled session. The marking does not run a clock or verify the
+            seal.
+          views:
+            default: KEEP SEALED
+            short: SEALED
+            long: KEEP SEALED
+          aliases:
+            - keep sealed
+            - sealed
+          categories:
+            - handling
+        - id: COLLECT_AFTER_USE
+          name: Collect after use
+          definition: Collect every issued copy after the authorized activity and return
+            it to its custodian.
+          guidance: >-
+            A human instruction for controlled packets or temporary plans. The
+            marking does not prove that every copy was returned.
+          views:
+            default: COLLECT AFTER USE
+            short: COLLECT
+            long: COLLECT AFTER USE
+          aliases:
+            - collect after use
+            - collect
+          categories:
+            - handling
+  rules:
+    - id: protection-level-required
+      name: Protection Level Required
+      action: cardinality
+      category: level
+      min: 1
+      message: Choose a protection level.
+    - id: one-protection-level
+      name: One Protection Level
+      action: exclusive
+      target:
+        - PUBLIC
+        - INTERNAL
+        - CONFIDENTIAL
+        - RESTRICTED
+      message: Choose exactly one protection level.
+    - id: public-has-no-handling
+      name: Public Has No Handling Instructions
+      when: PUBLIC
+      action: cardinality
+      category: handling
+      max: 0
+      message: PUBLIC is an approved public version and cannot carry handling
+        instructions.
+  parse:
+    case_sensitive: false
+    strip_whitespace: true
+  render:
+    color_from: level
+    default: default
+    formats:
+      - id: default
+        view: default
+        surface: marking
+        mode: inline
+        separator: //
+        separator_aliases: [',']
+        fields:
+          - category: level
+            separator: /
+            separator_aliases: [',']
+          - category: handling
+            separator: /
+            separator_aliases: [',']
+      - id: short
+        view: short
+        surface: marking
+        mode: inline
+        separator: //
+        separator_aliases: [',']
+        fields:
+          - category: level
+            separator: /
+            separator_aliases: [',']
+          - category: handling
+            separator: /
+            separator_aliases: [',']
+      - id: instructions
+        view: long
+        surface: marking
+        mode: inline
+        separator: ' // '
+        fields:
+          - category: level
+            separator: ', '
+          - category: handling
+            separator: ', '

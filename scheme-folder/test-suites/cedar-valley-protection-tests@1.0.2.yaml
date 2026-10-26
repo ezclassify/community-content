@@ -1,0 +1,157 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cedar-valley-protection-tests
+  version: 1.0.2
+  name: cedar valley protection tests
+  description: >-
+    Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are
+    authored separately from execution.
+  composition:
+    scheme:
+      id: cedar-valley-protection
+      version: 1.0.0
+  cases:
+    - id: public
+      input:
+        marking: PUBLIC
+      operation: process
+      name: PUBLIC marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: PUBLIC
+    - id: internal
+      input:
+        marking: INTERNAL
+      operation: process
+      name: INTERNAL marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: INTERNAL
+    - id: confidential
+      input:
+        marking: CONFIDENTIAL
+      operation: process
+      name: CONFIDENTIAL marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: CONFIDENTIAL
+    - id: restricted
+      input:
+        marking: RESTRICTED
+      operation: process
+      name: RESTRICTED marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: RESTRICTED
+    - id: unmarked-is-not-public
+      input:
+        marking: ''
+      operation: process
+      name: An unmarked file is not PUBLIC
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: false
+    - id: compact-p
+      operation: process
+      input:
+        marking: PUBLIC
+      options:
+        outputFormat: short
+      name: PUBLIC in short format
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: P
+    - id: compact-i
+      operation: process
+      input:
+        marking: INTERNAL
+      options:
+        outputFormat: short
+      name: INTERNAL in short format
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: I
+    - id: compact-c
+      operation: process
+      input:
+        marking: CONFIDENTIAL
+      options:
+        outputFormat: short
+      name: CONFIDENTIAL in short format
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: C
+    - id: compact-r
+      operation: process
+      input:
+        marking: RESTRICTED
+      options:
+        outputFormat: short
+      name: RESTRICTED in short format
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: R
+    - id: compact-part-input
+      operation: process
+      input:
+        marking: I
+      name: Read a short INTERNAL marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: INTERNAL

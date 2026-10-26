@@ -1,0 +1,15 @@
+context:
+  id: cedar-valley-handling
+  version: 1.0.0
+  description: >-
+    Explore Cedar Valley protection plus four human handling instructions. The marking records the
+    instruction; the host carries out and records the action.
+  scheme:
+    id: cedar-valley-handling
+    version: 1.0.0
+  guides:
+    - id: cedar-valley-handling-guide
+      version: 1.0.0
+  access:
+    id: cedar-valley-handling-access
+    version: 1.0.0

@@ -1,0 +1,18 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "importHelpers": false,
+        "types": ["node", "vitest/globals"]
+    },
+    "include": [
+        "tests/**/*.ts",
+        "schemes/**/tests/**/*.ts",
+        "vitest.config.ts",
+        "vite.config.ts",
+        "src/**/*.ts",
+        "src/**/*.d.ts"
+    ]
+}

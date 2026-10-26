@@ -1,0 +1,129 @@
+{
+    "name": "@ezclassify/schemes",
+    "version": "1.0.0-dev.30",
+    "type": "module",
+    "description": "Community-maintained rule-enforced schemes for EzClassify",
+    "license": "Apache-2.0",
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "keywords": [
+        "ezclassify",
+        "classification",
+        "marking",
+        "schemes",
+        "taxonomy",
+        "tlp",
+        "cvss"
+    ],
+    "homepage": "https://github.com/ezclassify/community-content#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ezclassify/community-content.git"
+    },
+    "bugs": {
+        "url": "https://github.com/ezclassify/community-content/issues"
+    },
+    "main": "./dist/lib/index.cjs",
+    "types": "./dist/lib/index.d.ts",
+    "module": "./dist/lib/index.mjs",
+    "exports": {
+        ".": {
+            "types": "./dist/lib/index.d.ts",
+            "import": "./dist/lib/index.mjs",
+            "require": "./dist/lib/index.cjs"
+        },
+        "./tlp": {
+            "types": "./dist/lib/tlp/index.d.ts",
+            "import": "./dist/lib/tlp.mjs",
+            "require": "./dist/lib/tlp.cjs"
+        },
+        "./cvss": {
+            "types": "./dist/lib/cvss/index.d.ts",
+            "import": "./dist/lib/cvss.mjs",
+            "require": "./dist/lib/cvss.cjs"
+        },
+        "./cvss-v4": {
+            "types": "./dist/lib/cvss-v4/index.d.ts",
+            "import": "./dist/lib/cvss-v4.mjs",
+            "require": "./dist/lib/cvss-v4.cjs"
+        },
+        "./*": "./dist/schemes/*",
+        "./contexts.json": "./dist/schemes/contexts.json",
+        "./package.json": "./package.json",
+        "./cedar-valley": {
+            "types": "./dist/lib/cedar-valley/index.d.ts",
+            "import": "./dist/lib/cedar-valley.mjs",
+            "require": "./dist/lib/cedar-valley.cjs"
+        },
+        "./cedar-valley-protection": {
+            "types": "./dist/lib/cedar-valley-protection/index.d.ts",
+            "import": "./dist/lib/cedar-valley-protection.mjs",
+            "require": "./dist/lib/cedar-valley-protection.cjs"
+        },
+        "./cedar-valley-handling": {
+            "types": "./dist/lib/cedar-valley-handling/index.d.ts",
+            "import": "./dist/lib/cedar-valley-handling.mjs",
+            "require": "./dist/lib/cedar-valley-handling.cjs"
+        },
+        "./test-suites/*": "./dist/test-suites/*",
+        "./test-suites.json": "./dist/test-suites/index.json"
+    },
+    "files": [
+        "dist",
+        "!dist/**/*.map",
+        "README.md",
+        "LICENSE",
+        "THIRD-PARTY-NOTICES.md"
+    ],
+    "scripts": {
+        "build": "node scripts/bundle-schemes.mjs && node scripts/bundle-test-suites.mjs && vite build",
+        "build:watch": "node scripts/bundle-schemes.mjs && node scripts/bundle-test-suites.mjs && vite build --watch",
+        "bundle:test-suites": "node scripts/bundle-test-suites.mjs",
+        "prepublishOnly": "npm run build",
+        "validate": "node scripts/validate-folder.mjs",
+        "fmt": "node scripts/fmt-folder.mjs",
+        "test": "vitest run",
+        "test:verbose": "vitest run --reporter=verbose --no-file-parallelism",
+        "test:behavior": "node scripts/behavioral-suites.mjs",
+        "clean": "node scripts/clean.mjs",
+        "clean:cache": "node scripts/clean.mjs --cache-only",
+        "clean:deep": "node scripts/clean.mjs --deep",
+        "deps:relock": "node scripts/relock.mjs --strip && rm -rf node_modules package-lock.json && npm install --package-lock-only --include=optional --ignore-scripts --replace-registry-host=never --before=\"$(node -e 'console.log(new Date(Date.now()-7*864e5).toISOString())')\" && node scripts/relock.mjs --restore && npm install --package-lock-only --include=optional --ignore-scripts --replace-registry-host=never --tag=dev && node scripts/relock.mjs --normalize && npm run check:lockfile-portable && npm run check:dependency-age",
+        "check:no-escape": "node scripts/check-no-escape.mjs",
+        "check:dependency-age": "node scripts/check-dependency-age.mjs",
+        "check:lockfile-portable": "node scripts/check-lockfile-portable.mjs",
+        "check:dependency-licenses": "node scripts/check-dependency-licenses.mjs",
+        "verify:pack-consume": "node scripts/verify-pack-consume.mjs",
+        "lint": "eslint .",
+        "typecheck": "tsc -p tsconfig.json",
+        "format": "prettier --write \"scripts/**/*.mjs\" \"src/**/*.ts\" \"tests/**/*.ts\" \"schemes/**/tests/**/*.ts\" \"vitest.config.ts\" \"vite.config.ts\" \"eslint.config.mjs\" \"tsconfig*.json\" \".prettierrc.json\" \"package.json\"",
+        "format:check": "prettier --check \"scripts/**/*.mjs\" \"src/**/*.ts\" \"tests/**/*.ts\" \"schemes/**/tests/**/*.ts\" \"vitest.config.ts\" \"vite.config.ts\" \"eslint.config.mjs\" \"tsconfig*.json\" \".prettierrc.json\" \"package.json\"",
+        "notices": "node scripts/generate-third-party-notices.mjs",
+        "sbom": "node scripts/generate-sbom.mjs",
+        "check:cli-pin": "node scripts/check-cli-pin.mjs",
+        "resolve:cli": "node scripts/resolve-cli.mjs",
+        "docs": "npm exec --yes --package=typedoc@0.28.20 --package=typescript@5.9.3 -- typedoc --options typedoc.json",
+        "docs:source": "npm exec --yes --package=typedoc@0.28.20 --package=typescript@5.9.3 -- typedoc --options typedoc.source.json"
+    },
+    "devDependencies": {
+        "ajv": "8.20.0",
+        "@eslint/js": "^10.0.1",
+        "@ezclassify/schemas": "^1.0.0-0",
+        "@ezclassify/tsconfig": "^1.0.0-0",
+        "@ezclassify/types": "^1.0.0-0",
+        "@ezclassify/validator": "^1.0.0-0",
+        "@types/node": "^22.15.0",
+        "@typescript-eslint/eslint-plugin": "^8.62.1",
+        "@typescript-eslint/parser": "^8.62.1",
+        "eslint": "^10.12.0",
+        "globals": "^16.5.0",
+        "js-yaml": "^4.1.0",
+        "prettier": "^3.5.3",
+        "semver": "^7.7.4",
+        "typescript": "5.9.3",
+        "vite": "^8.3.4",
+        "vite-plugin-dts": "^5.0.0",
+        "vitest": "^4.1.1"
+    }
+}

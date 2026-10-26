@@ -1,0 +1,251 @@
+guide:
+  id: cedar-valley-guide
+  version: 1.0.0
+  name: Cedar Valley District Files Guide
+  description: >-
+    Suggests protection, sensitive-content, school, external-sharing, and handling markings for an
+    author to review. It does not infer identity, record relationships, assignments, approval, or
+    completed handling actions.
+  targetSchemes:
+    - id: cedar-valley
+      version: "*"
+  categories:
+    - id: protection
+      label: 1. Protection
+    - id: content
+      label: 2. Sensitive content
+    - id: schools
+      label: 3. Permitted schools
+    - id: sharing
+      label: 4. Allow sharing with
+    - id: handling
+      label: 5. Handling instructions
+  rules:
+    inline:
+      - id: public
+        name: Public
+        category: protection
+        keywords:
+          - published lunch menu
+          - school calendar
+          - released practice questions
+          - approved for public release
+        outcome:
+          concepts:
+            - id: PUBLIC
+              category: level
+        rationale: Public is a positive approval for this exact version; an unmarked file is not public.
+      - id: internal
+        name: Internal
+        category: protection
+        keywords:
+          - staff plan
+          - district memo
+          - routine operations
+          - bus operations schedule
+        outcome:
+          concepts:
+            - id: INTERNAL
+              category: level
+        rationale: Routine district work that has not been approved for public distribution is Internal.
+      - id: confidential
+        name: Confidential
+        category: protection
+        keywords:
+          - student record
+          - employee evaluation
+          - supplier bid
+          - payment information
+          - purchasing notes
+        outcome:
+          concepts:
+            - id: CONFIDENTIAL
+              category: level
+        rationale: >-
+          Private records and active purchasing material need confirmed record or business
+          authorization from the host.
+      - id: restricted
+        name: Restricted
+        category: protection
+        keywords:
+          - live assessment
+          - answer key
+          - building access code
+          - security blind spot
+          - active investigation
+        outcome:
+          concepts:
+            - id: RESTRICTED
+              category: level
+        rationale: >-
+          Safety, investigation, and live-assessment material needs explicit assignment from the
+          host.
+      - id: student-information
+        name: Student information
+        category: content
+        keywords:
+          - student record
+          - attendance record
+          - individual result
+          - support plan
+        outcome:
+          concepts:
+            - id: STUDENT_INFORMATION
+              category: sensitive_content
+        rationale: The host still verifies access to the particular student record.
+      - id: employee-information
+        name: Employee information
+        category: content
+        keywords:
+          - employee evaluation
+          - personnel file
+        outcome:
+          concepts:
+            - id: EMPLOYEE_INFORMATION
+              category: sensitive_content
+        rationale: The host still verifies access to the employee record or case.
+      - id: financial-information
+        name: Financial information
+        category: content
+        keywords:
+          - supplier bid
+          - payment information
+          - purchasing notes
+        outcome:
+          concepts:
+            - id: FINANCIAL_INFORMATION
+              category: sensitive_content
+        rationale: A published budget does not need this tag.
+      - id: secure-assessments
+        name: Secure assessments
+        category: content
+        keywords:
+          - live assessment
+          - unreleased questions
+          - answer key
+        outcome:
+          concepts:
+            - id: SECURE_ASSESSMENTS
+              category: sensitive_content
+        rationale: The host verifies assignment to the assessment.
+      - id: security-information
+        name: Security information
+        category: content
+        keywords:
+          - building access code
+          - security blind spot
+        outcome:
+          concepts:
+            - id: SECURITY_INFORMATION
+              category: sensitive_content
+        rationale: The host verifies an operational need.
+      - id: all-schools
+        name: All three schools
+        category: schools
+        keywords:
+          - all three schools
+          - districtwide school plan
+        outcome:
+          concepts:
+            - id: ALL
+              category: permitted_schools
+        rationale: ALL is the finite Oakwood, Pinecrest, and Riverside group.
+      - id: oakwood
+        name: Oakwood
+        category: schools
+        keywords:
+          - oakwood
+          - oakwood middle school
+        outcome:
+          concepts:
+            - id: OAKWOOD
+              category: permitted_schools
+        rationale: Select Oakwood only when it is an allowed school recipient.
+      - id: pinecrest
+        name: Pinecrest
+        category: schools
+        keywords:
+          - pinecrest
+          - pinecrest middle school
+        outcome:
+          concepts:
+            - id: PINECREST
+              category: permitted_schools
+        rationale: Select Pinecrest only when it is an allowed school recipient.
+      - id: riverside
+        name: Riverside
+        category: schools
+        keywords:
+          - riverside
+          - riverside high school
+        outcome:
+          concepts:
+            - id: RIVERSIDE
+              category: permitted_schools
+        rationale: Select Riverside only when it is an allowed school recipient.
+      - id: education-department
+        name: Commonwealth Education Department
+        category: sharing
+        keywords:
+          - commonwealth education department
+          - state education department
+        outcome:
+          concepts:
+            - id: COMMONWEALTH_EDUCATION_DEPARTMENT
+              category: allow_sharing_with
+        rationale: This adds one external recipient; it does not establish identity or business need.
+      - id: transportation-services
+        name: Student Transportation Services
+        category: sharing
+        keywords:
+          - student transportation services
+          - transportation provider
+        outcome:
+          concepts:
+            - id: STUDENT_TRANSPORTATION_SERVICES
+              category: allow_sharing_with
+        rationale: This adds one external recipient; it does not establish identity or business need.
+      - id: do-not-forward
+        name: Do not forward
+        category: handling
+        keywords:
+          - do not forward
+          - ask before sharing
+        outcome:
+          concepts:
+            - id: DO_NOT_FORWARD
+              category: handling
+        rationale: This is a human instruction; the marking does not technically block forwarding.
+      - id: redact-before-release
+        name: Redact before release
+        category: handling
+        keywords:
+          - redact before release
+          - public copy
+        outcome:
+          concepts:
+            - id: REDACT_BEFORE_RELEASE
+              category: handling
+        rationale: Create and approve a separate redacted public version; this copy remains protected.
+      - id: keep-sealed
+        name: Keep sealed
+        category: handling
+        keywords:
+          - keep sealed
+          - open at scheduled time
+        outcome:
+          concepts:
+            - id: KEEP_SEALED
+              category: handling
+        rationale: The custodian controls the opening event outside the marking engine.
+      - id: collect-after-use
+        name: Collect after use
+        category: handling
+        keywords:
+          - collect after use
+          - return every copy
+        outcome:
+          concepts:
+            - id: COLLECT_AFTER_USE
+              category: handling
+        rationale: The custodian records collection outside the marking engine.

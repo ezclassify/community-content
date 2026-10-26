@@ -1,0 +1,23 @@
+access:
+  id: cedar-valley-handling-access
+  version: 1.0.0
+  name: "Cedar Valley: Protection and Handling Access"
+  description: >-
+    Checks a trusted host-provided clearance against the marked protection level. Handling markings
+    are human instructions and do not independently grant or deny access.
+  targetScheme:
+    id: cedar-valley-handling
+    version: "*"
+  rules:
+    inline:
+      - id: protection-clearance
+        name: Protection clearance
+        attribute: clearance
+        categoryId: level
+        strategy: gte
+        when:
+          data:
+            categoryId: level
+            operator: min_order
+            value: 1
+        denyReason: The reader’s trusted clearance is below this protection level.

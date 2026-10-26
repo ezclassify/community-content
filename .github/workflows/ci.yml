@@ -1,0 +1,140 @@
+name: CI
+
+# Push and pull-request runs apply the full CI gate.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        node-version: [22, 24]
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Configure registry for CI
+        # Registry config lives in a user-level npmrc so the tracked project
+        # .npmrc (ignore-scripts) stays untouched and the clean-tree gate
+        # below stays honest.
+        #
+        # Two lanes, picked by whether this run holds the GitHub Packages
+        # token. With it, `@ezclassify` resolves from the GitHub Packages
+        # development mirror. Without it, which is every fork pull request and
+        # every Dependabot pull request, the scope resolves from public npm
+        # with no credential at all. That is the install path CONTRIBUTING and
+        # the README promise an outside contributor, and it is what lets a fork
+        # or a Dependabot bump reach the gates below instead of dying at
+        # install.
+        env:
+          EZ_GHPKG_TOKEN: ${{ secrets.EZ_GHPKG_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "$EZ_GHPKG_TOKEN" ]; then
+            cat > "$RUNNER_TEMP/ci-npmrc" << 'NPMRC'
+          @ezclassify:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          NPMRC
+            echo "Resolving @ezclassify from GitHub Packages."
+          else
+            echo '@ezclassify:registry=https://registry.npmjs.org' > "$RUNNER_TEMP/ci-npmrc"
+            echo "Resolving @ezclassify from public npm, no credential."
+          fi
+          echo "NPM_CONFIG_USERCONFIG=$RUNNER_TEMP/ci-npmrc" >> "$GITHUB_ENV"
+
+      - name: Install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.EZ_GHPKG_TOKEN }}
+        # The public repo intentionally has no committed lock before its first
+        # publication. Generate the date-bounded portable lock from empty state
+        # and prove those exact bytes with a frozen install.
+        run: npm run deps:relock && npm ci
+
+      - name: Dependency publish-date quarantine
+        run: npm run check:dependency-age
+
+      # Lint/format/typecheck cover the executable code around the scheme
+      # data: scripts/, the vitest specs, and the config files. Scheme YAML
+      # and the compiled bundle are canonical serializations owned by the
+      # `fmt` verb and are excluded from all three (see .prettierignore and
+      # eslint.config.mjs ignores).
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - run: npm test
+
+      # Validate and build from the dependency tree used by the tests.
+      - name: Dependency license compliance
+        # Check license compliance against the lockfile and installed tree
+        # produced by the frozen install and quarantine gate above.
+        run: npm run check:dependency-licenses
+
+      - name: THIRD-PARTY-NOTICES.md matches the production dependency set
+        # Regenerate the notices from the current package.json and fail on
+        # drift, so adding a production dependency forces the attribution
+        # (and a license review) into the same PR.
+        run: npm run notices && git diff --exit-code THIRD-PARTY-NOTICES.md
+
+      - name: CLI pin is well-formed
+        # Licensed maintainers may resolve a CLI locally. Its optional pin
+        # must name a checksummed artifact or no source; this public job never
+        # downloads the proprietary engine or runs behavioral suites.
+        run: npm run check:cli-pin
+
+      - run: npm run validate
+
+      - run: npm run build
+
+      - name: Generate SBOM
+        run: npm run sbom
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sbom
+          path: dist/sbom.json
+
+      - name: README quickstart runs against the built bundle
+        run: node scripts/readme-quickstart.mjs
+
+      - name: Manifest is in sync (npm run fmt is a no-op)
+        run: npm run fmt
+
+      - name: Working tree is clean after build
+        run: git diff --exit-code && test -z "$(git status --porcelain)"
+
+      - name: No dependency or import escapes the repo
+        # Static half of the independence check: no file:/link:/workspace:
+        # dependency protocols in the published manifest, and no relative
+        # import that resolves above the repo root.
+        run: npm run check:no-escape
+
+      - name: Pack and consume the package from its tarball
+        # Dynamic half: npm-pack @ezclassify/schemes, install the tarball
+        # into a scratch project outside the repo, and resolve every
+        # declared export (schemes wildcard, contexts.json) the way a
+        # consumer would. This verifies package consumption independently
+        # of the checkout's installed dependencies.
+        run: npm run verify:pack-consume

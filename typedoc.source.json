@@ -1,0 +1,16 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "entryPoints": ["src/", "scripts/", "vite.config.ts"],
+    "entryPointStrategy": "expand",
+    "tsconfig": "docs/tsconfig.source.json",
+    "name": "Community content source reference",
+    "readme": "none",
+    "out": "docs/source",
+    "exclude": ["**/*.spec.*", "**/*.test.*"],
+    "disableSources": true,
+    "validation": {
+        "notExported": false,
+        "invalidLink": true
+    },
+    "treatWarningsAsErrors": true
+}

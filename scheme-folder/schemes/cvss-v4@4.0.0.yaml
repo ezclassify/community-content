@@ -1,0 +1,2710 @@
+scheme:
+    id: cvss-v4
+    version: 4.0.0
+    name: CVSS v4.0
+    description: >
+        Common Vulnerability Scoring System (CVSS) version 4.0, released November 2023 by FIRST (Forum of Incident Response
+        and Security Teams). Supersedes CVSS v3.1. Introduces Base, Threat (formerly Temporal), Environmental, and
+        Supplemental metric groups. New victim system metrics (VC/VI/VA for the vulnerable system; SC/SI/SA for subsequent
+        systems) and new Supplemental group metrics. Scoring nomenclature: CVSS-B (base only), CVSS-BT (base+threat),
+        CVSS-BE (base+environmental), CVSS-BTE (base+threat+environmental). Supplemental metrics do not affect the score.
+    definition: >-
+        CVSS v4.0 describes a vulnerability through four metric groups: Base, Threat, Environmental, and Supplemental. Only
+        Base, Threat, and Environmental contribute to the score. The Base
+        group holds the properties that do not change with time or deployment, scored against the reasonable worst case across
+        environments.
+    guidance: >-
+        The vector string is the transport form of an assessment: one value per metric, in a fixed order, short enough to paste
+        into a ticket and machine readable on the other end. Source: FIRST CVSS v4.0 Specification Document,
+        https://www.first.org/cvss/v4.0/specification-document.
+    data:
+        categories:
+            - id: attack_vector
+              label: Attack Vector (AV)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.1 (Attack Vector), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 0
+            - id: attack_complexity
+              label: Attack Complexity (AC)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.1 (Attack Complexity), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 1
+            - id: attack_requirements
+              label: Attack Requirements (AT)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.1 (Attack Requirements), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 2
+            - id: privileges_required
+              label: Privileges Required (PR)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.1 (Privileges Required), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 3
+            - id: user_interaction
+              label: User Interaction (UI)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.1 (User Interaction), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 4
+            - id: vc_impact
+              label: Vulnerable System Confidentiality (VC)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.2 (Vulnerable System Impact), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 5
+            - id: vi_impact
+              label: Vulnerable System Integrity (VI)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.2 (Vulnerable System Impact), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 6
+            - id: va_impact
+              label: Vulnerable System Availability (VA)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.2 (Vulnerable System Impact), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 7
+            - id: sc_impact
+              label: Subsequent System Confidentiality (SC)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.2 (Subsequent System Impact), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 8
+            - id: si_impact
+              label: Subsequent System Integrity (SI)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.2 (Subsequent System Impact), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 9
+            - id: sa_impact
+              label: Subsequent System Availability (SA)
+              citation: FIRST CVSS v4.0 Specification Document, Section 2.2 (Subsequent System Impact), https://www.first.org/cvss/v4.0/specification-document
+              required: true
+              single: true
+              rollup: max
+              position: 10
+            - id: exploit_maturity
+              label: Exploit Maturity (E)
+              citation: FIRST CVSS v4.0 Specification Document, Section 3 (Threat Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 11
+            - id: severity
+              scopes: [severity]
+              label: Severity
+              citation: FIRST CVSS v4.0 Specification Document, Section 6 (Qualitative Severity Rating Scale), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 12
+            - id: safety
+              label: Safety (S)
+              citation: FIRST CVSS v4.0 Specification Document, Section 5 (Supplemental Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 20
+            - id: automatable
+              label: Automatable (AU)
+              citation: FIRST CVSS v4.0 Specification Document, Section 5 (Supplemental Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 21
+            - id: recovery
+              label: Recovery (R)
+              citation: FIRST CVSS v4.0 Specification Document, Section 5 (Supplemental Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 22
+            - id: value_density
+              label: Value Density (V)
+              citation: FIRST CVSS v4.0 Specification Document, Section 5 (Supplemental Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 23
+            - id: response_effort
+              label: Vulnerability Response Effort (RE)
+              citation: FIRST CVSS v4.0 Specification Document, Section 5 (Supplemental Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 24
+            - id: provider_urgency
+              label: Provider Urgency (U)
+              citation: FIRST CVSS v4.0 Specification Document, Section 5 (Supplemental Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 25
+            - id: confidentiality_requirement
+              label: Confidentiality Requirement (CR)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.1 (Security Requirements), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 13
+            - id: integrity_requirement
+              label: Integrity Requirement (IR)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.1 (Security Requirements), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 14
+            - id: availability_requirement
+              label: Availability Requirement (AR)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.1 (Security Requirements), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 15
+            - id: modified_attack_vector
+              label: Modified Attack Vector (MAV)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 16
+            - id: modified_attack_complexity
+              label: Modified Attack Complexity (MAC)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 17
+            - id: modified_attack_requirements
+              label: Modified Attack Requirements (MAT)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 18
+            - id: modified_privileges_required
+              label: Modified Privileges Required (MPR)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 19
+            - id: modified_user_interaction
+              label: Modified User Interaction (MUI)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 26
+            - id: modified_vc_impact
+              label: Modified Vulnerable System Confidentiality (MVC)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 27
+            - id: modified_vi_impact
+              label: Modified Vulnerable System Integrity (MVI)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 28
+            - id: modified_va_impact
+              label: Modified Vulnerable System Availability (MVA)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 29
+            - id: modified_sc_impact
+              label: Modified Subsequent System Confidentiality (MSC)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 30
+            - id: modified_si_impact
+              label: Modified Subsequent System Integrity (MSI)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 31
+            - id: modified_sa_impact
+              label: Modified Subsequent System Availability (MSA)
+              citation: FIRST CVSS v4.0 Specification Document, Section 4.2 (Modified Base Metrics), https://www.first.org/cvss/v4.0/specification-document
+              required: false
+              single: true
+              rollup: max
+              position: 32
+        concepts:
+            inline:
+                - id: AV_N
+                  name: 'Attack Vector: Network'
+                  definition: >-
+                      Reachable through the network stack, so the set of possible attackers is not bounded by proximity and can extend
+                      to the whole internet.
+                  guidance: 'Select when the vulnerability is exploitable over the network, such as remotely exploitable web application flaws.'
+                  views:
+                      default: 'AV:N'
+                      metric: 'N'
+                      label: Network
+                  aliases:
+                      - 'AV:N'
+                      - AV N
+                      - Attack Vector Network
+                  categories:
+                      - attack_vector
+                  position: 3
+                  rank: 3
+                - id: AV_A
+                  name: 'Attack Vector: Adjacent'
+                  definition: >-
+                      Reachable only over a protocol whose reach is a logically adjacent topology, such as a shared link layer or one
+                      IP subnet.
+                  guidance: >-
+                      Select when the attack is limited to the same shared physical or logical network, such as Bluetooth, IEEE 802.11,
+                      or a local IP subnet.
+                  views:
+                      default: 'AV:A'
+                      metric: A
+                      label: Adjacent
+                  aliases:
+                      - 'AV:A'
+                      - AV A
+                      - Attack Vector Adjacent
+                  categories:
+                      - attack_vector
+                  position: 2
+                  rank: 2
+                - id: AV_L
+                  name: 'Attack Vector: Local'
+                  definition: >-
+                      Not reachable over the network stack. The attacker works through local read, write, or execute access, or through
+                      a person acting on the system.
+                  guidance: >-
+                      Select when the vulnerability requires the attacker to have local system access, such as a local privilege
+                      escalation.
+                  views:
+                      default: 'AV:L'
+                      metric: L
+                      label: Local
+                  aliases:
+                      - 'AV:L'
+                      - AV L
+                      - Attack Vector Local
+                  categories:
+                      - attack_vector
+                  position: 1
+                  rank: 1
+                - id: AV_P
+                  name: 'Attack Vector: Physical'
+                  definition: >-
+                      The attacker has to touch or handle the system, so physical access to the hardware is a precondition.
+                  guidance: 'Select when the vulnerability requires physical access to the hardware, such as a cold boot attack.'
+                  views:
+                      default: 'AV:P'
+                      metric: P
+                      label: Physical
+                  aliases:
+                      - 'AV:P'
+                      - AV P
+                      - Attack Vector Physical
+                  categories:
+                      - attack_vector
+                  position: 0
+                  rank: 0
+                - id: AC_L
+                  name: 'Attack Complexity: Low'
+                  definition: >-
+                      No measurable extra work is needed beyond reaching the system to obtain a working exploit.
+                  guidance: >-
+                      Select when no specialized access conditions or extenuating circumstances exist; the attack can be reliably
+                      reproduced at will.
+                  views:
+                      default: 'AC:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'AC:L'
+                      - AC L
+                  categories:
+                      - attack_complexity
+                  position: 1
+                  rank: 1
+                - id: AC_H
+                  name: 'Attack Complexity: High'
+                  definition: >-
+                      A working exploit depends on evading or defeating a hardening measure that would otherwise block the attack.
+                  guidance: >-
+                      Select when the attack requires the attacker to invest measurable effort in preparation or execution against the
+                      specific target, such as winning a race condition or performing target-specific reconnaissance.
+                  views:
+                      default: 'AC:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'AC:H'
+                      - AC H
+                  categories:
+                      - attack_complexity
+                  position: 0
+                  rank: 0
+                - id: AT_N
+                  name: 'Attack Requirements: None'
+                  definition: >-
+                      Exploitation does not depend on how the target happens to be deployed or configured.
+                  guidance: 'Select when the attack can succeed regardless of configuration, environment, or timing conditions of the target.'
+                  views:
+                      default: 'AT:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'AT:N'
+                      - AT N
+                  categories:
+                      - attack_requirements
+                  position: 1
+                  rank: 1
+                - id: AT_P
+                  name: 'Attack Requirements: Present'
+                  definition: >-
+                      Exploitation depends on particular deployment or execution conditions being present on the target.
+                  guidance: >-
+                      Select when the attack requires a specific configuration, race condition, or non-default setting to be present on
+                      the target system.
+                  views:
+                      default: 'AT:P'
+                      metric: P
+                      label: Present
+                  aliases:
+                      - 'AT:P'
+                      - AT P
+                  categories:
+                      - attack_requirements
+                  position: 0
+                  rank: 0
+                - id: PR_N
+                  name: 'Privileges Required: None'
+                  definition: >-
+                      The attacker holds no authorization before the attack and needs no access to the target's settings or files.
+                  guidance: Select when the attack can be performed without any prior authentication or authorization to the target system.
+                  views:
+                      default: 'PR:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'PR:N'
+                      - PR N
+                  categories:
+                      - privileges_required
+                  position: 2
+                  rank: 2
+                - id: PR_L
+                  name: 'Privileges Required: Low'
+                  definition: >-
+                      The attacker needs the privileges of an ordinary authorized user.
+                  guidance: >-
+                      Select when the attacker needs basic user-level access, such as a standard authenticated account on the target
+                      system.
+                  views:
+                      default: 'PR:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'PR:L'
+                      - PR L
+                  categories:
+                      - privileges_required
+                  position: 1
+                  rank: 1
+                - id: PR_H
+                  name: 'Privileges Required: High'
+                  definition: >-
+                      The attacker needs privileges that carry broad control over the target, such as an administrative account with
+                      full access to its settings and files.
+                  guidance: >-
+                      Select when the attacker needs administrative or highly privileged access to the target system before the attack
+                      can succeed.
+                  views:
+                      default: 'PR:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'PR:H'
+                      - PR H
+                  categories:
+                      - privileges_required
+                  position: 0
+                  rank: 0
+                - id: UI_N
+                  name: 'User Interaction: None'
+                  definition: >-
+                      No person other than the attacker has to do anything.
+                  guidance: Select when no action is required from any user (other than the attacker) for the vulnerability to be exploited.
+                  views:
+                      default: 'UI:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'UI:N'
+                      - UI N
+                  categories:
+                      - user_interaction
+                  position: 2
+                  rank: 2
+                - id: UI_P
+                  name: 'User Interaction: Passive'
+                  definition: >-
+                      Exploitation needs limited involvement from the targeted user, short of a deliberate action aimed at the
+                      attacker's payload.
+                  guidance: >-
+                      Select when the user unknowingly enables the attack through ordinary use, such as visiting a web page that
+                      silently triggers the exploit.
+                  views:
+                      default: 'UI:P'
+                      metric: P
+                      label: Passive
+                  aliases:
+                      - 'UI:P'
+                      - UI P
+                  categories:
+                      - user_interaction
+                  position: 1
+                  rank: 1
+                - id: UI_A
+                  name: 'User Interaction: Active'
+                  definition: >-
+                      Exploitation needs the targeted user to take specific, deliberate actions, or to work around a protection
+                      mechanism.
+                  guidance: >-
+                      Select when the user must take deliberate action for exploitation to succeed, such as importing a malicious file,
+                      accepting a security warning, or manually installing software.
+                  views:
+                      default: 'UI:A'
+                      metric: A
+                      label: Active
+                  aliases:
+                      - 'UI:A'
+                      - UI A
+                  categories:
+                      - user_interaction
+                  position: 0
+                  rank: 0
+                - id: VC_H
+                  name: 'Vulnerable System Confidentiality: High'
+                  definition: >-
+                      Confidentiality on the vulnerable system is lost entirely: all of its information is exposed to the attacker.
+                  guidance: >-
+                      Select when the attacker can read all data on the vulnerable system, such as full database disclosure or memory
+                      dump.
+                  views:
+                      default: 'VC:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'VC:H'
+                      - VC H
+                  categories:
+                      - vc_impact
+                  position: 2
+                  rank: 2
+                - id: VC_L
+                  name: 'Vulnerable System Confidentiality: Low'
+                  definition: >-
+                      Confidentiality on the vulnerable system is partly lost: some restricted information is exposed, but the attacker
+                      cannot choose which.
+                  guidance: >-
+                      Select when the attacker gains access to limited data on the vulnerable system, such as partial information
+                      leakage from error messages or side channels.
+                  views:
+                      default: 'VC:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'VC:L'
+                      - VC L
+                  categories:
+                      - vc_impact
+                  position: 1
+                  rank: 1
+                - id: VC_N
+                  name: 'Vulnerable System Confidentiality: None'
+                  definition: >-
+                      Confidentiality on the vulnerable system is unaffected.
+                  guidance: Select when confidentiality of the vulnerable system is not affected by the vulnerability.
+                  views:
+                      default: 'VC:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'VC:N'
+                      - VC N
+                  categories:
+                      - vc_impact
+                  position: 0
+                  rank: 0
+                - id: VI_H
+                  name: 'Vulnerable System Integrity: High'
+                  definition: >-
+                      Integrity on the vulnerable system is lost entirely: any of its data can be altered.
+                  guidance: Select when the attacker can modify all data or files on the vulnerable system without restriction.
+                  views:
+                      default: 'VI:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'VI:H'
+                      - VI H
+                  categories:
+                      - vi_impact
+                  position: 2
+                  rank: 2
+                - id: VI_L
+                  name: 'Vulnerable System Integrity: Low'
+                  definition: >-
+                      Integrity on the vulnerable system is partly lost: data can be altered, but the extent or the effect of the
+                      change is outside the attacker's control.
+                  guidance: Select when the attacker can make limited or uncontrolled modifications to data on the vulnerable system.
+                  views:
+                      default: 'VI:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'VI:L'
+                      - VI L
+                  categories:
+                      - vi_impact
+                  position: 1
+                  rank: 1
+                - id: VI_N
+                  name: 'Vulnerable System Integrity: None'
+                  definition: >-
+                      Integrity on the vulnerable system is unaffected.
+                  guidance: Select when integrity of the vulnerable system is not affected by the vulnerability.
+                  views:
+                      default: 'VI:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'VI:N'
+                      - VI N
+                  categories:
+                      - vi_impact
+                  position: 0
+                  rank: 0
+                - id: VA_H
+                  name: 'Vulnerable System Availability: High'
+                  definition: >-
+                      Availability of the vulnerable system is lost entirely: access to its resources can be denied outright.
+                  guidance: >-
+                      Select when the attacker can completely deny service on the vulnerable system, such as a crash or sustained denial
+                      of service.
+                  views:
+                      default: 'VA:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'VA:H'
+                      - VA H
+                  categories:
+                      - va_impact
+                  position: 2
+                  rank: 2
+                - id: VA_L
+                  name: 'Vulnerable System Availability: Low'
+                  definition: >-
+                      Availability of the vulnerable system degrades, through reduced performance or interrupted access to its
+                      resources.
+                  guidance: >-
+                      Select when the attacker can cause degraded performance or intermittent availability issues on the vulnerable
+                      system.
+                  views:
+                      default: 'VA:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'VA:L'
+                      - VA L
+                  categories:
+                      - va_impact
+                  position: 1
+                  rank: 1
+                - id: VA_N
+                  name: 'Vulnerable System Availability: None'
+                  definition: >-
+                      Availability of the vulnerable system is unaffected.
+                  guidance: Select when availability of the vulnerable system is not affected by the vulnerability.
+                  views:
+                      default: 'VA:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'VA:N'
+                      - VA N
+                  categories:
+                      - va_impact
+                  position: 0
+                  rank: 0
+                - id: SC_H
+                  name: 'Subsequent System Confidentiality: High'
+                  definition: >-
+                      Confidentiality on subsequent systems is lost entirely: all of their information is exposed to the attacker.
+                  guidance: >-
+                      Select when the attacker can read all data on systems beyond the vulnerable system, such as lateral movement
+                      leading to full data access on other hosts.
+                  views:
+                      default: 'SC:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'SC:H'
+                      - SC H
+                  categories:
+                      - sc_impact
+                  position: 2
+                  rank: 2
+                - id: SC_L
+                  name: 'Subsequent System Confidentiality: Low'
+                  definition: >-
+                      Confidentiality on subsequent systems is partly lost: some restricted information is exposed, but the attacker
+                      cannot choose which.
+                  guidance: >-
+                      Select when the attacker gains limited data access on systems beyond the vulnerable system, such as partial
+                      leakage to downstream services.
+                  views:
+                      default: 'SC:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'SC:L'
+                      - SC L
+                  categories:
+                      - sc_impact
+                  position: 1
+                  rank: 1
+                - id: SC_N
+                  name: 'Subsequent System Confidentiality: None'
+                  definition: >-
+                      Confidentiality on subsequent systems is unaffected.
+                  guidance: Select when confidentiality of subsequent systems is not affected by the vulnerability.
+                  views:
+                      default: 'SC:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'SC:N'
+                      - SC N
+                  categories:
+                      - sc_impact
+                  position: 0
+                  rank: 0
+                - id: SI_H
+                  name: 'Subsequent System Integrity: High'
+                  definition: >-
+                      Integrity on subsequent systems is lost entirely: any of their data can be altered.
+                  guidance: Select when the attacker can modify all data on systems beyond the vulnerable system without restriction.
+                  views:
+                      default: 'SI:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'SI:H'
+                      - SI H
+                  categories:
+                      - si_impact
+                  position: 2
+                  rank: 2
+                - id: SI_L
+                  name: 'Subsequent System Integrity: Low'
+                  definition: >-
+                      Integrity on subsequent systems is partly lost: data can be altered, but the extent or the effect of the change
+                      is outside the attacker's control.
+                  guidance: >-
+                      Select when the attacker can make limited or uncontrolled modifications to data on systems beyond the vulnerable
+                      system.
+                  views:
+                      default: 'SI:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'SI:L'
+                      - SI L
+                  categories:
+                      - si_impact
+                  position: 1
+                  rank: 1
+                - id: SI_N
+                  name: 'Subsequent System Integrity: None'
+                  definition: >-
+                      Integrity on subsequent systems is unaffected.
+                  guidance: Select when integrity of subsequent systems is not affected by the vulnerability.
+                  views:
+                      default: 'SI:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'SI:N'
+                      - SI N
+                  categories:
+                      - si_impact
+                  position: 0
+                  rank: 0
+                - id: SA_H
+                  name: 'Subsequent System Availability: High'
+                  definition: >-
+                      Availability of subsequent systems is lost entirely: access to their resources can be denied outright.
+                  guidance: Select when the attacker can completely deny service on systems beyond the vulnerable system.
+                  views:
+                      default: 'SA:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'SA:H'
+                      - SA H
+                  categories:
+                      - sa_impact
+                  position: 2
+                  rank: 2
+                - id: SA_L
+                  name: 'Subsequent System Availability: Low'
+                  definition: >-
+                      Availability of subsequent systems degrades, through reduced performance or interrupted access to their
+                      resources.
+                  guidance: >-
+                      Select when the attacker can cause degraded performance or intermittent availability issues on systems beyond the
+                      vulnerable system.
+                  views:
+                      default: 'SA:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'SA:L'
+                      - SA L
+                  categories:
+                      - sa_impact
+                  position: 1
+                  rank: 1
+                - id: SA_N
+                  name: 'Subsequent System Availability: None'
+                  definition: >-
+                      Availability of subsequent systems is unaffected.
+                  guidance: Select when availability of subsequent systems is not affected by the vulnerability.
+                  views:
+                      default: 'SA:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'SA:N'
+                      - SA N
+                  categories:
+                      - sa_impact
+                  position: 0
+                  rank: 0
+                - id: E_X
+                  name: 'Exploit Maturity: Not Defined'
+                  definition: Reliable threat intelligence is unavailable; scoring treats this value as Attacked.
+                  guidance: Preserve X when explicitly supplied; omission also means Not Defined in CVSS.
+                  views:
+                      default: 'E:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'E:X'
+                  categories:
+                      - exploit_maturity
+                  position: -1
+                  rank: 3
+                - id: E_A
+                  name: 'Exploit Maturity: Attacked'
+                  definition: >-
+                      Exploit intelligence reports attacks in progress, with ready-made exploit tooling in circulation.
+                  guidance: >-
+                      Select when there is evidence of active exploitation in the wild or when weaponized exploit code is publicly
+                      available.
+                  views:
+                      default: 'E:A'
+                      metric: A
+                      label: Attacked
+                  aliases:
+                      - 'E:A'
+                      - E A
+                      - Attacked
+                  categories:
+                      - exploit_maturity
+                  position: 3
+                  rank: 2
+                - id: E_P
+                  name: 'Exploit Maturity: POC'
+                  definition: >-
+                      Exploit intelligence reports public proof-of-concept code, or a practical demonstration is not feasible on most
+                      systems.
+                  guidance: Select when a proof-of-concept exists but no reliable weaponized exploit or active exploitation has been observed.
+                  views:
+                      default: 'E:P'
+                      metric: P
+                      label: POC
+                  aliases:
+                      - 'E:P'
+                      - E P
+                      - POC
+                  categories:
+                      - exploit_maturity
+                  position: 2
+                  rank: 1
+                - id: E_U
+                  name: 'Exploit Maturity: Unreported'
+                  definition: >-
+                      Exploit intelligence reports neither active exploitation nor public proof-of-concept code.
+                  guidance: Select when there is no known exploit code and no reports of active exploitation for this vulnerability.
+                  views:
+                      default: 'E:U'
+                      metric: U
+                      label: Unreported
+                  aliases:
+                      - 'E:U'
+                      - E U
+                      - Unreported
+                  categories:
+                      - exploit_maturity
+                  position: 1
+                  rank: 0
+                - id: SEV_CRITICAL
+                  name: Critical
+                  definition: CVSS score 9.0-10.0. The vulnerability poses the most severe risk and should be remediated immediately.
+                  guidance: 'Assign when the overall CVSS score is 9.0 or above, indicating maximum urgency for remediation.'
+                  views:
+                      default: Critical
+                      short: CRITICAL
+                  aliases:
+                      - Critical
+                      - CRITICAL
+                  categories:
+                      - severity
+                  position: 4
+                  rank: 4
+                - id: SEV_HIGH
+                  name: High
+                  definition: CVSS score 7.0-8.9. The vulnerability poses significant risk and should be remediated as a priority.
+                  guidance: 'Assign when the overall CVSS score is between 7.0 and 8.9, indicating high urgency for remediation.'
+                  views:
+                      default: High
+                      short: HIGH
+                  aliases:
+                      - High
+                      - HIGH
+                  categories:
+                      - severity
+                  position: 3
+                  rank: 3
+                - id: SEV_MEDIUM
+                  name: Medium
+                  definition: CVSS score 4.0-6.9. The vulnerability poses moderate risk and should be remediated in a timely manner.
+                  guidance: 'Assign when the overall CVSS score is between 4.0 and 6.9, indicating moderate urgency for remediation.'
+                  views:
+                      default: Medium
+                      short: MEDIUM
+                  aliases:
+                      - Medium
+                      - MEDIUM
+                      - Med
+                  categories:
+                      - severity
+                  position: 2
+                  rank: 2
+                - id: SEV_LOW
+                  name: Low
+                  definition: CVSS score 0.1-3.9. The vulnerability poses low risk and should be remediated as resources permit.
+                  guidance: 'Assign when the overall CVSS score is between 0.1 and 3.9, indicating lower urgency for remediation.'
+                  views:
+                      default: Low
+                      short: LOW
+                  aliases:
+                      - Low
+                      - LOW
+                  categories:
+                      - severity
+                  position: 1
+                  rank: 1
+                - id: SEV_NONE
+                  name: None
+                  definition: CVSS score 0.0. The vulnerability has been analyzed and poses no measurable risk.
+                  guidance: 'Assign when the overall CVSS score is 0.0, indicating no impact.'
+                  views:
+                      default: None
+                      short: NONE
+                  aliases:
+                      - None
+                      - NONE
+                  categories:
+                      - severity
+                  position: 0
+                  rank: 0
+                - id: S_X
+                  name: 'Safety: Not Defined'
+                  definition: This Supplemental metric has not been evaluated and does not affect the CVSS score.
+                  guidance: Preserve X when explicitly supplied; omission also means Not Defined in CVSS.
+                  views:
+                      default: 'S:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'S:X'
+                  categories:
+                      - safety
+                  position: -1
+                  rank: 2
+                - id: S_N
+                  name: 'Safety: Negligible'
+                  definition: >-
+                      Consequences fall in the negligible band of the IEC 61508 consequence categories.
+                  guidance: Select when exploitation of the vulnerability has no impact on human safety or the physical environment.
+                  views:
+                      default: 'S:N'
+                      metric: 'N'
+                      label: Negligible
+                  aliases:
+                      - 'S:N'
+                  categories:
+                      - safety
+                  position: 0
+                  rank: 0
+                - id: S_P
+                  name: 'Safety: Present'
+                  definition: >-
+                      Consequences reach the marginal, critical, or catastrophic bands of the IEC 61508 consequence categories.
+                  guidance: >-
+                      Select when exploitation of the vulnerability could result in injury, loss of life, or physical environmental
+                      damage.
+                  views:
+                      default: 'S:P'
+                      metric: P
+                      label: Present
+                  aliases:
+                      - 'S:P'
+                  categories:
+                      - safety
+                  position: 1
+                  rank: 1
+                - id: AU_X
+                  name: 'Automatable: Not Defined'
+                  definition: This Supplemental metric has not been evaluated and does not affect the CVSS score.
+                  guidance: Preserve X when explicitly supplied; omission also means Not Defined in CVSS.
+                  views:
+                      default: 'AU:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'AU:X'
+                  categories:
+                      - automatable
+                  position: -1
+                  rank: 2
+                - id: AU_N
+                  name: 'Automatable: No'
+                  definition: >-
+                      The attacker cannot reliably automate every stage of the kill chain, from reconnaissance through
+                      exploitation, for this vulnerability.
+                  guidance: >-
+                      Select when exploitation requires manual steps, target-specific customization, or human decision-making that
+                      prevents mass automated exploitation.
+                  views:
+                      default: 'AU:N'
+                      metric: 'N'
+                      label: 'No'
+                  aliases:
+                      - 'AU:N'
+                  categories:
+                      - automatable
+                  position: 0
+                  rank: 0
+                - id: AU_Y
+                  name: 'Automatable: Yes'
+                  definition: >-
+                      Every stage of the kill chain, from reconnaissance through exploitation, can be automated reliably for this
+                      vulnerability.
+                  guidance: >-
+                      Select when the vulnerability can be exploited at scale via worms, botnets, or scripted attacks without per-target
+                      customization.
+                  views:
+                      default: 'AU:Y'
+                      metric: 'Y'
+                      label: 'Yes'
+                  aliases:
+                      - 'AU:Y'
+                  categories:
+                      - automatable
+                  position: 1
+                  rank: 1
+                - id: R_X
+                  name: 'Recovery: Not Defined'
+                  definition: This Supplemental metric has not been evaluated and does not affect the CVSS score.
+                  guidance: Preserve X when explicitly supplied; omission also means Not Defined in CVSS.
+                  views:
+                      default: 'R:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'R:X'
+                  categories:
+                      - recovery
+                  position: -1
+                  rank: 3
+                - id: R_A
+                  name: 'Recovery: Automatic'
+                  definition: >-
+                      Service returns on its own once the attack stops.
+                  guidance: Select when the affected system can restore normal operations without human intervention after exploitation.
+                  views:
+                      default: 'R:A'
+                      metric: A
+                      label: Automatic
+                  aliases:
+                      - 'R:A'
+                  categories:
+                      - recovery
+                  position: 2
+                  rank: 0
+                - id: R_U
+                  name: 'Recovery: User'
+                  definition: >-
+                      Service returns only after a person intervenes.
+                  guidance: >-
+                      Select when an administrator or user must take deliberate action to restore services after exploitation, such as
+                      restarting a service or restoring from backup.
+                  views:
+                      default: 'R:U'
+                      metric: U
+                      label: User
+                  aliases:
+                      - 'R:U'
+                  categories:
+                      - recovery
+                  position: 1
+                  rank: 1
+                - id: R_I
+                  name: 'Recovery: Irrecoverable'
+                  definition: >-
+                      Service cannot be restored by the user at all.
+                  guidance: >-
+                      Select when the damage from exploitation is permanent and the system cannot be restored to its pre-attack state,
+                      such as destroyed hardware or irrecoverably corrupted data.
+                  views:
+                      default: 'R:I'
+                      metric: I
+                      label: Irrecoverable
+                  aliases:
+                      - 'R:I'
+                  categories:
+                      - recovery
+                  position: 0
+                  rank: 2
+                - id: V_X
+                  name: 'Value Density: Not Defined'
+                  definition: This Supplemental metric has not been evaluated and does not affect the CVSS score.
+                  guidance: Preserve X when explicitly supplied; omission also means Not Defined in CVSS.
+                  views:
+                      default: 'V:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'V:X'
+                  categories:
+                      - value_density
+                  position: -1
+                  rank: 2
+                - id: V_D
+                  name: 'Value Density: Diffuse'
+                  definition: >-
+                      The system holds few resources, so one compromise yields little to the attacker.
+                  guidance: >-
+                      Select when each exploited target yields limited value, such as individual consumer devices or low-value
+                      endpoints.
+                  views:
+                      default: 'V:D'
+                      metric: D
+                      label: Diffuse
+                  aliases:
+                      - 'V:D'
+                  categories:
+                      - value_density
+                  position: 0
+                  rank: 0
+                - id: V_C
+                  name: 'Value Density: Concentrated'
+                  definition: >-
+                      The system holds a concentration of resources, so one compromise yields a lot to the attacker.
+                  guidance: >-
+                      Select when each exploited target yields high value, such as database servers, domain controllers, or systems
+                      holding sensitive bulk data.
+                  views:
+                      default: 'V:C'
+                      metric: C
+                      label: Concentrated
+                  aliases:
+                      - 'V:C'
+                  categories:
+                      - value_density
+                  position: 1
+                  rank: 1
+                - id: RE_X
+                  name: 'Vulnerability Response Effort: Not Defined'
+                  definition: This Supplemental metric has not been evaluated and does not affect the CVSS score.
+                  guidance: Preserve X when explicitly supplied; omission also means Not Defined in CVSS.
+                  views:
+                      default: 'RE:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'RE:X'
+                  categories:
+                      - response_effort
+                  position: -1
+                  rank: 3
+                - id: RE_L
+                  name: 'Vulnerability Response Effort: Low'
+                  definition: >-
+                      Responding to the vulnerability takes little effort.
+                  guidance: >-
+                      Select when remediation is straightforward, such as applying an automatic update or toggling a single
+                      configuration setting.
+                  views:
+                      default: 'RE:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'RE:L'
+                  categories:
+                      - response_effort
+                  position: 2
+                  rank: 0
+                - id: RE_M
+                  name: 'Vulnerability Response Effort: Moderate'
+                  definition: >-
+                      Responding to the vulnerability takes a moderate amount of work.
+                  guidance: >-
+                      Select when remediation requires planned downtime, manual patching, or testing before deployment across the
+                      organization.
+                  views:
+                      default: 'RE:M'
+                      metric: M
+                      label: Moderate
+                  aliases:
+                      - 'RE:M'
+                  categories:
+                      - response_effort
+                  position: 1
+                  rank: 1
+                - id: RE_H
+                  name: 'Vulnerability Response Effort: High'
+                  definition: >-
+                      Responding to the vulnerability takes considerable work.
+                  guidance: >-
+                      Select when remediation requires significant effort such as architectural changes, hardware replacement, or
+                      complex coordinated mitigations across multiple systems.
+                  views:
+                      default: 'RE:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'RE:H'
+                  categories:
+                      - response_effort
+                  position: 0
+                  rank: 2
+                - id: U_X
+                  name: 'Provider Urgency: Not Defined'
+                  definition: This Supplemental metric has not been evaluated and does not affect the CVSS score.
+                  guidance: Preserve X when explicitly supplied; omission also means Not Defined in CVSS.
+                  views:
+                      default: 'U:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'U:X'
+                  categories:
+                      - provider_urgency
+                  position: -1
+                  rank: 4
+                - id: U_CLEAR
+                  name: 'Provider Urgency: Clear'
+                  definition: >-
+                      The provider's own assessment places no urgency on this vulnerability.
+                  guidance: >-
+                      Select when the provider indicates no action is currently required and the vulnerability presents negligible
+                      immediate risk.
+                  views:
+                      default: 'U:Clear'
+                      metric: Clear
+                      label: Clear
+                  aliases:
+                      - 'U:Clear'
+                      - U Clear
+                  categories:
+                      - provider_urgency
+                  position: 0
+                  rank: 0
+                - id: U_GREEN
+                  name: 'Provider Urgency: Green'
+                  definition: >-
+                      The provider's own assessment places reduced urgency on this vulnerability.
+                  guidance: >-
+                      Select when the provider recommends remediation as part of normal update cycles without requiring priority
+                      scheduling.
+                  views:
+                      default: 'U:Green'
+                      metric: Green
+                      label: Green
+                  aliases:
+                      - 'U:Green'
+                      - U Green
+                  categories:
+                      - provider_urgency
+                  position: 1
+                  rank: 1
+                - id: U_AMBER
+                  name: 'Provider Urgency: Amber'
+                  definition: >-
+                      The provider's own assessment places moderate urgency on this vulnerability.
+                  guidance: >-
+                      Select when the provider recommends prioritized remediation, such as applying patches in the next scheduled
+                      maintenance window.
+                  views:
+                      default: 'U:Amber'
+                      metric: Amber
+                      label: Amber
+                  aliases:
+                      - 'U:Amber'
+                      - U Amber
+                  categories:
+                      - provider_urgency
+                  position: 2
+                  rank: 2
+                - id: U_RED
+                  name: 'Provider Urgency: Red'
+                  definition: >-
+                      The provider's own assessment places the highest urgency on this vulnerability.
+                  guidance: >-
+                      Select when the provider recommends immediate action, such as emergency out-of-cycle patching or applying
+                      mitigations without delay.
+                  views:
+                      default: 'U:Red'
+                      metric: Red
+                      label: Red
+                  aliases:
+                      - 'U:Red'
+                      - U Red
+                  categories:
+                      - provider_urgency
+                  position: 3
+                  rank: 3
+                - id: CR_X
+                  name: 'Confidentiality Requirement: Not Defined'
+                  definition: >-
+                      This metric value is not being used; the corresponding Base metric is left unmodified when computing the
+                      environmental score.
+                  guidance: Select when the confidentiality requirement is unknown or the default assumption of Medium should apply.
+                  views:
+                      default: 'CR:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'CR:X'
+                      - CR X
+                  categories:
+                      - confidentiality_requirement
+                  position: 0
+                  rank: 3
+                - id: CR_H
+                  name: 'Confidentiality Requirement: High'
+                  definition: >-
+                      Losing confidentiality would have a catastrophic effect on the organization or on the people it serves.
+                  guidance: >-
+                      Select when the affected asset holds information whose confidentiality is critical to the organization's
+                      mission or safety.
+                  views:
+                      default: 'CR:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'CR:H'
+                      - CR H
+                  categories:
+                      - confidentiality_requirement
+                  position: 3
+                  rank: 2
+                - id: CR_M
+                  name: 'Confidentiality Requirement: Medium'
+                  definition: >-
+                      Losing confidentiality would have a serious effect on the organization or on the people it serves.
+                  guidance: >-
+                      Select when loss of confidentiality on the affected asset would meaningfully impair operations but is not
+                      mission-ending.
+                  views:
+                      default: 'CR:M'
+                      metric: M
+                      label: Medium
+                  aliases:
+                      - 'CR:M'
+                      - CR M
+                  categories:
+                      - confidentiality_requirement
+                  position: 2
+                  rank: 1
+                - id: CR_L
+                  name: 'Confidentiality Requirement: Low'
+                  definition: >-
+                      Losing confidentiality would have only a limited effect on the organization or on the people it serves.
+                  guidance: >-
+                      Select when the affected asset holds information whose confidentiality carries minimal organizational
+                      consequence if lost.
+                  views:
+                      default: 'CR:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'CR:L'
+                      - CR L
+                  categories:
+                      - confidentiality_requirement
+                  position: 1
+                  rank: 0
+                - id: IR_X
+                  name: 'Integrity Requirement: Not Defined'
+                  definition: >-
+                      This metric value is not being used; the corresponding Base metric is left unmodified when computing the
+                      environmental score.
+                  guidance: Select when the integrity requirement is unknown or the default assumption of Medium should apply.
+                  views:
+                      default: 'IR:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'IR:X'
+                      - IR X
+                  categories:
+                      - integrity_requirement
+                  position: 0
+                  rank: 3
+                - id: IR_H
+                  name: 'Integrity Requirement: High'
+                  definition: >-
+                      Losing integrity would have a catastrophic effect on the organization or on the people it serves.
+                  guidance: >-
+                      Select when the affected asset holds information whose integrity is critical to the organization's mission
+                      or safety.
+                  views:
+                      default: 'IR:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'IR:H'
+                      - IR H
+                  categories:
+                      - integrity_requirement
+                  position: 3
+                  rank: 2
+                - id: IR_M
+                  name: 'Integrity Requirement: Medium'
+                  definition: >-
+                      Losing integrity would have a serious effect on the organization or on the people it serves.
+                  guidance: >-
+                      Select when loss of integrity on the affected asset would meaningfully impair operations but is not
+                      mission-ending.
+                  views:
+                      default: 'IR:M'
+                      metric: M
+                      label: Medium
+                  aliases:
+                      - 'IR:M'
+                      - IR M
+                  categories:
+                      - integrity_requirement
+                  position: 2
+                  rank: 1
+                - id: IR_L
+                  name: 'Integrity Requirement: Low'
+                  definition: >-
+                      Losing integrity would have only a limited effect on the organization or on the people it serves.
+                  guidance: >-
+                      Select when the affected asset holds information whose integrity carries minimal organizational
+                      consequence if lost.
+                  views:
+                      default: 'IR:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'IR:L'
+                      - IR L
+                  categories:
+                      - integrity_requirement
+                  position: 1
+                  rank: 0
+                - id: AR_X
+                  name: 'Availability Requirement: Not Defined'
+                  definition: >-
+                      This metric value is not being used; the corresponding Base metric is left unmodified when computing the
+                      environmental score.
+                  guidance: Select when the availability requirement is unknown or the default assumption of Medium should apply.
+                  views:
+                      default: 'AR:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'AR:X'
+                      - AR X
+                  categories:
+                      - availability_requirement
+                  position: 0
+                  rank: 3
+                - id: AR_H
+                  name: 'Availability Requirement: High'
+                  definition: >-
+                      Losing availability would have a catastrophic effect on the organization or on the people it serves.
+                  guidance: >-
+                      Select when the affected asset holds information whose availability is critical to the organization's
+                      mission or safety.
+                  views:
+                      default: 'AR:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'AR:H'
+                      - AR H
+                  categories:
+                      - availability_requirement
+                  position: 3
+                  rank: 2
+                - id: AR_M
+                  name: 'Availability Requirement: Medium'
+                  definition: >-
+                      Losing availability would have a serious effect on the organization or on the people it serves.
+                  guidance: >-
+                      Select when loss of availability on the affected asset would meaningfully impair operations but is not
+                      mission-ending.
+                  views:
+                      default: 'AR:M'
+                      metric: M
+                      label: Medium
+                  aliases:
+                      - 'AR:M'
+                      - AR M
+                  categories:
+                      - availability_requirement
+                  position: 2
+                  rank: 1
+                - id: AR_L
+                  name: 'Availability Requirement: Low'
+                  definition: >-
+                      Losing availability would have only a limited effect on the organization or on the people it serves.
+                  guidance: >-
+                      Select when the affected asset holds information whose availability carries minimal organizational
+                      consequence if lost.
+                  views:
+                      default: 'AR:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'AR:L'
+                      - AR L
+                  categories:
+                      - availability_requirement
+                  position: 1
+                  rank: 0
+                - id: MAV_X
+                  name: 'Modified Attack Vector: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Attack Vector value
+                      unmodified.
+                  guidance: Select when the environment does not change the exploitation context assumed by the Base Attack Vector.
+                  views:
+                      default: 'MAV:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MAV:X'
+                      - MAV X
+                  categories:
+                      - modified_attack_vector
+                  position: 0
+                  rank: 4
+                - id: MAV_N
+                  name: 'Modified Attack Vector: Network'
+                  definition: >-
+                      In the analyst's environment the system is reachable through the network stack, with no bound on attacker
+                      proximity short of the whole internet.
+                  guidance: >-
+                      Select when the deployed environment exposes the vulnerable system to remote network attackers, overriding
+                      the Base value.
+                  views:
+                      default: 'MAV:N'
+                      metric: 'N'
+                      label: Network
+                  aliases:
+                      - 'MAV:N'
+                      - MAV N
+                  categories:
+                      - modified_attack_vector
+                  position: 4
+                  rank: 3
+                - id: MAV_A
+                  name: 'Modified Attack Vector: Adjacent'
+                  definition: >-
+                      In the analyst's environment the attack is confined to a logically adjacent topology, such as a shared link layer
+                      or one IP subnet.
+                  guidance: >-
+                      Select when the environment restricts exploitation to the same shared network segment, overriding the Base
+                      value.
+                  views:
+                      default: 'MAV:A'
+                      metric: A
+                      label: Adjacent
+                  aliases:
+                      - 'MAV:A'
+                      - MAV A
+                  categories:
+                      - modified_attack_vector
+                  position: 3
+                  rank: 2
+                - id: MAV_L
+                  name: 'Modified Attack Vector: Local'
+                  definition: >-
+                      In the analyst's environment the system is off the network stack, and the attacker works through local read,
+                      write, or execute access.
+                  guidance: >-
+                      Select when the deployed environment requires local system access to exploit the vulnerability, overriding
+                      the Base value.
+                  views:
+                      default: 'MAV:L'
+                      metric: L
+                      label: Local
+                  aliases:
+                      - 'MAV:L'
+                      - MAV L
+                  categories:
+                      - modified_attack_vector
+                  position: 2
+                  rank: 1
+                - id: MAV_P
+                  name: 'Modified Attack Vector: Physical'
+                  definition: >-
+                      In the analyst's environment the attack requires the attacker to physically touch or manipulate the
+                      vulnerable system.
+                  guidance: Select when the deployed environment requires physical access to the hardware, overriding the Base value.
+                  views:
+                      default: 'MAV:P'
+                      metric: P
+                      label: Physical
+                  aliases:
+                      - 'MAV:P'
+                      - MAV P
+                  categories:
+                      - modified_attack_vector
+                  position: 1
+                  rank: 0
+                - id: MAC_X
+                  name: 'Modified Attack Complexity: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Attack Complexity value
+                      unmodified.
+                  guidance: Select when the environment does not change the attack complexity assumed by the Base metric.
+                  views:
+                      default: 'MAC:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MAC:X'
+                      - MAC X
+                  categories:
+                      - modified_attack_complexity
+                  position: 0
+                  rank: 2
+                - id: MAC_L
+                  name: 'Modified Attack Complexity: Low'
+                  definition: >-
+                      In the analyst's environment no measurable extra work is needed beyond reaching the system to obtain a working
+                      exploit.
+                  guidance: >-
+                      Select when the deployed environment removes the security-enhancing conditions that would otherwise raise
+                      attack complexity, overriding the Base value.
+                  views:
+                      default: 'MAC:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'MAC:L'
+                      - MAC L
+                  categories:
+                      - modified_attack_complexity
+                  position: 2
+                  rank: 1
+                - id: MAC_H
+                  name: 'Modified Attack Complexity: High'
+                  definition: >-
+                      In the analyst's environment a working exploit depends on evading or defeating a hardening measure that would
+                      otherwise block the attack.
+                  guidance: >-
+                      Select when the deployed environment adds security-enhancing conditions that raise attack complexity,
+                      overriding the Base value.
+                  views:
+                      default: 'MAC:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'MAC:H'
+                      - MAC H
+                  categories:
+                      - modified_attack_complexity
+                  position: 1
+                  rank: 0
+                - id: MAT_X
+                  name: 'Modified Attack Requirements: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Attack Requirements value
+                      unmodified.
+                  guidance: Select when the environment does not change the attack requirements assumed by the Base metric.
+                  views:
+                      default: 'MAT:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MAT:X'
+                      - MAT X
+                  categories:
+                      - modified_attack_requirements
+                  position: 0
+                  rank: 2
+                - id: MAT_N
+                  name: 'Modified Attack Requirements: None'
+                  definition: >-
+                      In the analyst's environment the successful attack does not depend on the deployment and execution
+                      conditions of the vulnerable system.
+                  guidance: >-
+                      Select when the deployed environment removes the prerequisite conditions the attack would otherwise
+                      require, overriding the Base value.
+                  views:
+                      default: 'MAT:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'MAT:N'
+                      - MAT N
+                  categories:
+                      - modified_attack_requirements
+                  position: 2
+                  rank: 1
+                - id: MAT_P
+                  name: 'Modified Attack Requirements: Present'
+                  definition: >-
+                      In the analyst's environment the successful attack depends on the presence of specific deployment and
+                      execution conditions of the vulnerable system that enable the attack.
+                  guidance: >-
+                      Select when the deployed environment introduces prerequisite conditions the attack requires, overriding
+                      the Base value.
+                  views:
+                      default: 'MAT:P'
+                      metric: P
+                      label: Present
+                  aliases:
+                      - 'MAT:P'
+                      - MAT P
+                  categories:
+                      - modified_attack_requirements
+                  position: 1
+                  rank: 0
+                - id: MPR_X
+                  name: 'Modified Privileges Required: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Privileges Required value
+                      unmodified.
+                  guidance: Select when the environment does not change the privilege level assumed by the Base metric.
+                  views:
+                      default: 'MPR:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MPR:X'
+                      - MPR X
+                  categories:
+                      - modified_privileges_required
+                  position: 0
+                  rank: 3
+                - id: MPR_N
+                  name: 'Modified Privileges Required: None'
+                  definition: >-
+                      In the analyst's environment the attacker is unauthorized prior to attack and requires no access to
+                      settings or files of the vulnerable system.
+                  guidance: >-
+                      Select when the deployed environment allows exploitation without any prior authentication, overriding the
+                      Base value.
+                  views:
+                      default: 'MPR:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'MPR:N'
+                      - MPR N
+                  categories:
+                      - modified_privileges_required
+                  position: 3
+                  rank: 2
+                - id: MPR_L
+                  name: 'Modified Privileges Required: Low'
+                  definition: >-
+                      In the analyst's environment the attacker requires privileges that provide basic capabilities normally
+                      provided to any authorized user.
+                  guidance: >-
+                      Select when the deployed environment requires basic user-level access to exploit the vulnerability,
+                      overriding the Base value.
+                  views:
+                      default: 'MPR:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'MPR:L'
+                      - MPR L
+                  categories:
+                      - modified_privileges_required
+                  position: 2
+                  rank: 1
+                - id: MPR_H
+                  name: 'Modified Privileges Required: High'
+                  definition: >-
+                      In the analyst's environment the attacker needs privileges carrying broad control over the system, such as an
+                      administrative account.
+                  guidance: >-
+                      Select when the deployed environment requires administrative access to exploit the vulnerability,
+                      overriding the Base value.
+                  views:
+                      default: 'MPR:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'MPR:H'
+                      - MPR H
+                  categories:
+                      - modified_privileges_required
+                  position: 1
+                  rank: 0
+                - id: MUI_X
+                  name: 'Modified User Interaction: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base User Interaction value
+                      unmodified.
+                  guidance: Select when the environment does not change the user interaction assumed by the Base metric.
+                  views:
+                      default: 'MUI:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MUI:X'
+                      - MUI X
+                  categories:
+                      - modified_user_interaction
+                  position: 0
+                  rank: 3
+                - id: MUI_N
+                  name: 'Modified User Interaction: None'
+                  definition: >-
+                      In the analyst's environment the vulnerable system can be exploited without interaction from any human
+                      user other than the attacker.
+                  guidance: Select when the deployed environment removes the need for user interaction, overriding the Base value.
+                  views:
+                      default: 'MUI:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'MUI:N'
+                      - MUI N
+                  categories:
+                      - modified_user_interaction
+                  position: 3
+                  rank: 2
+                - id: MUI_P
+                  name: 'Modified User Interaction: Passive'
+                  definition: >-
+                      In the analyst's environment successful exploitation requires limited interaction by the targeted user
+                      with the vulnerable component and the attacker's payload.
+                  guidance: >-
+                      Select when the deployed environment requires only passive, unwitting user interaction, overriding the
+                      Base value.
+                  views:
+                      default: 'MUI:P'
+                      metric: P
+                      label: Passive
+                  aliases:
+                      - 'MUI:P'
+                      - MUI P
+                  categories:
+                      - modified_user_interaction
+                  position: 2
+                  rank: 1
+                - id: MUI_A
+                  name: 'Modified User Interaction: Active'
+                  definition: >-
+                      In the analyst's environment successful exploitation requires a targeted user to perform specific,
+                      conscious interactions with the vulnerable component and the attacker's payload.
+                  guidance: >-
+                      Select when the deployed environment requires deliberate user action for exploitation, overriding the Base
+                      value.
+                  views:
+                      default: 'MUI:A'
+                      metric: A
+                      label: Active
+                  aliases:
+                      - 'MUI:A'
+                      - MUI A
+                  categories:
+                      - modified_user_interaction
+                  position: 1
+                  rank: 0
+                - id: MVC_X
+                  name: 'Modified Vulnerable System Confidentiality: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Confidentiality impact
+                      value unmodified.
+                  guidance: >-
+                      Select when the environment does not change the confidentiality impact on the vulnerable system assumed by
+                      the Base metric.
+                  views:
+                      default: 'MVC:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MVC:X'
+                      - MVC X
+                  categories:
+                      - modified_vc_impact
+                  position: 0
+                  rank: 3
+                - id: MVC_H
+                  name: 'Modified Vulnerable System Confidentiality: High'
+                  definition: In the analyst's environment there is a total loss of confidentiality on the vulnerable system.
+                  guidance: >-
+                      Select when the deployed environment raises the confidentiality impact on the vulnerable system to total,
+                      overriding the Base value.
+                  views:
+                      default: 'MVC:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'MVC:H'
+                      - MVC H
+                  categories:
+                      - modified_vc_impact
+                  position: 3
+                  rank: 2
+                - id: MVC_L
+                  name: 'Modified Vulnerable System Confidentiality: Low'
+                  definition: >-
+                      In the analyst's environment there is some loss of confidentiality on the vulnerable system, but the
+                      attacker does not control the extent.
+                  guidance: >-
+                      Select when the deployed environment limits the confidentiality impact on the vulnerable system,
+                      overriding the Base value.
+                  views:
+                      default: 'MVC:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'MVC:L'
+                      - MVC L
+                  categories:
+                      - modified_vc_impact
+                  position: 2
+                  rank: 1
+                - id: MVC_N
+                  name: 'Modified Vulnerable System Confidentiality: None'
+                  definition: In the analyst's environment there is no loss of confidentiality on the vulnerable system.
+                  guidance: >-
+                      Select when the deployed environment removes the confidentiality impact on the vulnerable system,
+                      overriding the Base value.
+                  views:
+                      default: 'MVC:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'MVC:N'
+                      - MVC N
+                  categories:
+                      - modified_vc_impact
+                  position: 1
+                  rank: 0
+                - id: MVI_X
+                  name: 'Modified Vulnerable System Integrity: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Integrity impact value
+                      unmodified.
+                  guidance: >-
+                      Select when the environment does not change the integrity impact on the vulnerable system assumed by the
+                      Base metric.
+                  views:
+                      default: 'MVI:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MVI:X'
+                      - MVI X
+                  categories:
+                      - modified_vi_impact
+                  position: 0
+                  rank: 3
+                - id: MVI_H
+                  name: 'Modified Vulnerable System Integrity: High'
+                  definition: In the analyst's environment there is a total loss of integrity on the vulnerable system.
+                  guidance: >-
+                      Select when the deployed environment raises the integrity impact on the vulnerable system to total,
+                      overriding the Base value.
+                  views:
+                      default: 'MVI:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'MVI:H'
+                      - MVI H
+                  categories:
+                      - modified_vi_impact
+                  position: 3
+                  rank: 2
+                - id: MVI_L
+                  name: 'Modified Vulnerable System Integrity: Low'
+                  definition: >-
+                      In the analyst's environment there is some loss of integrity on the vulnerable system, but the attacker
+                      does not control the extent.
+                  guidance: >-
+                      Select when the deployed environment limits the integrity impact on the vulnerable system, overriding the
+                      Base value.
+                  views:
+                      default: 'MVI:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'MVI:L'
+                      - MVI L
+                  categories:
+                      - modified_vi_impact
+                  position: 2
+                  rank: 1
+                - id: MVI_N
+                  name: 'Modified Vulnerable System Integrity: None'
+                  definition: In the analyst's environment there is no loss of integrity on the vulnerable system.
+                  guidance: >-
+                      Select when the deployed environment removes the integrity impact on the vulnerable system, overriding the
+                      Base value.
+                  views:
+                      default: 'MVI:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'MVI:N'
+                      - MVI N
+                  categories:
+                      - modified_vi_impact
+                  position: 1
+                  rank: 0
+                - id: MVA_X
+                  name: 'Modified Vulnerable System Availability: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Availability impact value
+                      unmodified.
+                  guidance: >-
+                      Select when the environment does not change the availability impact on the vulnerable system assumed by
+                      the Base metric.
+                  views:
+                      default: 'MVA:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MVA:X'
+                      - MVA X
+                  categories:
+                      - modified_va_impact
+                  position: 0
+                  rank: 3
+                - id: MVA_H
+                  name: 'Modified Vulnerable System Availability: High'
+                  definition: In the analyst's environment there is a total loss of availability on the vulnerable system.
+                  guidance: >-
+                      Select when the deployed environment raises the availability impact on the vulnerable system to total,
+                      overriding the Base value.
+                  views:
+                      default: 'MVA:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'MVA:H'
+                      - MVA H
+                  categories:
+                      - modified_va_impact
+                  position: 3
+                  rank: 2
+                - id: MVA_L
+                  name: 'Modified Vulnerable System Availability: Low'
+                  definition: >-
+                      In the analyst's environment there is some loss of availability on the vulnerable system, but the attacker
+                      does not control the extent.
+                  guidance: >-
+                      Select when the deployed environment limits the availability impact on the vulnerable system, overriding
+                      the Base value.
+                  views:
+                      default: 'MVA:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'MVA:L'
+                      - MVA L
+                  categories:
+                      - modified_va_impact
+                  position: 2
+                  rank: 1
+                - id: MVA_N
+                  name: 'Modified Vulnerable System Availability: None'
+                  definition: In the analyst's environment there is no loss of availability on the vulnerable system.
+                  guidance: >-
+                      Select when the deployed environment removes the availability impact on the vulnerable system, overriding
+                      the Base value.
+                  views:
+                      default: 'MVA:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'MVA:N'
+                      - MVA N
+                  categories:
+                      - modified_va_impact
+                  position: 1
+                  rank: 0
+                - id: MSC_X
+                  name: 'Modified Subsequent System Confidentiality: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Confidentiality impact
+                      value unmodified.
+                  guidance: >-
+                      Select when the environment does not change the confidentiality impact on subsequent systems assumed by
+                      the Base metric.
+                  views:
+                      default: 'MSC:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MSC:X'
+                      - MSC X
+                  categories:
+                      - modified_sc_impact
+                  position: 0
+                  rank: 3
+                - id: MSC_H
+                  name: 'Modified Subsequent System Confidentiality: High'
+                  definition: In the analyst's environment there is a total loss of confidentiality on subsequent systems.
+                  guidance: >-
+                      Select when the deployed environment raises the confidentiality impact on subsequent systems to total,
+                      overriding the Base value.
+                  views:
+                      default: 'MSC:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'MSC:H'
+                      - MSC H
+                  categories:
+                      - modified_sc_impact
+                  position: 3
+                  rank: 2
+                - id: MSC_L
+                  name: 'Modified Subsequent System Confidentiality: Low'
+                  definition: >-
+                      In the analyst's environment there is some loss of confidentiality on subsequent systems, but the attacker
+                      does not control the extent.
+                  guidance: >-
+                      Select when the deployed environment limits the confidentiality impact on subsequent systems, overriding
+                      the Base value.
+                  views:
+                      default: 'MSC:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'MSC:L'
+                      - MSC L
+                  categories:
+                      - modified_sc_impact
+                  position: 2
+                  rank: 1
+                - id: MSC_N
+                  name: 'Modified Subsequent System Confidentiality: None'
+                  definition: In the analyst's environment there is no loss of confidentiality on subsequent systems.
+                  guidance: >-
+                      Select when the deployed environment removes the confidentiality impact on subsequent systems, overriding
+                      the Base value.
+                  views:
+                      default: 'MSC:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'MSC:N'
+                      - MSC N
+                  categories:
+                      - modified_sc_impact
+                  position: 1
+                  rank: 0
+                - id: MSI_X
+                  name: 'Modified Subsequent System Integrity: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Integrity impact value
+                      unmodified.
+                  guidance: >-
+                      Select when the environment does not change the integrity impact on subsequent systems assumed by the Base
+                      metric.
+                  views:
+                      default: 'MSI:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MSI:X'
+                      - MSI X
+                  categories:
+                      - modified_si_impact
+                  position: 0
+                  rank: 4
+                - id: MSI_S
+                  name: 'Modified Subsequent System Integrity: Safety'
+                  definition: >-
+                      In the analyst's environment the integrity impact on subsequent systems reaches the marginal, critical, or
+                      catastrophic bands of the IEC 61508 consequence categories.
+                  guidance: >-
+                      Select only for Modified Subsequent System Integrity or Availability when exploitation could cause
+                      physical harm or loss of life; Safety is not a valid Base impact value.
+                  views:
+                      default: 'MSI:S'
+                      metric: S
+                      label: Safety
+                  aliases:
+                      - 'MSI:S'
+                      - MSI S
+                  categories:
+                      - modified_si_impact
+                  position: 4
+                  rank: 3
+                - id: MSI_H
+                  name: 'Modified Subsequent System Integrity: High'
+                  definition: In the analyst's environment there is a total loss of integrity on subsequent systems.
+                  guidance: >-
+                      Select when the deployed environment raises the integrity impact on subsequent systems to total,
+                      overriding the Base value.
+                  views:
+                      default: 'MSI:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'MSI:H'
+                      - MSI H
+                  categories:
+                      - modified_si_impact
+                  position: 3
+                  rank: 2
+                - id: MSI_L
+                  name: 'Modified Subsequent System Integrity: Low'
+                  definition: >-
+                      In the analyst's environment there is some loss of integrity on subsequent systems, but the attacker does
+                      not control the extent.
+                  guidance: >-
+                      Select when the deployed environment limits the integrity impact on subsequent systems, overriding the
+                      Base value.
+                  views:
+                      default: 'MSI:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'MSI:L'
+                      - MSI L
+                  categories:
+                      - modified_si_impact
+                  position: 2
+                  rank: 1
+                - id: MSI_N
+                  name: 'Modified Subsequent System Integrity: None'
+                  definition: In the analyst's environment there is no loss of integrity on subsequent systems.
+                  guidance: >-
+                      Select when the deployed environment removes the integrity impact on subsequent systems, overriding the
+                      Base value.
+                  views:
+                      default: 'MSI:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'MSI:N'
+                      - MSI N
+                  categories:
+                      - modified_si_impact
+                  position: 1
+                  rank: 0
+                - id: MSA_X
+                  name: 'Modified Subsequent System Availability: Not Defined'
+                  definition: >-
+                      This metric enables the analyst to override the Base metric value based on characteristics of the specific
+                      environment where the vulnerable system is deployed. Not Defined leaves the Base Availability impact value
+                      unmodified.
+                  guidance: >-
+                      Select when the environment does not change the availability impact on subsequent systems assumed by the
+                      Base metric.
+                  views:
+                      default: 'MSA:X'
+                      metric: X
+                      label: Not Defined
+                  aliases:
+                      - 'MSA:X'
+                      - MSA X
+                  categories:
+                      - modified_sa_impact
+                  position: 0
+                  rank: 4
+                - id: MSA_S
+                  name: 'Modified Subsequent System Availability: Safety'
+                  definition: >-
+                      In the analyst's environment the availability impact on subsequent systems reaches the marginal, critical, or
+                      catastrophic bands of the IEC 61508 consequence categories.
+                  guidance: >-
+                      Select only for Modified Subsequent System Integrity or Availability when exploitation could cause
+                      physical harm or loss of life; Safety is not a valid Base impact value.
+                  views:
+                      default: 'MSA:S'
+                      metric: S
+                      label: Safety
+                  aliases:
+                      - 'MSA:S'
+                      - MSA S
+                  categories:
+                      - modified_sa_impact
+                  position: 4
+                  rank: 3
+                - id: MSA_H
+                  name: 'Modified Subsequent System Availability: High'
+                  definition: In the analyst's environment there is a total loss of availability on subsequent systems.
+                  guidance: >-
+                      Select when the deployed environment raises the availability impact on subsequent systems to total,
+                      overriding the Base value.
+                  views:
+                      default: 'MSA:H'
+                      metric: H
+                      label: High
+                  aliases:
+                      - 'MSA:H'
+                      - MSA H
+                  categories:
+                      - modified_sa_impact
+                  position: 3
+                  rank: 2
+                - id: MSA_L
+                  name: 'Modified Subsequent System Availability: Low'
+                  definition: >-
+                      In the analyst's environment there is some loss of availability on subsequent systems, but the attacker
+                      does not control the extent.
+                  guidance: >-
+                      Select when the deployed environment limits the availability impact on subsequent systems, overriding the
+                      Base value.
+                  views:
+                      default: 'MSA:L'
+                      metric: L
+                      label: Low
+                  aliases:
+                      - 'MSA:L'
+                      - MSA L
+                  categories:
+                      - modified_sa_impact
+                  position: 2
+                  rank: 1
+                - id: MSA_N
+                  name: 'Modified Subsequent System Availability: None'
+                  definition: In the analyst's environment there is no loss of availability on subsequent systems.
+                  guidance: >-
+                      Select when the deployed environment removes the availability impact on subsequent systems, overriding the
+                      Base value.
+                  views:
+                      default: 'MSA:N'
+                      metric: 'N'
+                      label: None
+                  aliases:
+                      - 'MSA:N'
+                      - MSA N
+                  categories:
+                      - modified_sa_impact
+                  position: 1
+                  rank: 0
+    rules:
+        - id: exclusive-attack-vector
+          action: exclusive
+          message: Only one Attack Vector value may be specified
+          target:
+              - AV_N
+              - AV_A
+              - AV_L
+              - AV_P
+        - id: exclusive-attack-complexity
+          action: exclusive
+          message: Only one Attack Complexity value may be specified
+          target:
+              - AC_L
+              - AC_H
+        - id: exclusive-attack-requirements
+          action: exclusive
+          message: Only one Attack Requirements value may be specified
+          target:
+              - AT_N
+              - AT_P
+        - id: exclusive-privileges-required
+          action: exclusive
+          message: Only one Privileges Required value may be specified
+          target:
+              - PR_N
+              - PR_L
+              - PR_H
+        - id: exclusive-user-interaction
+          action: exclusive
+          message: Only one User Interaction value may be specified
+          target:
+              - UI_N
+              - UI_P
+              - UI_A
+        - id: exclusive-vc
+          action: exclusive
+          message: Only one Vulnerable System Confidentiality value may be specified
+          target:
+              - VC_H
+              - VC_L
+              - VC_N
+        - id: exclusive-vi
+          action: exclusive
+          message: Only one Vulnerable System Integrity value may be specified
+          target:
+              - VI_H
+              - VI_L
+              - VI_N
+        - id: exclusive-va
+          action: exclusive
+          message: Only one Vulnerable System Availability value may be specified
+          target:
+              - VA_H
+              - VA_L
+              - VA_N
+        - id: exclusive-sc
+          action: exclusive
+          message: Only one Subsequent System Confidentiality value may be specified
+          target:
+              - SC_H
+              - SC_L
+              - SC_N
+        - id: exclusive-si
+          action: exclusive
+          message: Only one Subsequent System Integrity value may be specified
+          target:
+              - SI_H
+              - SI_L
+              - SI_N
+        - id: exclusive-sa
+          action: exclusive
+          message: Only one Subsequent System Availability value may be specified
+          target:
+              - SA_H
+              - SA_L
+              - SA_N
+        - id: exclusive-exploit-maturity
+          action: exclusive
+          message: Only one Exploit Maturity value may be specified
+          target:
+              - E_X
+              - E_A
+              - E_P
+              - E_U
+        - id: exclusive-severity
+          action: exclusive
+          message: Only one Severity value may be specified
+          target:
+              - SEV_NONE
+              - SEV_LOW
+              - SEV_MEDIUM
+              - SEV_HIGH
+              - SEV_CRITICAL
+        - id: exclusive-confidentiality-requirement
+          action: exclusive
+          message: Only one Confidentiality Requirement value may be specified
+          target:
+              - CR_X
+              - CR_H
+              - CR_M
+              - CR_L
+        - id: exclusive-integrity-requirement
+          action: exclusive
+          message: Only one Integrity Requirement value may be specified
+          target:
+              - IR_X
+              - IR_H
+              - IR_M
+              - IR_L
+        - id: exclusive-availability-requirement
+          action: exclusive
+          message: Only one Availability Requirement value may be specified
+          target:
+              - AR_X
+              - AR_H
+              - AR_M
+              - AR_L
+        - id: exclusive-modified-attack-vector
+          action: exclusive
+          message: Only one Modified Attack Vector value may be specified
+          target:
+              - MAV_X
+              - MAV_N
+              - MAV_A
+              - MAV_L
+              - MAV_P
+        - id: exclusive-modified-attack-complexity
+          action: exclusive
+          message: Only one Modified Attack Complexity value may be specified
+          target:
+              - MAC_X
+              - MAC_L
+              - MAC_H
+        - id: exclusive-modified-attack-requirements
+          action: exclusive
+          message: Only one Modified Attack Requirements value may be specified
+          target:
+              - MAT_X
+              - MAT_N
+              - MAT_P
+        - id: exclusive-modified-privileges-required
+          action: exclusive
+          message: Only one Modified Privileges Required value may be specified
+          target:
+              - MPR_X
+              - MPR_N
+              - MPR_L
+              - MPR_H
+        - id: exclusive-modified-user-interaction
+          action: exclusive
+          message: Only one Modified User Interaction value may be specified
+          target:
+              - MUI_X
+              - MUI_N
+              - MUI_P
+              - MUI_A
+        - id: exclusive-modified-vc
+          action: exclusive
+          message: Only one Modified Vulnerable System Confidentiality value may be specified
+          target:
+              - MVC_X
+              - MVC_H
+              - MVC_L
+              - MVC_N
+        - id: exclusive-modified-vi
+          action: exclusive
+          message: Only one Modified Vulnerable System Integrity value may be specified
+          target:
+              - MVI_X
+              - MVI_H
+              - MVI_L
+              - MVI_N
+        - id: exclusive-modified-va
+          action: exclusive
+          message: Only one Modified Vulnerable System Availability value may be specified
+          target:
+              - MVA_X
+              - MVA_H
+              - MVA_L
+              - MVA_N
+        - id: exclusive-modified-sc
+          action: exclusive
+          message: Only one Modified Subsequent System Confidentiality value may be specified
+          target:
+              - MSC_X
+              - MSC_H
+              - MSC_L
+              - MSC_N
+        - id: exclusive-modified-si
+          action: exclusive
+          message: Only one Modified Subsequent System Integrity value may be specified
+          target:
+              - MSI_X
+              - MSI_S
+              - MSI_H
+              - MSI_L
+              - MSI_N
+        - id: exclusive-modified-sa
+          action: exclusive
+          message: Only one Modified Subsequent System Availability value may be specified
+          target:
+              - MSA_X
+              - MSA_S
+              - MSA_H
+              - MSA_L
+              - MSA_N
+        - id: exclusive-safety
+          action: exclusive
+          message: Only one Safety value may be specified
+          target:
+              - S_X
+              - S_N
+              - S_P
+        - id: exclusive-automatable
+          action: exclusive
+          message: Only one Automatable value may be specified
+          target:
+              - AU_X
+              - AU_N
+              - AU_Y
+        - id: exclusive-recovery
+          action: exclusive
+          message: Only one Recovery value may be specified
+          target:
+              - R_X
+              - R_A
+              - R_U
+              - R_I
+        - id: exclusive-value-density
+          action: exclusive
+          message: Only one Value Density value may be specified
+          target:
+              - V_X
+              - V_D
+              - V_C
+        - id: exclusive-response-effort
+          action: exclusive
+          message: Only one Vulnerability Response Effort value may be specified
+          target:
+              - RE_X
+              - RE_L
+              - RE_M
+              - RE_H
+        - id: exclusive-provider-urgency
+          action: exclusive
+          message: Only one Provider Urgency value may be specified
+          target:
+              - U_X
+              - U_CLEAR
+              - U_GREEN
+              - U_AMBER
+              - U_RED
+    parse:
+        case_sensitive: false
+        strip_whitespace: true
+        normalize:
+            - id: fix-case
+              type: case
+              description: CVSS metric values are uppercase
+              correction: upper
+              confidence: safe
+              explanation: Converted metric value to uppercase
+              pattern: '(mav|mac|mat|mpr|mui|mvc|mvi|mva|msc|msi|msa|av|ac|at|pr|ui|vc|vi|va|sc|si|sa|cr|ir|ar|au|re|e|s|r|v|u):[a-z]'
+            - id: fix-redundant
+              type: dedup
+              description: Remove duplicate metric values
+              confidence: safe
+              explanation: Removed duplicate CVSS metric value
+    render:
+        surface_separator: "\n"
+        surfaces:
+            - surface: default
+              default: default
+              views:
+                  - id: default
+                    format: default
+                  - id: metric
+                    format: metric
+            - surface: severity
+              default: severity
+              views:
+                  - id: severity
+                    format: severity
+        formats:
+            - id: default
+              view: default
+              surface: default
+              mode: inline
+              prefix: 'CVSS:4.0/'
+              separator: /
+              fields:
+                  - category: attack_vector
+                  - category: attack_complexity
+                  - category: attack_requirements
+                  - category: privileges_required
+                  - category: user_interaction
+                  - category: vc_impact
+                  - category: vi_impact
+                  - category: va_impact
+                  - category: sc_impact
+                  - category: si_impact
+                  - category: sa_impact
+                  - category: exploit_maturity
+                  - category: confidentiality_requirement
+                  - category: integrity_requirement
+                  - category: availability_requirement
+                  - category: modified_attack_vector
+                  - category: modified_attack_complexity
+                  - category: modified_attack_requirements
+                  - category: modified_privileges_required
+                  - category: modified_user_interaction
+                  - category: modified_vc_impact
+                  - category: modified_vi_impact
+                  - category: modified_va_impact
+                  - category: modified_sc_impact
+                  - category: modified_si_impact
+                  - category: modified_sa_impact
+                  - category: safety
+                  - category: automatable
+                  - category: recovery
+                  - category: value_density
+                  - category: response_effort
+                  - category: provider_urgency
+            - id: metric
+              view: metric
+              surface: default
+              mode: inline
+              separator: /
+              fields:
+                  - category: attack_vector
+                  - category: attack_complexity
+                  - category: attack_requirements
+                  - category: privileges_required
+                  - category: user_interaction
+                  - category: vc_impact
+                  - category: vi_impact
+                  - category: va_impact
+                  - category: sc_impact
+                  - category: si_impact
+                  - category: sa_impact
+                  - category: exploit_maturity
+            - id: severity
+              view: default
+              surface: severity
+              mode: inline
+              separator: ''
+              fields:
+                  - category: severity
+    default_scope: default
+    scopes:
+        - id: default
+          label: Vector
+        - id: severity
+          label: Qualitative rating

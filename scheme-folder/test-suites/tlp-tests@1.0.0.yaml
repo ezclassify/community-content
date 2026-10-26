@@ -1,0 +1,149 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: tlp-tests
+  version: 1.0.0
+  name: TLP tests
+  description: >-
+    What TLP v2.0 accepts, what it refuses, what it renders back, and how
+    combined material rolls up. Cases trace to FIRST.org TLP v2.0; see
+    schemes/sensitivity-marking/tlp/docs/.
+  composition:
+    scheme:
+      id: tlp
+      version: 2.0.0
+  cases:
+    - id: red-round-trip
+      description: The canonical form parses and renders back unchanged.
+      operation: process
+      input:
+        marking: 'TLP:RED'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'TLP:RED' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: TLP_RED, categoryId: tlp_level }
+        - { path: [assertions, '1'], matcher: absent }
+
+    - id: amber-strict-round-trip
+      description: The one variant label, which is a distinct level and not AMBER.
+      operation: process
+      input:
+        marking: 'TLP:AMBER+STRICT'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'TLP:AMBER+STRICT' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: TLP_AMBER_STRICT, categoryId: tlp_level }
+        - { path: [assertions, '1'], matcher: absent }
+
+    - id: lowercase-is-normalized
+      description: >-
+        TLP labels are uppercase. Lowercase input is a case correction, not a
+        parse failure.
+      operation: process
+      input:
+        marking: 'tlp:amber+strict'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'TLP:AMBER+STRICT' }
+
+    - id: bare-color-alias
+      description: A bare level name resolves through the concept's aliases.
+      operation: process
+      input:
+        marking: GREEN
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'TLP:GREEN' }
+        - { path: [assertions], matcher: contains, value: { conceptId: TLP_GREEN } }
+
+    - id: retired-white-maps-to-clear
+      description: >-
+        TLP:WHITE was renamed TLP:CLEAR in v2.0. The old spelling is an alias so
+        archived material still reads.
+      operation: process
+      input:
+        marking: 'TLP:WHITE'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'TLP:CLEAR' }
+        - { path: [assertions], matcher: contains, value: { conceptId: TLP_CLEAR } }
+
+    - id: unknown-level-refused
+      description: TLP defines five labels. BLUE is not one of them.
+      operation: process
+      input:
+        marking: 'TLP:BLUE'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [assertions], matcher: equals, value: [] }
+
+    - id: two-levels-are-mutually-exclusive
+      description: >-
+        A document carries one TLP level. Two at once violates the exclusive
+        rule rather than silently keeping the higher one.
+      operation: process
+      input:
+        marking: 'TLP:RED TLP:GREEN'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [errors], matcher: contains, value: { constraintId: exclusive-tlp } }
+
+    - id: short-format-drops-the-prefix
+      description: The short view is display-only; the level itself is unchanged.
+      operation: render
+      input:
+        assertions:
+          - conceptId: TLP_RED
+            categoryId: tlp_level
+            confidence: certain
+            source: user
+      options:
+        outputFormat: short
+      assertions:
+        - { path: [rendered], matcher: equals, value: RED }
+
+    - id: red-wins-over-green
+      description: >-
+        Combining TLP-marked material takes the most restrictive level, because
+        the tlp_level category rolls up by max.
+      operation: aggregate
+      input:
+        markings: ['TLP:GREEN', 'TLP:RED']
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'TLP:RED' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: TLP_RED, categoryId: tlp_level }
+        - { path: [assertions, '1'], matcher: absent }
+
+    - id: amber-strict-outranks-amber
+      description: >-
+        The variant is more restrictive than plain AMBER, so a mixed set rolls
+        up to it rather than down.
+      operation: aggregate
+      input:
+        markings: ['TLP:AMBER', 'TLP:AMBER+STRICT']
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'TLP:AMBER+STRICT' }
+
+    - id: clear-does-not-dilute-the-set
+      description: Public material mixed with restricted material stays restricted.
+      operation: aggregate
+      input:
+        markings: ['TLP:CLEAR', 'TLP:GREEN', 'TLP:CLEAR']
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'TLP:GREEN' }
+
+    - id: all-clear-stays-clear
+      operation: aggregate
+      input:
+        markings: ['TLP:CLEAR', 'TLP:CLEAR']
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'TLP:CLEAR' }

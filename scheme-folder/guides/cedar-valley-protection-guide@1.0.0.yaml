@@ -1,0 +1,71 @@
+guide:
+  id: cedar-valley-protection-guide
+  version: 1.0.0
+  name: "Cedar Valley: Protection Guide"
+  description: >-
+    Suggests one protection level from document language. Suggestions are prompts for an author to
+    review, not proof that a file is public or that a reader is authorized.
+  targetSchemes:
+    - id: cedar-valley-protection
+      version: "*"
+  categories:
+    - id: protection
+      label: 1. Protection
+  rules:
+    inline:
+      - id: public
+        name: Public
+        category: protection
+        keywords:
+          - published lunch menu
+          - school calendar
+          - released practice questions
+          - approved for public release
+        outcome:
+          concepts:
+            - id: PUBLIC
+              category: level
+        rationale: Public is a positive approval for this exact version; an unmarked file is not public.
+      - id: internal
+        name: Internal
+        category: protection
+        keywords:
+          - staff plan
+          - district memo
+          - routine operations
+          - bus operations schedule
+        outcome:
+          concepts:
+            - id: INTERNAL
+              category: level
+        rationale: Routine district work that has not been approved for public distribution is Internal.
+      - id: confidential
+        name: Confidential
+        category: protection
+        keywords:
+          - student record
+          - employee evaluation
+          - supplier bid
+          - purchasing notes
+        outcome:
+          concepts:
+            - id: CONFIDENTIAL
+              category: level
+        rationale: >-
+          Private records and active purchasing material need confirmed record or business
+          authorization from the host.
+      - id: restricted
+        name: Restricted
+        category: protection
+        keywords:
+          - live assessment
+          - answer key
+          - building access code
+          - active investigation
+        outcome:
+          concepts:
+            - id: RESTRICTED
+              category: level
+        rationale: >-
+          Safety, investigation, and live-assessment material needs explicit assignment from the
+          host.

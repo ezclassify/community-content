@@ -1,0 +1,122 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cvss-tests
+  version: 1.0.0
+  name: CVSS v3.1 tests
+  description: >-
+    CVSS v3.1 vector strings, round-tripped and combined. Cases trace to the
+    FIRST.org CVSS v3.1 specification; see schemes/security-vectors/cvss/docs/.
+  composition:
+    scheme:
+      id: cvss
+      version: 3.1.0
+  cases:
+    - id: base-vector-round-trip
+      description: >-
+        The eight base metrics are the required set. A complete base vector
+        parses and renders back byte for byte.
+      operation: process
+      input:
+        marking: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: AV_N, categoryId: attack_vector }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: S_U, categoryId: scope }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: A_H, categoryId: availability }
+
+    - id: metric-order-is-canonical
+      description: >-
+        The specification fixes metric order. A vector supplied out of order
+        comes back in the order the specification defines.
+      operation: process
+      input:
+        marking: 'CVSS:3.1/A:H/C:H/I:H/S:U/UI:N/PR:N/AC:L/AV:N'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H' }
+
+    - id: temporal-metrics-are-optional-and-kept
+      description: >-
+        Temporal metrics are not required, but a vector that carries them keeps
+        them, after the base group.
+      operation: process
+      input:
+        marking: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:C/C:L/I:L/A:N/E:P/RL:O/RC:C'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - path: [rendered]
+          matcher: equals
+          value: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:C/C:L/I:L/A:N/E:P/RL:O/RC:C'
+
+    - id: partial-vector-keeps-the-metrics-it-carries
+      description: >-
+        A vector missing a base metric still parses the metrics it does carry,
+        and does not invent the missing one. The eight base metrics are marked
+        `required`, so the missing Availability Impact makes the vector
+        invalid, and the error names the metric that is absent.
+      operation: process
+      input:
+        marking: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+        - { path: [rendered], matcher: equals, value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H' }
+        - path: [errors]
+          matcher: contains
+          value: { constraintId: 'required-category:availability' }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: C_H, categoryId: confidentiality }
+        - { path: [assertions], matcher: excludes, value: { categoryId: availability } }
+
+    - id: unknown-metric-value-refused
+      description: Attack Vector has four defined values. Z is not one of them.
+      operation: process
+      input:
+        marking: 'CVSS:3.1/AV:Z/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
+      assertions:
+        - { path: [valid], matcher: equals, value: false }
+
+    - id: lowercase-vector-is-normalized
+      description: >-
+        Metric values are uppercase. A lowercase vector is a case correction,
+        not a parse failure, and renders back canonically.
+      operation: process
+      input:
+        marking: 'cvss:3.1/av:n/ac:l/pr:n/ui:n/s:u/c:h/i:h/a:h'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H' }
+
+    - id: worst-value-wins-per-metric
+      description: >-
+        Combining two assessments of the same component takes the worse value
+        for each metric independently, because every metric category rolls up
+        by max. Neither input is the answer: Attack Vector, Privileges
+        Required, User Interaction, and the three impacts come from the first
+        vector; Scope comes from the second.
+      operation: aggregate
+      input:
+        markings:
+          - 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
+          - 'CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:C/C:L/I:L/A:L'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H' }
+
+    - id: identical-vectors-aggregate-to-themselves
+      description: The same assessment twice is still that assessment.
+      operation: aggregate
+      input:
+        markings:
+          - 'CVSS:3.1/AV:A/AC:H/PR:L/UI:R/S:U/C:L/I:N/A:N'
+          - 'CVSS:3.1/AV:A/AC:H/PR:L/UI:R/S:U/C:L/I:N/A:N'
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'CVSS:3.1/AV:A/AC:H/PR:L/UI:R/S:U/C:L/I:N/A:N' }

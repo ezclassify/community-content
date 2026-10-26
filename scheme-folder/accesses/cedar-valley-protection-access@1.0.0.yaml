@@ -1,0 +1,24 @@
+access:
+  id: cedar-valley-protection-access
+  version: 1.0.0
+  name: "Cedar Valley: Protection Access"
+  description: >-
+    Checks a trusted host-provided clearance against the marked protection level. PUBLIC needs no
+    clearance. Clearance is only one gate; a deployment remains responsible for identity, purpose,
+    and record relationships.
+  targetScheme:
+    id: cedar-valley-protection
+    version: "*"
+  rules:
+    inline:
+      - id: protection-clearance
+        name: Protection clearance
+        attribute: clearance
+        categoryId: level
+        strategy: gte
+        when:
+          data:
+            categoryId: level
+            operator: min_order
+            value: 1
+        denyReason: The reader’s trusted clearance is below this protection level.

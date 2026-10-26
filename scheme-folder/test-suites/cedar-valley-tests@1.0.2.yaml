@@ -1,0 +1,506 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cedar-valley-tests
+  version: 1.0.2
+  name: cedar valley tests
+  description: >-
+    Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are
+    authored separately from execution.
+  composition:
+    scheme:
+      id: cedar-valley
+      version: 1.0.0
+  cases:
+    - id: public
+      input:
+        marking: PUBLIC
+      operation: process
+      name: PUBLIC marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: PUBLIC
+    - id: internal
+      input:
+        marking: INTERNAL
+      operation: process
+      name: INTERNAL marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: INTERNAL
+    - id: confidential
+      input:
+        marking: CONFIDENTIAL
+      operation: process
+      name: CONFIDENTIAL marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: CONFIDENTIAL
+    - id: restricted
+      input:
+        marking: RESTRICTED
+      operation: process
+      name: RESTRICTED marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: RESTRICTED
+    - id: unmarked-is-not-public
+      input:
+        marking: ''
+      operation: process
+      name: An unmarked file is not PUBLIC
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: false
+    - id: financial-information-has-confidential-floor
+      input:
+        marking: INTERNAL//FINANCIAL INFORMATION
+      operation: process
+      name: Financial information requires CONFIDENTIAL
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: false
+        - path:
+            - rendered
+          matcher: equals
+          value: INTERNAL//FINANCIAL INFORMATION
+        - path:
+            - errors
+            - '0'
+            - constraintId
+          matcher: equals
+          value: financial-information-is-confidential
+        - path:
+            - errors
+            - '1'
+          matcher: absent
+    - id: complete-district-file
+      input:
+        marking: >-
+          CONFIDENTIAL//FINANCIAL INFORMATION/STUDENT INFORMATION//OAKWOOD/PINECREST//STUDENT
+          TRANSPORTATION SERVICES//DO NOT FORWARD/REDACT BEFORE RELEASE
+      operation: process
+      name: Preserve a complete district marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: >-
+            CONFIDENTIAL//FINANCIAL INFORMATION/STUDENT INFORMATION//OAKWOOD/PINECREST//STUDENT
+            TRANSPORTATION SERVICES//DO NOT FORWARD/REDACT BEFORE RELEASE
+    - id: district-only-file-narrows-external-sharing
+      operation: aggregate
+      input:
+        markings:
+          - INTERNAL//OAKWOOD/PINECREST//STUDENT TRANSPORTATION SERVICES//DO NOT FORWARD
+          - CONFIDENTIAL//FINANCIAL INFORMATION//OAKWOOD/PINECREST//REDACT BEFORE RELEASE
+      name: District-only content removes external recipients
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: >-
+            CONFIDENTIAL//FINANCIAL INFORMATION//OAKWOOD/PINECREST//DO NOT FORWARD/REDACT BEFORE
+            RELEASE
+    - id: disjoint-schools-do-not-broaden-access
+      operation: aggregate
+      input:
+        markings:
+          - INTERNAL//OAKWOOD
+          - INTERNAL//RIVERSIDE
+      name: Disjoint school scopes are invalid
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: false
+        - path:
+            - errors
+          matcher: contains
+          value:
+            constraintId: school-intersection-must-not-empty
+    - id: compact-p
+      operation: process
+      input:
+        marking: PUBLIC
+      options:
+        outputFormat: short
+      name: PUBLIC in short format
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: P
+    - id: compact-i
+      operation: process
+      input:
+        marking: INTERNAL
+      options:
+        outputFormat: short
+      name: INTERNAL in short format
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: I
+    - id: compact-c
+      operation: process
+      input:
+        marking: CONFIDENTIAL
+      options:
+        outputFormat: short
+      name: CONFIDENTIAL in short format
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: C
+    - id: compact-r
+      operation: process
+      input:
+        marking: RESTRICTED
+      options:
+        outputFormat: short
+      name: RESTRICTED in short format
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: R
+    - id: compact-part-input
+      operation: process
+      input:
+        marking: (I)
+      name: Read an INTERNAL portion marking
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: INTERNAL
+    - id: district-is-implicit
+      operation: process
+      input:
+        marking: INTERNAL
+      name: Nonpublic content includes the district recipient
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: INTERNAL
+        - path:
+            - assertions
+          matcher: contains
+          value:
+            categoryId: allow_sharing_with
+            conceptId: CEDAR_VALLEY_DISTRICT
+    - id: all-schools-expanded
+      operation: process
+      input:
+        marking: INTERNAL//ALL
+      name: ALL expands to all three schools
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: INTERNAL//ALL
+        - path:
+            - assertions
+          matcher: contains
+          value:
+            categoryId: permitted_schools
+            conceptId: OAKWOOD
+        - path:
+            - assertions
+          matcher: contains
+          value:
+            categoryId: permitted_schools
+            conceptId: PINECREST
+        - path:
+            - assertions
+          matcher: contains
+          value:
+            categoryId: permitted_schools
+            conceptId: RIVERSIDE
+    - id: external-sharing-requires-every-contributor
+      operation: aggregate
+      input:
+        markings:
+          - INTERNAL//STUDENT TRANSPORTATION SERVICES
+          - CONFIDENTIAL
+      name: External sharing requires every contributor
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: CONFIDENTIAL
+    - id: external-sharing-retained-by-agreement
+      operation: aggregate
+      input:
+        markings:
+          - INTERNAL//STUDENT TRANSPORTATION SERVICES
+          - CONFIDENTIAL//STUDENT TRANSPORTATION SERVICES
+      name: Retain agreed external recipients
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: CONFIDENTIAL//STUDENT TRANSPORTATION SERVICES
+    - id: public-contributor-is-neutral
+      operation: aggregate
+      input:
+        markings:
+          - PUBLIC
+          - INTERNAL//OAKWOOD//DO NOT FORWARD
+      name: A PUBLIC contributor does not restrict the other content
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: INTERNAL//OAKWOOD//DO NOT FORWARD
+    - id: blank-school-scope-is-neutral
+      operation: aggregate
+      input:
+        markings:
+          - INTERNAL
+          - CONFIDENTIAL//OAKWOOD
+      name: Blank school scope preserves Oakwood
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: CONFIDENTIAL//OAKWOOD
+        - path:
+            - assertions
+          matcher: contains
+          value:
+            categoryId: permitted_schools
+            conceptId: OAKWOOD
+        - path:
+            - assertions
+          matcher: excludes
+          value:
+            categoryId: permitted_schools
+            conceptId: PINECREST
+        - path:
+            - assertions
+          matcher: excludes
+          value:
+            categoryId: permitted_schools
+            conceptId: RIVERSIDE
+        - path:
+            - assertions
+          matcher: excludes
+          value:
+            categoryId: permitted_schools
+            conceptId: ALL
+    - id: school-intersection-does-not-add-recipients
+      operation: aggregate
+      input:
+        markings:
+          - INTERNAL//OAKWOOD/PINECREST
+          - CONFIDENTIAL//OAKWOOD/RIVERSIDE
+      name: Intersect school scopes to Oakwood
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - rendered
+          matcher: equals
+          value: CONFIDENTIAL//OAKWOOD
+        - path:
+            - assertions
+          matcher: contains
+          value:
+            categoryId: permitted_schools
+            conceptId: OAKWOOD
+        - path:
+            - assertions
+          matcher: excludes
+          value:
+            categoryId: permitted_schools
+            conceptId: PINECREST
+        - path:
+            - assertions
+          matcher: excludes
+          value:
+            categoryId: permitted_schools
+            conceptId: RIVERSIDE
+        - path:
+            - assertions
+          matcher: excludes
+          value:
+            categoryId: permitted_schools
+            conceptId: ALL
+    - id: floor-accepted-financial-information-is-confidential
+      operation: process
+      input:
+        marking: CONFIDENTIAL//FINANCIAL INFORMATION
+      name: CONFIDENTIAL permits financial information
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - errors
+          matcher: equals
+          value: []
+    - id: floor-refused-security-information-is-restricted
+      operation: process
+      input:
+        marking: CONFIDENTIAL//SECURITY INFORMATION
+      name: Security information requires RESTRICTED
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: false
+        - path:
+            - rendered
+          matcher: equals
+          value: CONFIDENTIAL//SECURITY INFORMATION
+        - path:
+            - errors
+            - '0'
+            - constraintId
+          matcher: equals
+          value: security-information-is-restricted
+        - path:
+            - errors
+            - '1'
+          matcher: absent
+    - id: floor-accepted-security-information-is-restricted
+      operation: process
+      input:
+        marking: RESTRICTED//SECURITY INFORMATION
+      name: RESTRICTED permits security information
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: true
+        - path:
+            - errors
+          matcher: equals
+          value: []
+    - id: public-refuses-protected-dimension-1
+      operation: process
+      input:
+        marking: PUBLIC//STUDENT INFORMATION
+      name: PUBLIC cannot carry student information
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: false
+    - id: public-refuses-protected-dimension-2
+      operation: process
+      input:
+        marking: PUBLIC//OAKWOOD
+      name: PUBLIC cannot carry a school limit
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: false
+    - id: public-refuses-protected-dimension-3
+      operation: process
+      input:
+        marking: PUBLIC//STUDENT TRANSPORTATION SERVICES
+      name: PUBLIC cannot carry external recipients
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: false
+    - id: public-refuses-protected-dimension-4
+      operation: process
+      input:
+        marking: PUBLIC//DO NOT FORWARD
+      name: PUBLIC cannot carry handling instructions
+      assertions:
+        - path:
+            - valid
+          matcher: equals
+          value: false

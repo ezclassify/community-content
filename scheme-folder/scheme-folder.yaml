@@ -1,0 +1,52 @@
+name: community-content
+format: 1
+description: Public standards and explicitly fictional teaching schemes for EzClassify.
+schemes:
+  - id: cedar-valley
+    versions:
+      - 1.0.0
+  - id: cedar-valley-handling
+    versions:
+      - 1.0.0
+  - id: cedar-valley-protection
+    versions:
+      - 1.0.0
+  - id: cvss
+    versions:
+      - 3.1.0
+  - id: cvss-v4
+    versions:
+      - 4.0.0
+  - id: tlp
+    versions:
+      - 2.0.0
+guides:
+  - id: cedar-valley-guide
+    versions:
+      - 1.0.0
+  - id: cedar-valley-handling-guide
+    versions:
+      - 1.0.0
+  - id: cedar-valley-protection-guide
+    versions:
+      - 1.0.0
+accesses:
+  - id: cedar-valley-access
+    versions:
+      - 1.0.0
+  - id: cedar-valley-handling-access
+    versions:
+      - 1.0.0
+  - id: cedar-valley-protection-access
+    versions:
+      - 1.0.0
+contexts:
+  - id: cedar-valley
+    versions:
+      - 1.0.0
+  - id: cedar-valley-handling
+    versions:
+      - 1.0.0
+  - id: cedar-valley-protection
+    versions:
+      - 1.0.0

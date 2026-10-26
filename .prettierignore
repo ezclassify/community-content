@@ -1,0 +1,12 @@
+# Scheme sources and their compiled bundle use the canonical serialization
+# owned by the `fmt` verb (scripts/fmt-folder.mjs) and the bundler. Prettier
+# must never touch them: key order and quote style are load-bearing for
+# literal-match tests and hash vectors.
+scheme-folder/
+schemes/**/*.yaml
+schemes/**/*.yml
+schemes/**/*.json
+dist/
+node_modules/
+coverage/
+CHANGELOG.md

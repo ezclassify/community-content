@@ -1,0 +1,43 @@
+access:
+  id: cedar-valley-access
+  version: 1.0.0
+  name: Cedar Valley District Files Access
+  description: >-
+    Checks trusted host-provided clearance, sensitive-content permissions, school eligibility, and
+    recipient organization. Cedar Valley District is derived for every nonpublic file; selected
+    external organizations are additional allowed recipients. The host supplies identity, record
+    relationships, assignments, and delivery facts.
+  targetScheme:
+    id: cedar-valley
+    version: "*"
+  rules:
+    inline:
+      - id: protection-clearance
+        name: Protection clearance
+        attribute: clearance
+        categoryId: level
+        strategy: gte
+        when:
+          data:
+            categoryId: level
+            operator: min_order
+            value: 1
+        denyReason: The reader’s trusted clearance is below this protection level.
+      - id: sensitive-content-permissions
+        name: Sensitive content permissions
+        attribute: sensitive_content_permissions
+        categoryId: sensitive_content
+        strategy: superset
+        denyReason: The reader lacks permission for one or more sensitive-content kinds.
+      - id: permitted-school
+        name: Permitted school
+        attribute: school_memberships
+        categoryId: permitted_schools
+        strategy: includes
+        denyReason: None of the reader’s trusted school memberships is permitted.
+      - id: recipient-organization
+        name: Recipient organization
+        attribute: recipient_organizations
+        categoryId: allow_sharing_with
+        strategy: includes
+        denyReason: The reader’s trusted recipient organization is not permitted.

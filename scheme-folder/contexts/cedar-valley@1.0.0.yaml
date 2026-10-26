@@ -1,0 +1,15 @@
+context:
+  id: cedar-valley
+  version: 1.0.0
+  description: >-
+    Explore Cedar Valley district files across protection, sensitive content, school eligibility,
+    external sharing, and handling. The host supplies trusted identity and authorization facts.
+  scheme:
+    id: cedar-valley
+    version: 1.0.0
+  guides:
+    - id: cedar-valley-guide
+      version: 1.0.0
+  access:
+    id: cedar-valley-access
+    version: 1.0.0

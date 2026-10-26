@@ -1,0 +1,19 @@
+{
+    "arrowParens": "always",
+    "overrides": [
+        {
+            "files": ["tests/**/*.ts", "schemes/**/*.ts", "*.config.ts"],
+            "options": {
+                "semi": false,
+                "tabWidth": 2
+            }
+        }
+    ],
+    "printWidth": 100,
+    "quoteProps": "consistent",
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 4,
+    "trailingComma": "all",
+    "useTabs": false
+}
