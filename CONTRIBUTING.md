@@ -168,7 +168,7 @@ What `npm run validate` and the CLI both hold a suite to:
 
 Operations available to a case: `process`, `validate`, `explain`, `aggregate`,
 `render`, `suggest`, `suggestForCategories`, `schemeScan`, `guideScan`,
-`guideEvaluate`, `checkAccess`, `auditDocument`, `assessDocumentAccess` and
+`guideEvaluate`, `checkAccess`, `auditDocument` and
 `translate`. A guide, access or crosswalk operation needs that policy in the
 composition. The suites in
 [`scheme-folder/test-suites/`](scheme-folder/test-suites/) are the best worked examples;
