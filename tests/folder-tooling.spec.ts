@@ -166,9 +166,9 @@ describe('npm run build', () => {
     expect(fs.readdirSync(output).sort()).toEqual(['index.json', ...authored].sort())
     expect(index.testSuites.find((suite) => suite.id === 'cedar-valley-access-tests')).toEqual({
       id: 'cedar-valley-access-tests',
-      version: '1.0.2',
+      version: '1.0.3',
       testPolicy: { kind: 'access', id: 'cedar-valley-access', version: '1.0.0' },
-      filename: 'cedar-valley-access-tests@1.0.2.json',
+      filename: 'cedar-valley-access-tests@1.0.3.json',
     })
     expect(index.testSuites.find((suite) => suite.id === 'tlp-tests')?.testPolicy).toEqual({
       kind: 'scheme',
