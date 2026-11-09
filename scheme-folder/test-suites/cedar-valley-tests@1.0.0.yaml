@@ -232,6 +232,22 @@ testSuite:
             - rendered
           matcher: equals
           value: INTERNAL
+    - id: portion-mark-ends-at-its-own-parenthesis
+      operation: schemeScan
+      input:
+        text: (C) see section (a) below.
+      name: A portion mark ends at its own closing parenthesis
+      assertions:
+        - path:
+            - results
+            - '0'
+            - marking
+          matcher: equals
+          value: (C)
+        - path:
+            - results
+            - '1'
+          matcher: absent
     - id: district-is-implicit
       operation: process
       input:

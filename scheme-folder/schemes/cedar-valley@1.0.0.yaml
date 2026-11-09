@@ -548,7 +548,7 @@ scheme:
         - then:
             union: true
   embedded_marking:
-    - pattern: "\\((.+)\\)"
+    - pattern: "\\(([^)]+)\\)"
       template: '({marking}) '
       auto_insert: every-paragraph
   # Separators belong to the fields that write them: `//` between categories
