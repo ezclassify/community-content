@@ -74,11 +74,11 @@ format renders it by itself.
 ## Behavior
 
 What this scheme does is stated as data, in the test suite
-[`../../../scheme-folder/test-suites/cvss-v4-tests@1.0.1.yaml`](../../../scheme-folder/test-suites/cvss-v4-tests@1.0.1.yaml),
+[`../../../scheme-folder/test-suites/cvss-v4-tests@1.0.0.yaml`](../../../scheme-folder/test-suites/cvss-v4-tests@1.0.0.yaml),
 and checked by running it:
 
 ```bash
-ezclassify scheme test ./scheme-folder/test-suites/cvss-v4-tests@1.0.1.yaml
+ezclassify scheme test ./scheme-folder/test-suites/cvss-v4-tests@1.0.0.yaml
 ```
 
 A few of the cases, in prose:

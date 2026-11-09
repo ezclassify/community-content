@@ -1,7 +1,7 @@
 testSuite:
   apiVersion: schemes.ezclassify.com/v1
   id: cvss-v4-tests
-  version: 1.0.1
+  version: 1.0.0
   name: CVSS v4.0 tests
   description: >-
     CVSS v4.0 vector strings and qualitative ratings, round-tripped and
