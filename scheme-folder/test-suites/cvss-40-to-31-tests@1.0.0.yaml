@@ -229,25 +229,85 @@ testSuite:
             disposition: carry
             targets: [{ categoryId: exploit_code_maturity, conceptId: E_P }]
 
-    - id: explicit-not-defined-is-unmapped
+    - id: environmental-metrics-and-not-defined-values-omit
       description: >-
-        The crosswalk has no rule for an explicit Not Defined value. E:X comes
-        back unmapped, which makes the translation partial even though the
-        draft 3.1 Base vector it emits is valid.
+        The rubric reads no Environmental metric, and an explicit Not Defined
+        value means the same as leaving the metric out. A vector that writes
+        every optional metric as X still derives a complete, valid 3.1 Base
+        vector, and each of those metrics is listed as omitted.
       operation: translate
       input:
         translation:
           crosswalkId: cvss-40-to-31
-          marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X'
+          marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X'
       assertions:
-        - { path: [result, status], matcher: equals, value: partial }
+        - { path: [result, status], matcher: equals, value: complete }
+        - { path: [result, source, valid], matcher: equals, value: true }
         - path: [result, target, rendered]
           matcher: equals
           value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
         - { path: [result, target, valid], matcher: equals, value: true }
+        - { path: [result, outcomes], matcher: excludes, value: { disposition: unmapped } }
         - path: [result, outcomes]
           matcher: contains
-          value:
-            source: { categoryId: exploit_maturity, conceptId: E_X }
-            disposition: unmapped
-            targets: []
+          value: { mappingId: omit-exploit_maturity-E_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-confidentiality_requirement-CR_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-integrity_requirement-IR_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-availability_requirement-AR_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_attack_vector-MAV_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_attack_complexity-MAC_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_attack_requirements-MAT_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_privileges_required-MPR_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_user_interaction-MUI_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_vc_impact-MVC_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_vi_impact-MVI_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_va_impact-MVA_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_sc_impact-MSC_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_si_impact-MSI_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-modified_sa_impact-MSA_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-safety-S_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-automatable-AU_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-recovery-R_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-value_density-V_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-response_effort-RE_X, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-provider_urgency-U_X, disposition: omit, targets: [] }

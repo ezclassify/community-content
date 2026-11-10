@@ -121,11 +121,17 @@ What it carries:
 What it does not carry:
 
 - The Supplemental metrics are omitted, because 3.1 has no field for them.
-- Environmental metrics, Modified Base metrics, explicit Not Defined (`X`)
-  values, and the qualitative severity rating have no rule. They come back
-  unmapped, which makes the translation partial.
+- The Environmental metrics, both the Security Requirements and the Modified
+  Base metrics, are omitted, because the rubric derives the 3.1 vector from
+  the Base and Threat metrics only.
+- Explicit Not Defined (`X`) values are omitted, since writing `X` means the
+  same as leaving the metric out.
+- The qualitative severity rating has no rule. A translation that includes it
+  comes back unmapped for that value, which makes it partial.
 
-A complete 4.0 Base vector gives a complete, valid 3.1 Base vector. The suite
+A complete 4.0 Base vector gives a complete, valid 3.1 Base vector, whatever
+optional metrics it also carries. Every omitted metric is listed in the
+result. The suite
 [`cvss-40-to-31-tests@1.0.0.yaml`](../../../scheme-folder/test-suites/cvss-40-to-31-tests@1.0.0.yaml)
 states the behavior.
 

@@ -147,37 +147,13 @@ describe('crosswalk cvss-31-to-40 coverage', () => {
 })
 
 describe('crosswalk cvss-40-to-31 coverage', () => {
-  // The derivation covers the metrics FIRST's rubric reads plus the
-  // Supplemental metrics it omits. Environmental and Modified Base metrics,
-  // explicit Not Defined values and the severity rating are deliberately
-  // left unmapped, as the scheme docs say.
-  it('decides exactly the 4.0 Base, Threat and Supplemental values the rubric reads', () => {
-    const doc = crosswalk('cvss-40-to-31@1.0.0.yaml')
-    const decided = new Set(references(doc).source.map(key))
-    const covered = [
-      'attack_vector',
-      'attack_complexity',
-      'attack_requirements',
-      'privileges_required',
-      'user_interaction',
-      'vc_impact',
-      'vi_impact',
-      'va_impact',
-      'sc_impact',
-      'si_impact',
-      'sa_impact',
-      'exploit_maturity',
-      'safety',
-      'automatable',
-      'recovery',
-      'value_density',
-      'response_effort',
-      'provider_urgency',
-    ]
-    const expected = schemes['cvss-v4@4.0.0'].concepts
-      .flatMap((concept) => (concept.categories ?? []).map((category) => ({ category, concept })))
-      .filter(({ category, concept }) => covered.includes(category) && !concept.id.endsWith('_X'))
-      .map(({ category, concept }) => `${category}/${concept.id}`)
+  // The rubric derives the 3.1 vector from the Base and Threat metrics; every
+  // other metric value, Not Defined included, has an explicit omit. Only the
+  // qualitative severity rating has no rule, because it is not vector data.
+  it('decides every CVSS 4.0 metric value except the severity rating', () => {
+    const decided = new Set(references(crosswalk('cvss-40-to-31@1.0.0.yaml')).source.map(key))
+    const expected = [...declared(schemes['cvss-v4@4.0.0'])]
+      .filter((ref) => !ref.startsWith('severity/'))
       .sort()
     expect([...decided].sort()).toEqual(expected)
   })
