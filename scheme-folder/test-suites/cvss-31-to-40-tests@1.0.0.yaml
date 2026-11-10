@@ -1,0 +1,148 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cvss-31-to-40-tests
+  version: 1.0.0
+  name: CVSS 3.1 to 4.0 crosswalk tests
+  description: >-
+    The cvss-31-to-40 migration aid run on CVSS 3.1 vectors the cvss scheme
+    docs and suite already record. Values 4.0 keeps carry, values 4.0 split or
+    redefined go to review, and the retired Temporal metrics are omitted, so
+    no translation comes out as a complete v4.0 vector.
+  composition:
+    scheme:
+      id: cvss
+      version: 3.1.0
+    crosswalks:
+      - id: cvss-31-to-40
+        version: 1.0.0
+  cases:
+    - id: base-vector-carries-exploitability-and-reviews-impact
+      description: >-
+        Attack Vector, Low Attack Complexity, Privileges Required and no User
+        Interaction carry. Scope and the three impact metrics go to review,
+        because a 3.1 vector does not say which 4.0 system an impact belongs
+        to. The draft target is missing every metric under review, so it is
+        not a valid v4.0 Base vector and the translation is partial.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-31-to-40
+          marking: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
+      assertions:
+        - { path: [result, status], matcher: equals, value: partial }
+        - { path: [result, source, valid], matcher: equals, value: true }
+        - { path: [result, target, rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/PR:N/UI:N' }
+        - { path: [result, target, valid], matcher: equals, value: false }
+        - path: [result, target, errors]
+          matcher: contains
+          value: { constraintId: 'required-category:attack_requirements' }
+        - path: [result, target, errors]
+          matcher: contains
+          value: { constraintId: 'required-category:sc_impact' }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-attack_vector-AV_N
+            disposition: carry
+            targets: [{ categoryId: attack_vector, conceptId: AV_N }]
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-attack_complexity-AC_L
+            disposition: carry
+            targets: [{ categoryId: attack_complexity, conceptId: AC_L }]
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-privileges_required-PR_N
+            disposition: carry
+            targets: [{ categoryId: privileges_required, conceptId: PR_N }]
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-user-interaction-none
+            disposition: carry
+            targets: [{ categoryId: user_interaction, conceptId: UI_N }]
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: review-scope-S_U, disposition: review, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: review-confidentiality-C_H, disposition: review, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: review-integrity-I_H, disposition: review, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: review-availability-A_H, disposition: review, targets: [] }
+        - { path: [result, outcomes], matcher: excludes, value: { disposition: unmapped } }
+
+    - id: split-metrics-review-and-retired-metrics-omit
+      description: >-
+        High Attack Complexity goes to review because 4.0 splits it into
+        Attack Complexity and Attack Requirements. Required User Interaction
+        goes to review with Passive and Active as the two proposals.
+        Proof-of-Concept carries to Exploit Maturity. Remediation Level and
+        Report Confidence are retired in 4.0 and are omitted.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-31-to-40
+          marking: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:C/C:L/I:L/A:N/E:P/RL:O/RC:C'
+      assertions:
+        - { path: [result, status], matcher: equals, value: partial }
+        - { path: [result, target, rendered], matcher: equals, value: 'CVSS:4.0/AV:L/PR:H/E:P' }
+        - { path: [result, target, valid], matcher: equals, value: false }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: review-attack_complexity-AC_H, disposition: review, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: review-user-interaction-required
+            disposition: review
+            targets:
+              - { categoryId: user_interaction, conceptId: UI_P }
+              - { categoryId: user_interaction, conceptId: UI_A }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: review-scope-S_C, disposition: review }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-exploit_code_maturity-E_P
+            disposition: carry
+            targets: [{ categoryId: exploit_maturity, conceptId: E_P }]
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-remediation_level-RL_O, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-report_confidence-RC_C, disposition: omit, targets: [] }
+        - { path: [result, outcomes], matcher: excludes, value: { disposition: unmapped } }
+
+    - id: environmental-requirements-go-to-review
+      description: >-
+        Security Requirements keep their values in 4.0, but the consumer
+        confirms them during the v4.0 assessment, so each one goes to review.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-31-to-40
+          marking: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:P/RL:U/RC:C/CR:H/IR:H/AR:M'
+      assertions:
+        - { path: [result, status], matcher: equals, value: partial }
+        - { path: [result, target, rendered], matcher: equals, value: 'CVSS:4.0/AV:N/AC:L/PR:N/UI:N/E:P' }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: review-confidentiality_requirement-CR_H, disposition: review, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: review-integrity_requirement-IR_H, disposition: review, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: review-availability_requirement-AR_M, disposition: review, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-remediation_level-RL_U, disposition: omit }
+        - { path: [result, outcomes], matcher: excludes, value: { disposition: unmapped } }

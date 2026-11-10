@@ -1,0 +1,253 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cvss-40-to-31-tests
+  version: 1.0.0
+  name: CVSS 4.0 to 3.1 crosswalk tests
+  description: >-
+    The cvss-40-to-31 derivation run on CVSS 4.0 vectors the cvss-v4 scheme
+    docs and suite already record. Each case checks the 3.1 vector FIRST's
+    published rubric gives, and every candidate of the three cross-field
+    selections is chosen at least once.
+  composition:
+    scheme:
+      id: cvss-v4
+      version: 4.0.0
+    crosswalks:
+      - id: cvss-40-to-31
+        version: 1.0.0
+  cases:
+    - id: base-vector-derives-a-complete-base-vector
+      description: >-
+        Low Attack Complexity with no Attack Requirements stays Low, no
+        subsequent-system impact leaves Scope Unchanged, and the
+        vulnerable-system impacts become the 3.1 impact set. The result is a
+        complete, valid 3.1 Base vector.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-40-to-31
+          marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N'
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - { path: [result, source, valid], matcher: equals, value: true }
+        - path: [result, target, rendered]
+          matcher: equals
+          value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
+        - { path: [result, target, valid], matcher: equals, value: true }
+        - path: [result, selections]
+          matcher: contains
+          value:
+            selectionId: derive-attack-complexity
+            candidateId: low
+            targets: [{ categoryId: attack_complexity, conceptId: AC_L }]
+        - path: [result, selections]
+          matcher: contains
+          value:
+            selectionId: derive-scope
+            candidateId: unchanged
+            targets: [{ categoryId: scope, conceptId: S_U }]
+        - path: [result, selections]
+          matcher: contains
+          value: { selectionId: select-impact-domain, candidateId: vulnerable-system }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-attack_vector-AV_N
+            disposition: carry
+            targets: [{ categoryId: attack_vector, conceptId: AV_N }]
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: derive-vc_impact-VC_H
+            disposition: carry
+            targets: [{ categoryId: confidentiality, conceptId: C_H }]
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            source: { categoryId: sc_impact, conceptId: SC_N }
+            disposition: omit
+            targets: []
+
+    - id: subsequent-system-impact-wins-and-changes-scope
+      description: >-
+        Attack Requirements Present makes 3.1 Attack Complexity High. With
+        three High subsequent-system impacts against none on the vulnerable
+        system, the subsequent-system set becomes the 3.1 impact set and
+        Scope is Changed. Active User Interaction becomes Required.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-40-to-31
+          marking: 'CVSS:4.0/AV:L/AC:H/AT:P/PR:H/UI:A/VC:N/VI:N/VA:N/SC:H/SI:H/SA:H'
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - path: [result, target, rendered]
+          matcher: equals
+          value: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:H'
+        - { path: [result, target, valid], matcher: equals, value: true }
+        - path: [result, selections]
+          matcher: contains
+          value:
+            selectionId: derive-attack-complexity
+            candidateId: high
+            targets: [{ categoryId: attack_complexity, conceptId: AC_H }]
+        - path: [result, selections]
+          matcher: contains
+          value:
+            selectionId: derive-scope
+            candidateId: changed
+            targets: [{ categoryId: scope, conceptId: S_C }]
+        - path: [result, selections]
+          matcher: contains
+          value: { selectionId: select-impact-domain, candidateId: subsequent-system }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: derive-sc_impact-SC_H
+            disposition: carry
+            targets: [{ categoryId: confidentiality, conceptId: C_H }]
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            source: { categoryId: vc_impact, conceptId: VC_N }
+            disposition: omit
+            targets: []
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-user-interaction-UI_A
+            disposition: carry
+            targets: [{ categoryId: user_interaction, conceptId: UI_R }]
+
+    - id: impact-tie-stays-with-the-vulnerable-system
+      description: >-
+        Both impact sets have three High values. The rubric breaks the tie
+        toward the vulnerable system, and the High subsequent-system impacts
+        still make Scope Changed.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-40-to-31
+          marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H'
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - path: [result, target, rendered]
+          matcher: equals
+          value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
+        - path: [result, selections]
+          matcher: contains
+          value: { selectionId: select-impact-domain, candidateId: vulnerable-system }
+        - path: [result, selections]
+          matcher: contains
+          value: { selectionId: derive-scope, candidateId: changed }
+
+    - id: low-subsequent-impact-changes-scope-and-supplemental-metrics-omit
+      description: >-
+        Low subsequent-system impact is enough to make Scope Changed, while
+        the vulnerable-system set still has more High values and becomes the
+        impact set. Attacked becomes 3.1 Exploit Code Maturity High. The
+        Supplemental metrics have no 3.1 field and are omitted.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-40-to-31
+          marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N/E:A/S:P/AU:Y/R:I/RE:H'
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - path: [result, target, rendered]
+          matcher: equals
+          value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:H'
+        - { path: [result, target, valid], matcher: equals, value: true }
+        - path: [result, selections]
+          matcher: contains
+          value: { selectionId: derive-scope, candidateId: changed }
+        - path: [result, selections]
+          matcher: contains
+          value: { selectionId: select-impact-domain, candidateId: vulnerable-system }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-exploit-maturity-attacked
+            disposition: carry
+            targets: [{ categoryId: exploit_code_maturity, conceptId: E_H }]
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-safety-S_P, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-automatable-AU_Y, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-recovery-R_I, disposition: omit, targets: [] }
+        - path: [result, outcomes]
+          matcher: contains
+          value: { mappingId: omit-response_effort-RE_H, disposition: omit, targets: [] }
+
+    - id: passive-interaction-and-unreported-exploit-maturity
+      description: >-
+        Passive User Interaction becomes Required, and the 4.0 Unreported
+        value becomes the 3.1 U value.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-40-to-31
+          marking: 'CVSS:4.0/AV:L/AC:H/AT:P/PR:L/UI:P/VC:L/VI:N/VA:N/SC:N/SI:N/SA:N/E:U'
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - path: [result, target, rendered]
+          matcher: equals
+          value: 'CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:L/I:N/A:N/E:U'
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-user-interaction-UI_P
+            disposition: carry
+            targets: [{ categoryId: user_interaction, conceptId: UI_R }]
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-exploit-maturity-unreported
+            disposition: carry
+            targets: [{ categoryId: exploit_code_maturity, conceptId: E_U }]
+
+    - id: proof-of-concept-exploit-maturity-carries
+      description: Proof-of-Concept is a value both versions define, so it carries.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-40-to-31
+          marking: 'CVSS:4.0/AV:L/AC:H/AT:P/PR:H/UI:A/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N/E:P/AU:Y'
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - path: [result, target, rendered]
+          matcher: equals
+          value: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:L/I:L/A:N/E:P'
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            mappingId: carry-exploit-maturity-proof-of-concept
+            disposition: carry
+            targets: [{ categoryId: exploit_code_maturity, conceptId: E_P }]
+
+    - id: explicit-not-defined-is-unmapped
+      description: >-
+        The crosswalk has no rule for an explicit Not Defined value. E:X comes
+        back unmapped, which makes the translation partial even though the
+        draft 3.1 Base vector it emits is valid.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cvss-40-to-31
+          marking: 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X'
+      assertions:
+        - { path: [result, status], matcher: equals, value: partial }
+        - path: [result, target, rendered]
+          matcher: equals
+          value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
+        - { path: [result, target, valid], matcher: equals, value: true }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            source: { categoryId: exploit_maturity, conceptId: E_X }
+            disposition: unmapped
+            targets: []

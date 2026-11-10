@@ -1,0 +1,184 @@
+/**
+ * Document contract for the two CVSS crosswalks.
+ *
+ * These assertions read the authored crosswalk and scheme YAML directly. What a
+ * translation produces is engine behavior, stated in the suites
+ * `scheme-folder/test-suites/cvss-31-to-40-tests@1.0.0.yaml` and
+ * `cvss-40-to-31-tests@1.0.0.yaml`, which the EzClassify CLI runs. This file
+ * catches the authoring mistakes a contributor can make without a CLI: a
+ * mapping that names a metric value its scheme does not declare, two
+ * decisions with one id, or a source value left without a decision.
+ */
+import * as path from 'path'
+import { parseDocument } from '@ezclassify/validator'
+import { schemeDocument, type SchemeDocument } from './helpers/scheme-document'
+
+interface Ref {
+  categoryId: string
+  conceptId: string
+}
+
+interface Mapping {
+  id: string
+  source: Ref
+  targets?: Ref[]
+  disposition: string
+}
+
+interface Candidate {
+  id: string
+  when?: { any?: Ref[]; all?: Ref[]; none?: Ref[] }
+  score?: Ref[]
+  sources?: Ref[]
+  targets?: Ref[]
+  mappings?: Mapping[]
+}
+
+interface Crosswalk {
+  id: string
+  version: string
+  sourceScheme: { id: string; version: string }
+  targetScheme: { id: string; version: string }
+  mappings: Mapping[]
+  selections?: Array<{ id: string; candidates: Candidate[] }>
+}
+
+const folder = path.resolve(__dirname, '../scheme-folder')
+
+function crosswalk(file: string): Crosswalk {
+  return (parseDocument(path.join(folder, 'crosswalks', file)) as { crosswalk: Crosswalk })
+    .crosswalk
+}
+
+const schemes: Record<string, SchemeDocument> = {
+  'cvss@3.1.0': schemeDocument('schemes/cvss@3.1.0.yaml'),
+  'cvss-v4@4.0.0': schemeDocument('schemes/cvss-v4@4.0.0.yaml'),
+}
+
+/** Every mapping, top-level and inside selection candidates. */
+function allMappings(doc: Crosswalk): Mapping[] {
+  return [
+    ...doc.mappings,
+    ...(doc.selections ?? []).flatMap((selection) =>
+      selection.candidates.flatMap((candidate) => candidate.mappings ?? []),
+    ),
+  ]
+}
+
+/** Every reference to the source scheme, and every reference to the target scheme. */
+function references(doc: Crosswalk): { source: Ref[]; target: Ref[] } {
+  const source: Ref[] = []
+  const target: Ref[] = []
+  for (const mapping of allMappings(doc)) {
+    source.push(mapping.source)
+    target.push(...(mapping.targets ?? []))
+  }
+  for (const selection of doc.selections ?? []) {
+    for (const candidate of selection.candidates) {
+      const when = candidate.when ?? {}
+      source.push(
+        ...(when.any ?? []),
+        ...(when.all ?? []),
+        ...(when.none ?? []),
+        ...(candidate.score ?? []),
+        ...(candidate.sources ?? []),
+      )
+      target.push(...(candidate.targets ?? []))
+    }
+  }
+  return { source, target }
+}
+
+/** `category/concept` for every concept the scheme declares in that category. */
+function declared(scheme: SchemeDocument): Set<string> {
+  return new Set(
+    scheme.concepts.flatMap((concept) =>
+      (concept.categories ?? []).map((category) => `${category}/${concept.id}`),
+    ),
+  )
+}
+
+const key = (ref: Ref): string => `${ref.categoryId}/${ref.conceptId}`
+
+describe.each([
+  {
+    file: 'cvss-31-to-40@1.0.0.yaml',
+    id: 'cvss-31-to-40',
+    source: 'cvss@3.1.0',
+    target: 'cvss-v4@4.0.0',
+  },
+  {
+    file: 'cvss-40-to-31@1.0.0.yaml',
+    id: 'cvss-40-to-31',
+    source: 'cvss-v4@4.0.0',
+    target: 'cvss@3.1.0',
+  },
+])('crosswalk $id', ({ file, id, source, target }) => {
+  const doc = crosswalk(file)
+
+  it('runs between the two CVSS schemes this folder ships', () => {
+    expect(doc.id).toBe(id)
+    expect(doc.version).toBe('1.0.0')
+    expect(`${doc.sourceScheme.id}@${doc.sourceScheme.version}`).toBe(source)
+    expect(`${doc.targetScheme.id}@${doc.targetScheme.version}`).toBe(target)
+  })
+
+  it('names only metric values its two schemes declare', () => {
+    const refs = references(doc)
+    const sourceValues = declared(schemes[source])
+    const targetValues = declared(schemes[target])
+    expect(refs.source.map(key).filter((ref) => !sourceValues.has(ref))).toEqual([])
+    expect(refs.target.map(key).filter((ref) => !targetValues.has(ref))).toEqual([])
+  })
+
+  it('gives every decision its own id', () => {
+    const ids = allMappings(doc).map((mapping) => mapping.id)
+    expect(ids.filter((value, index) => ids.indexOf(value) !== index)).toEqual([])
+  })
+})
+
+describe('crosswalk cvss-31-to-40 coverage', () => {
+  // Partial means partial output, not partial review: every CVSS 3.1 value has
+  // a carry, review or omit decision, so no 3.1 vector comes back unmapped.
+  it('decides every CVSS 3.1 metric value exactly once', () => {
+    const decided = crosswalk('cvss-31-to-40@1.0.0.yaml').mappings.map((m) => key(m.source))
+    expect([...decided].sort()).toEqual([...declared(schemes['cvss@3.1.0'])].sort())
+  })
+})
+
+describe('crosswalk cvss-40-to-31 coverage', () => {
+  // The derivation covers the metrics FIRST's rubric reads plus the
+  // Supplemental metrics it omits. Environmental and Modified Base metrics,
+  // explicit Not Defined values and the severity rating are deliberately
+  // left unmapped, as the scheme docs say.
+  it('decides exactly the 4.0 Base, Threat and Supplemental values the rubric reads', () => {
+    const doc = crosswalk('cvss-40-to-31@1.0.0.yaml')
+    const decided = new Set(references(doc).source.map(key))
+    const covered = [
+      'attack_vector',
+      'attack_complexity',
+      'attack_requirements',
+      'privileges_required',
+      'user_interaction',
+      'vc_impact',
+      'vi_impact',
+      'va_impact',
+      'sc_impact',
+      'si_impact',
+      'sa_impact',
+      'exploit_maturity',
+      'safety',
+      'automatable',
+      'recovery',
+      'value_density',
+      'response_effort',
+      'provider_urgency',
+    ]
+    const expected = schemes['cvss-v4@4.0.0'].concepts
+      .flatMap((concept) => (concept.categories ?? []).map((category) => ({ category, concept })))
+      .filter(({ category, concept }) => covered.includes(category) && !concept.id.endsWith('_X'))
+      .map(({ category, concept }) => `${category}/${concept.id}`)
+      .sort()
+    expect([...decided].sort()).toEqual(expected)
+  })
+})

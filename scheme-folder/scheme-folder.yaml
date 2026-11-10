@@ -40,6 +40,13 @@ accesses:
   - id: cedar-valley-protection-access
     versions:
       - 1.0.0
+crosswalks:
+  - id: cvss-31-to-40
+    versions:
+      - 1.0.0
+  - id: cvss-40-to-31
+    versions:
+      - 1.0.0
 contexts:
   - id: cedar-valley
     versions:

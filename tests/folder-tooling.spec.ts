@@ -114,6 +114,26 @@ describe('npm run validate', () => {
     expect(result.err).toContain('suite_filename_mismatch')
   })
 
+  it('fails when a crosswalk pins a scheme version this folder does not hold', () => {
+    const root = repoWithMutableFolder()
+    const crosswalk = path.join(root, 'scheme-folder', 'crosswalks', 'cvss-31-to-40@1.0.0.yaml')
+    fs.writeFileSync(
+      crosswalk,
+      fs.readFileSync(crosswalk, 'utf-8').replace('    version: 3.1.0', '    version: 3.0.0'),
+    )
+    const result = run('scripts/validate-folder.mjs', [], root)
+    expect(result.code).toBe(1)
+    expect(result.err).toContain('sourceScheme names scheme "cvss@3.0.0"')
+  })
+
+  it('fails when a crosswalk runs in no test suite', () => {
+    const root = repoWithMutableFolder()
+    fs.rmSync(path.join(root, 'scheme-folder', 'test-suites', 'cvss-40-to-31-tests@1.0.0.yaml'))
+    const result = run('scripts/validate-folder.mjs', [], root)
+    expect(result.code).toBe(1)
+    expect(result.err).toContain('crosswalk "cvss-40-to-31@1.0.0" has no test suite')
+  })
+
   it('fails when a published scheme has no test suite', () => {
     const root = repoWithMutableFolder()
     fs.rmSync(path.join(root, 'scheme-folder', 'test-suites', 'tlp-tests@1.0.0.yaml'))
@@ -155,7 +175,7 @@ describe('npm run build', () => {
         id: string
         version: string
         filename: string
-        testPolicy: { kind: string; id: string; version: string }
+        testPolicy?: { kind: string; id: string; version: string }
       }>
     }
     const authored = fs
@@ -175,6 +195,13 @@ describe('npm run build', () => {
       id: 'tlp',
       version: '2.0.0',
     })
+    // A crosswalk suite qualifies its crosswalk, which no test policy names, so
+    // it must not claim the scheme it starts from as that scheme's default.
+    expect(index.testSuites.find((suite) => suite.id === 'cvss-40-to-31-tests')).toEqual({
+      id: 'cvss-40-to-31-tests',
+      version: '1.0.0',
+      filename: 'cvss-40-to-31-tests@1.0.0.json',
+    })
     const compiled = JSON.parse(
       fs.readFileSync(path.join(output, 'tlp-tests@1.0.0.json'), 'utf8'),
     ) as { testSuite: { id: string; cases: unknown[] } }
@@ -192,7 +219,7 @@ describe('npm run build', () => {
     expect(fs.existsSync(path.join(root, 'dist', 'test-suites'))).toBe(false)
   })
 
-  it('emits one wrapped JSON per scheme plus the context index', () => {
+  it('emits one wrapped JSON per definition plus the context index', () => {
     const root = repoWithMutableFolder()
     expect(run('scripts/bundle-schemes.mjs', [], root).code).toBe(0)
 
@@ -208,6 +235,8 @@ describe('npm run build', () => {
       'cedar-valley-protection@1.0.0.json',
       'cedar-valley@1.0.0.json',
       'contexts.json',
+      'cvss-31-to-40@1.0.0.crosswalk.json',
+      'cvss-40-to-31@1.0.0.crosswalk.json',
       'cvss-v4@4.0.0.json',
       'cvss@3.1.0.json',
       'tlp@2.0.0.json',
@@ -216,6 +245,16 @@ describe('npm run build', () => {
     const tlp = JSON.parse(fs.readFileSync(path.join(outDir, 'tlp@2.0.0.json'), 'utf-8'))
     expect(Object.keys(tlp)).toEqual(['scheme'])
     expect(tlp.scheme.id).toBe('tlp')
+
+    const crosswalk = JSON.parse(
+      fs.readFileSync(path.join(outDir, 'cvss-40-to-31@1.0.0.crosswalk.json'), 'utf-8'),
+    )
+    expect(Object.keys(crosswalk)).toEqual(['crosswalk'])
+    expect(crosswalk.crosswalk).toMatchObject({
+      id: 'cvss-40-to-31',
+      sourceScheme: { id: 'cvss-v4', version: '4.0.0' },
+      targetScheme: { id: 'cvss', version: '3.1.0' },
+    })
 
     const contexts = JSON.parse(fs.readFileSync(path.join(outDir, 'contexts.json'), 'utf-8'))
     expect(

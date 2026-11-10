@@ -134,8 +134,7 @@ export function effectiveComposition(suite, suites) {
  * Every definition a composition names, as `{kind, ref, where}`.
  *
  * Scheme layers are schemes, guide layers are guides, and access layers are
- * access policies. Crosswalks are listed under their own kind, which this
- * folder does not hold.
+ * access policies. Crosswalks are listed under their own kind.
  *
  * @param {Record<string, any>} composition
  * @returns {Array<{kind: string, ref: string, where: string}>}
@@ -164,10 +163,16 @@ export function compositionRefs(composition) {
  * The policy a suite qualifies, for the published suite index: the access
  * policy when the composition has one, else its first guide, else its scheme.
  *
+ * A suite that runs crosswalks qualifies those crosswalks, not the scheme it
+ * happens to start from, and a test policy names only a scheme, guide or
+ * access policy. Such a suite is supplemental and qualifies no policy, so it
+ * cannot displace the scheme's own suite as that scheme's default.
+ *
  * @param {Record<string, any>} composition
- * @returns {{kind: 'access' | 'guide' | 'scheme', id: string, version: string}}
+ * @returns {{kind: 'access' | 'guide' | 'scheme', id: string, version: string} | undefined}
  */
 export function testPolicyOf(composition) {
+    if (composition.crosswalks?.length) return undefined;
     const ref = ({ id, version }) => ({ id, version });
     if (composition.access) return { kind: 'access', ...ref(composition.access) };
     if (composition.guides?.length) return { kind: 'guide', ...ref(composition.guides[0]) };

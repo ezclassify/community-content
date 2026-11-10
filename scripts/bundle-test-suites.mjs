@@ -8,7 +8,8 @@
  *   dist/test-suites/<id>@<version>.json   { testSuite: {...} }
  *   dist/test-suites/index.json            { testSuites: [{id, version, testPolicy, filename}] }
  *
- * `testPolicy` names the policy each suite qualifies (see `testPolicyOf`).
+ * `testPolicy` names the policy each suite qualifies (see `testPolicyOf`). A
+ * crosswalk suite qualifies no policy and its entry carries none.
  * The output directory is rebuilt from scratch on every run because it ships
  * through a wildcard export: a stale file left behind would publish.
  * @module
@@ -37,10 +38,11 @@ for (const { suite, fileName } of entries) {
         console.error(`[test-suites] ${fileName} extends a suite this folder does not hold`);
         process.exit(1);
     }
+    const testPolicy = testPolicyOf(composition);
     index.push({
         id: suite.id,
         version: suite.version,
-        testPolicy: testPolicyOf(composition),
+        ...(testPolicy ? { testPolicy } : {}),
         filename: `${suite.id}@${suite.version}.json`,
     });
 }

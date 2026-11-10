@@ -34,13 +34,14 @@ export const SCHEME_FOLDER_FORMAT = 1;
 export const MANIFEST_FILENAME = 'scheme-folder.yaml';
 
 /**
- * The four component kinds a scheme folder can hold, each in its own directory.
+ * The five component kinds a scheme folder can hold, each in its own directory.
  * The directory name is the plural of the kind, and the manifest key matches.
  */
 export const TYPE_DIRS = [
     { kind: 'scheme', dir: 'schemes', manifestKey: 'schemes' },
     { kind: 'guide', dir: 'guides', manifestKey: 'guides' },
     { kind: 'access', dir: 'accesses', manifestKey: 'accesses' },
+    { kind: 'crosswalk', dir: 'crosswalks', manifestKey: 'crosswalks' },
     { kind: 'context', dir: 'contexts', manifestKey: 'contexts' },
 ];
 
@@ -147,8 +148,8 @@ export function validateDefinitionFile(file, kind) {
  * Serialize a manifest to the convention's canonical YAML.
  *
  * Key order is fixed rather than sorted: a reader scanning the file wants
- * identity first and inventory after, and the four component lists always
- * appear so an empty one is visibly empty rather than absent.
+ * identity first and inventory after, and every component list always
+ * appears so an empty one is visibly empty rather than absent.
  *
  * @param {Record<string, unknown>} manifest
  * @returns {string} YAML text, newline-terminated.
