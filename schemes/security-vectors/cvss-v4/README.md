@@ -94,6 +94,44 @@ A few of the cases, in prose:
 - A lowercase vector normalizes to the canonical uppercase form, and the
   correction is recorded rather than silently applied.
 
+## Crosswalks
+
+[`cvss-40-to-31`](../../../scheme-folder/crosswalks/cvss-40-to-31@1.0.0.yaml)
+derives a CVSS 3.1 vector from a 4.0 vector using the conversion rubric FIRST
+publishes in its
+[CVSS FAQ](https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors).
+The crosswalk applies that rubric. It is not an official FIRST crosswalk, and
+FIRST does not review it.
+
+What it carries:
+
+- Attack Vector, Privileges Required, and no User Interaction, unchanged.
+  Passive and Active User Interaction both become Required.
+- 3.1 Attack Complexity is High when 4.0 Attack Complexity is High or Attack
+  Requirements is Present, and Low otherwise.
+- Scope is Changed when any subsequent-system impact is Low or High, and
+  Unchanged otherwise.
+- One impact set becomes the 3.1 Confidentiality, Integrity, and Availability
+  values: the subsequent-system set when it has more High values, otherwise the
+  vulnerable-system set. A tie goes to the vulnerable system. The set that
+  loses is omitted.
+- Exploit Maturity: Attacked becomes High, Proof-of-Concept stays
+  Proof-of-Concept, and Unreported becomes U.
+
+What it does not carry:
+
+- The Supplemental metrics are omitted, because 3.1 has no field for them.
+- Environmental metrics, Modified Base metrics, explicit Not Defined (`X`)
+  values, and the qualitative severity rating have no rule. They come back
+  unmapped, which makes the translation partial.
+
+A complete 4.0 Base vector gives a complete, valid 3.1 Base vector. The suite
+[`cvss-40-to-31-tests@1.0.0.yaml`](../../../scheme-folder/test-suites/cvss-40-to-31-tests@1.0.0.yaml)
+states the behavior.
+
+`cvss-31-to-40` goes the other way, and it is partial: most 4.0 metrics need an
+analyst. See the [`cvss` README](../cvss/README.md#crosswalks).
+
 ## Further reading
 
 - [`docs/sources.md`](docs/sources.md): primary and secondary sources.

@@ -40,7 +40,8 @@ Consumers who prefer the compiled wire format read the JSON under
 authored scheme; neither is a fork of the other. Test suite consumers read
 `./test-suites.json` for the policy each suite qualifies (its access policy,
 else its first guide, else its scheme) and `./test-suites/*` for the compiled
-suites. This adds no production dependency or engine behavior.
+suites. A suite that runs a crosswalk qualifies no policy, and its index entry
+carries none. This adds no production dependency or engine behavior.
 
 Shared validation or bundling behavior used by more than one scheme belongs in
 the repository scripts or test helpers, once. Scheme-local code is reserved for

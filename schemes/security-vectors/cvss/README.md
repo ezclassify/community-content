@@ -72,6 +72,37 @@ A few of the cases, in prose:
 Parsing is case insensitive, so lowercase metric values are normalized to the
 canonical uppercase form.
 
+## Crosswalks
+
+Two crosswalks connect this scheme with [`cvss-v4`](../cvss-v4). Each one runs
+in a single direction.
+
+[`cvss-31-to-40`](../../../scheme-folder/crosswalks/cvss-31-to-40@1.0.0.yaml)
+is a migration aid from 3.1 to 4.0, and it is partial on purpose. EzClassify
+community content maintains it from the CVSS 4.0 specification and FIRST's
+summary of what changed. It is not an official FIRST crosswalk.
+
+- **Carries** Attack Vector, Privileges Required, Low Attack Complexity, no User
+  Interaction, and Proof-of-Concept Exploit Code Maturity. 4.0 keeps these
+  values as they are.
+- **Sends to review** High Attack Complexity, which 4.0 splits into Attack
+  Complexity and Attack Requirements; Required User Interaction, proposed as
+  Passive or Active; Scope and the three impact metrics, because 4.0 scores
+  vulnerable-system and subsequent-system impact separately; the other Exploit
+  Code Maturity values; and the Security Requirements.
+- **Omits** Not Defined Exploit Code Maturity, Remediation Level, and Report
+  Confidence. 4.0 retires the last two.
+
+Every 3.1 value gets one of those decisions, so nothing comes back unmapped.
+The result is still never a complete 4.0 vector: Attack Requirements and the
+six impact metrics have to come from an analyst. Keep the 3.1 vector and finish
+the review before scoring. The suite
+[`cvss-31-to-40-tests@1.0.0.yaml`](../../../scheme-folder/test-suites/cvss-31-to-40-tests@1.0.0.yaml)
+states the behavior.
+
+`cvss-40-to-31` goes the other way and derives a complete 3.1 Base vector. See
+the [`cvss-v4` README](../cvss-v4/README.md#crosswalks).
+
 ## Further reading
 
 - [`docs/sources.md`](docs/sources.md): primary and secondary sources.

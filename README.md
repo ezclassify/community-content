@@ -37,6 +37,8 @@ dist/schemes/
   tlp@2.0.0.json
   cvss@3.1.0.json
   cvss-v4@4.0.0.json
+  cvss-31-to-40@1.0.0.crosswalk.json
+  cvss-40-to-31@1.0.0.crosswalk.json
   contexts.json
 ```
 
@@ -95,6 +97,12 @@ The catalog includes public standards and three fictional Cedar Valley teaching 
 | --------- | ------------------------ |
 | `cvss`    | CVSS v3.1 vector strings |
 | `cvss-v4` | CVSS v4.0 vector strings |
+
+Two crosswalks translate between them: `cvss-40-to-31` derives a 3.1 vector
+with FIRST's published rubric, and `cvss-31-to-40` is a partial migration aid
+that leaves most 4.0 metrics to an analyst. The [`cvss`](schemes/security-vectors/cvss/README.md#crosswalks)
+and [`cvss-v4`](schemes/security-vectors/cvss-v4/README.md#crosswalks) READMEs
+say what each one carries.
 
 Maintained schemes for IC Classification and Control Markings (CAPCO), CUI,
 and NATO are part of the licensed EzClassify catalog. This repository contains
