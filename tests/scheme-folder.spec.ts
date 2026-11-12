@@ -55,28 +55,53 @@ describe('scheme folder', () => {
 
   it('inventories every published scheme', () => {
     expect(refsOnDisk('schemes')).toEqual([
+      'access-control@1.0.0',
+      'acme-handling@1.0.0',
       'cedar-valley-handling@1.0.0',
       'cedar-valley-protection@1.0.0',
       'cedar-valley@1.0.0',
+      'corporate-tiers@1.0.0',
       'cvss-v4@4.0.0',
       'cvss@3.1.0',
+      'demo-scheme@1.0.0',
+      'llm-classify-demo-scheme@1.0.0',
+      'pet-adoption@1.0.0',
       'tlp@2.0.0',
     ])
     expect(refsOnDisk('guides')).toEqual([
       'cedar-valley-guide@1.0.0',
       'cedar-valley-handling-guide@1.0.0',
       'cedar-valley-protection-guide@1.0.0',
+      'comms-guide@1.0.0',
+      'demo-data-guide@1.0.0',
+      'llm-classify-demo-guide@1.0.0',
+      'pet-adoption-intake@1.0.0',
     ])
     expect(refsOnDisk('accesses')).toEqual([
+      'access-control-rules@1.0.0',
       'cedar-valley-access@1.0.0',
       'cedar-valley-handling-access@1.0.0',
       'cedar-valley-protection-access@1.0.0',
+      'demo-access-policy@1.0.0',
     ])
-    expect(refsOnDisk('crosswalks')).toEqual(['cvss-31-to-40@1.0.0', 'cvss-40-to-31@1.0.0'])
+    expect(refsOnDisk('crosswalks')).toEqual([
+      'acme-handling-to-tlp@1.0.0',
+      'cvss-31-to-40@1.0.0',
+      'cvss-40-to-31@1.0.0',
+    ])
     expect(refsOnDisk('contexts')).toEqual([
+      'access-control-demo@1.0.0',
       'cedar-valley-handling@1.0.0',
       'cedar-valley-protection@1.0.0',
       'cedar-valley@1.0.0',
+      'corporate-tiers@1.0.0',
+      'corporate-to-tlp-demo@1.0.0',
+      'cvss@1.0.0',
+      'guidebook-demo@1.0.0',
+      'llm-classify-demo-scheme-only@1.0.0',
+      'llm-classify-demo@1.0.0',
+      'pet-adoption@1.0.0',
+      'tlp@1.0.0',
     ])
   })
 
