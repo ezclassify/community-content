@@ -107,8 +107,7 @@ run. The intended workflow is:
    evidence for its recorded commit only.
 
 This pilot accepts public contributions to this repository, with self-contained
-YAML definitions and suites. Materialize external sources inline first. Do not
-submit private material or licensed vendor content without the rights to make
+YAML definitions and suites. Do not submit private material or licensed vendor content without the rights to make
 it public. Private and offline engine testing requires Runtime rights.
 
 CI in this public repository runs the independent schema, tooling and package
@@ -226,27 +225,26 @@ scheme:
               rollup: max
               position: 0
         concepts:
-            inline:
-                - id: LOW
-                  name: Low
-                  views:
-                      default: LOW
-                  aliases:
-                      - LOW
-                  categories:
-                      - level
-                  position: 0
-                  rank: 0
-                - id: HIGH
-                  name: High
-                  views:
-                      default: HIGH
-                  aliases:
-                      - HIGH
-                  categories:
-                      - level
-                  position: 1
-                  rank: 1
+            - id: LOW
+              name: Low
+              views:
+                  default: LOW
+              aliases:
+                  - LOW
+              categories:
+                  - level
+              position: 0
+              rank: 0
+            - id: HIGH
+              name: High
+              views:
+                  default: HIGH
+              aliases:
+                  - HIGH
+              categories:
+                  - level
+              position: 1
+              rank: 1
     render:
         default: default
         formats:
@@ -264,9 +262,9 @@ scheme:
           label: Default
 ```
 
-Optional sections at the same level as `data:`: `rules:` (inference),
-`parse:` (`case_sensitive`, `strip_whitespace`, `recognizers`, `normalize`),
-and per-concept `definition` and `guidance`. Separators belong to a format
+Optional sections at the same level as `data:`: `rules:` (inference) and
+`parse:` (`recognizers`, `normalize`). Each concept may also carry a
+`definition` and `guidance`. Separators belong to a format
 and to its fields, never to `parse:`. The schemes already in this repo are
 the best worked examples. `tlp` is a compact one to crib from.
 
