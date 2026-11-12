@@ -233,6 +233,7 @@ describe('npm run build', () => {
       'cedar-valley-guide@1.0.0.guide.json',
       'cedar-valley-handling-access@1.0.0.access.json',
       'cedar-valley-handling-guide@1.0.0.guide.json',
+      'cedar-valley-handling-to-protection@1.0.0.crosswalk.json',
       'cedar-valley-handling@1.0.0.json',
       'cedar-valley-protection-access@1.0.0.access.json',
       'cedar-valley-protection-guide@1.0.0.guide.json',
@@ -277,6 +278,7 @@ describe('npm run build', () => {
     ).toEqual([
       'access-control-demo@1.0.0',
       'cedar-valley-handling@1.0.0',
+      'cedar-valley-handling-to-protection@1.0.0',
       'cedar-valley-protection@1.0.0',
       'cedar-valley@1.0.0',
       'corporate-tiers@1.0.0',
@@ -289,6 +291,7 @@ describe('npm run build', () => {
       'tlp@1.0.0',
       'access-control-demo@latest',
       'cedar-valley-handling@latest',
+      'cedar-valley-handling-to-protection@latest',
       'cedar-valley-protection@latest',
       'cedar-valley@latest',
       'corporate-tiers@latest',

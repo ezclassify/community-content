@@ -75,11 +75,7 @@ format renders it by itself.
 
 What this scheme does is stated as data, in the test suite
 [`../../../scheme-folder/test-suites/cvss-v4-tests@1.0.0.yaml`](../../../scheme-folder/test-suites/cvss-v4-tests@1.0.0.yaml),
-and checked by running it:
-
-```bash
-ezclassify scheme test ./scheme-folder/test-suites/cvss-v4-tests@1.0.0.yaml
-```
+and a maintainer checks it by running it against the engine.
 
 A few of the cases, in prose:
 

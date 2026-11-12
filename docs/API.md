@@ -111,6 +111,6 @@ tests those crosswalks rather than a policy, so its entry has no `testPolicy`. I
 compiled suite preserves its authored content; bundling does not execute
 cases.
 
-`npm run validate` checks schema and folder consistency. The licensed CLI
-executes the behavior assertions with `ezclassify scheme test ./scheme-folder`.
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for suite authoring and local execution.
+`npm run validate` checks schema and folder consistency. A maintainer executes
+the behavior assertions against the engine.
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for suite authoring.

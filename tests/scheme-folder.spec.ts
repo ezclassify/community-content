@@ -86,11 +86,13 @@ describe('scheme folder', () => {
     ])
     expect(refsOnDisk('crosswalks')).toEqual([
       'acme-handling-to-tlp@1.0.0',
+      'cedar-valley-handling-to-protection@1.0.0',
       'cvss-31-to-40@1.0.0',
       'cvss-40-to-31@1.0.0',
     ])
     expect(refsOnDisk('contexts')).toEqual([
       'access-control-demo@1.0.0',
+      'cedar-valley-handling-to-protection@1.0.0',
       'cedar-valley-handling@1.0.0',
       'cedar-valley-protection@1.0.0',
       'cedar-valley@1.0.0',

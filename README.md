@@ -18,9 +18,8 @@ anyone writing scheme-specific code.
 
 This repository holds the schemes. It does not hold an engine. The EzClassify
 engine is proprietary and runs inside EzClassify applications. Authoring,
-building, and schema validation here use public tools. A Runtime license includes
-the full CLI and its local scheme tests, along with REST and MCP. Studio is
-optional. Contributors without Runtime can submit suites and request a
+building, and schema validation here use public tools. Behavior tests run
+against the engine inside EzClassify. Contributors submit suites and request a
 maintainer-assisted behavioral run. Hosted pilot runs are not yet available;
 confirm availability with a maintainer. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -29,8 +28,7 @@ confirm availability with a maintainer. See [CONTRIBUTING.md](CONTRIBUTING.md).
 Schemes are content. They go into an EzClassify application, which is what
 runs them.
 
-The npm package provides compiled JSON content for tooling and local document
-workflows:
+The npm package provides compiled JSON content for tooling:
 
 ```text
 dist/schemes/
@@ -47,8 +45,7 @@ npm install @ezclassify/schemes
 ```
 
 The files are plain JSON, so non-Node tools can read or copy them without
-executing JavaScript. The licensed [CLI's document commands](https://ezclassify.com/docs/cli) can read
-this component directory through `SCHEME_DIR`.
+executing JavaScript.
 
 For production REST and MCP deployments, an administrator installs verified
 artifacts in the runtime's artifact repository and supplies a published Context
@@ -131,15 +128,10 @@ with nothing installed but this repository's own dependencies.
 
 **Behavior.** Each scheme carries test suites in [`scheme-folder/test-suites/`](scheme-folder/test-suites/),
 stating inputs and the outcomes they must produce. They are data, not code.
-The EzClassify CLI runs them:
+A maintainer runs them against the engine.
 
-```bash
-ezclassify scheme test ./scheme-folder
-```
-
-Running the suites locally requires a Runtime license. Authoring a scheme,
-validating it, and opening a pull request do not. Contributors can request the
-maintainer-assisted pilot described in [CONTRIBUTING.md](CONTRIBUTING.md), which
+Authoring a scheme, validating it, and opening a pull request need no EzClassify
+license. Contributors can request the maintainer-assisted pilot described in [CONTRIBUTING.md](CONTRIBUTING.md), which
 also explains its current availability and the independent public CI checks.
 
 ## Contributing a scheme
