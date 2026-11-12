@@ -305,7 +305,7 @@ describe('npm run build', () => {
       .readFileSync(scheme, 'utf-8')
       .split('\n')
       .slice(1)
-      .map((line) => line.replace(/^ {4}/, ''))
+      .map((line) => line.replace(/^ {2}/, ''))
       .join('\n')
     fs.writeFileSync(scheme, bare)
 

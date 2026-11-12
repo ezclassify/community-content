@@ -156,9 +156,7 @@ What `npm run validate` and the CLI both hold a suite to:
 - `id` and `version` match the file name. Case ids are unique within the suite.
 - The composition names exact versions of definitions this folder holds: a
   `scheme`, plus `guides`, an `access` policy or `crosswalks` when the cases
-  need them. A
-  suite may instead `extends` another suite in the folder and inherit its
-  composition and cases.
+  need them.
 - Every scheme version in the folder is the scheme of at least one suite, and
   every crosswalk in the folder runs in at least one suite.
 - An assertion reads one value at an exact `path` into the operation's result

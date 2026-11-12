@@ -107,10 +107,9 @@ relative to the `@ezclassify/schemes/test-suites/` subpath. For example,
 
 `testPolicy` identifies the suite's access policy when present, otherwise its
 first guide, otherwise its scheme. A suite whose composition runs crosswalks
-tests those crosswalks rather than a policy, so its entry has no `testPolicy`. It uses the suite's own composition or the
-nearest ancestor composition for a suite that extends another suite. The
-compiled suite preserves its authored content, including any `extends`
-reference; bundling does not flatten inheritance or execute cases.
+tests those crosswalks rather than a policy, so its entry has no `testPolicy`. It uses the suite's own composition. The
+compiled suite preserves its authored content; bundling does not execute
+cases.
 
 `npm run validate` checks schema and folder consistency. The licensed CLI
 executes the behavior assertions with `ezclassify scheme test ./scheme-folder`.
