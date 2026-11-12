@@ -1,0 +1,81 @@
+# A generic two-category scheme for the website marking guide demo.
+scheme:
+  id: demo-scheme
+  version: 1.0.0
+  name: Demo Marking Scheme
+  description: A generic marking scheme for guide demonstration.
+  data:
+    categories:
+      - id: level
+        label: Level
+        required: false
+        single: true
+        rollup: max
+        position: 1
+      - id: control
+        label: Control
+        required: false
+        single: false
+        rollup: union
+        position: 2
+    concepts:
+      - id: LEVEL-A
+        name: Level A
+        views:
+          default: LEVEL-A
+        aliases:
+          - LEVEL-A
+        categories:
+          - level
+        position: 1
+        rank: 1
+      - id: LEVEL-B
+        name: Level B
+        views:
+          default: LEVEL-B
+        aliases:
+          - LEVEL-B
+        categories:
+          - level
+        position: 2
+        rank: 2
+      - id: LEVEL-C
+        name: Level C
+        views:
+          default: LEVEL-C
+        aliases:
+          - LEVEL-C
+        categories:
+          - level
+        position: 3
+        rank: 3
+      - id: CTRL-TOPO
+        name: Topology
+        views:
+          default: CTRL-TOPO
+        aliases:
+          - CTRL-TOPO
+        categories:
+          - control
+        position: 1
+      - id: CTRL-LOC
+        name: Location
+        views:
+          default: CTRL-LOC
+        aliases:
+          - CTRL-LOC
+        categories:
+          - control
+        position: 2
+  render:
+    default: default
+    formats:
+      - id: default
+        mode: inline
+        surface: default
+        separator: //
+        fields:
+          - category: level
+            separator: //
+          - category: control
+            separator: //

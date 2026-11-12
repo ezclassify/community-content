@@ -1,0 +1,146 @@
+# Fictional corporate sensitivity tiers with handling caveats. The website multi-scheme and
+# platform demos mark with it.
+scheme:
+  id: corporate-tiers
+  version: 1.0.0
+  name: Corporate Generic Sensitivity Tiers
+  description: >
+    Four sensitivity tiers (Public, Internal, Confidential, Restricted) with optional handling
+    caveats: DO NOT FORWARD, NEED TO KNOW, LEGAL HOLD, and CUSTOMER DATA.
+  definition: >
+    Sensitivity tiers indicate the intended audience and the potential harm from unauthorized
+    disclosure. Handling caveats add restrictions or obligations for the marked information.
+  guidance: >
+    Choose one sensitivity tier and add any applicable handling caveats. Combined markings use the
+    highest sensitivity tier and retain all handling caveats. Follow your organization’s policy when
+    deciding which marking applies.
+  data:
+    categories:
+      - id: tier
+        label: Sensitivity Tier
+        required: true
+        single: true
+        rollup: max
+        position: 0
+      - id: caveat
+        label: Handling Caveat
+        required: false
+        single: false
+        rollup: union
+        position: 1
+    concepts:
+      - id: PUBLIC
+        name: Public
+        definition: Approved for public disclosure with no restriction.
+        views:
+          default: PUBLIC
+        aliases:
+          - public
+        categories:
+          - tier
+        position: 1
+        rank: 1
+      - id: INTERNAL
+        name: Internal
+        definition: Information intended only for employees of the organization.
+        views:
+          default: INTERNAL
+        aliases:
+          - internal
+          - internal use only
+        categories:
+          - tier
+        position: 2
+        rank: 2
+      - id: CONFIDENTIAL
+        name: Confidential
+        definition: Information whose unauthorized disclosure would materially harm the organization.
+        views:
+          default: CONFIDENTIAL
+        aliases:
+          - confidential
+        categories:
+          - tier
+        position: 3
+        rank: 3
+      - id: RESTRICTED
+        name: Restricted
+        definition: >-
+          Information whose unauthorized disclosure would cause severe harm and which requires
+          access controls.
+        views:
+          default: RESTRICTED
+        aliases:
+          - restricted
+          - highly confidential
+        categories:
+          - tier
+        position: 4
+        rank: 4
+      - id: DO_NOT_FORWARD
+        name: DO NOT FORWARD
+        definition: Recipient must not forward this information to anyone else.
+        views:
+          default: DO NOT FORWARD
+        aliases:
+          - dnf
+          - do not forward
+        categories:
+          - caveat
+        position: 1
+      - id: NEED_TO_KNOW
+        name: NEED TO KNOW
+        definition: Access limited to individuals with a specific and current business need.
+        views:
+          default: NEED TO KNOW
+        aliases:
+          - need to know
+          - ntk
+        categories:
+          - caveat
+        position: 2
+      - id: LEGAL_HOLD
+        name: LEGAL HOLD
+        definition: Information subject to a legal preservation obligation. Deletion is suspended.
+        views:
+          default: LEGAL HOLD
+        aliases:
+          - legal hold
+          - litigation hold
+        categories:
+          - caveat
+        position: 3
+      - id: CUSTOMER_DATA
+        name: CUSTOMER DATA
+        definition: >-
+          Information belonging to or identifying a customer, subject to contractual handling
+          obligations.
+        views:
+          default: CUSTOMER DATA
+        aliases:
+          - customer data
+        categories:
+          - caveat
+        position: 4
+  rules:
+    - action: exclusive
+      id: exclusive-tier
+      message: Only one sensitivity tier may be specified.
+      target:
+        - PUBLIC
+        - INTERNAL
+        - CONFIDENTIAL
+        - RESTRICTED
+  render:
+    default: default
+    formats:
+      - id: default
+        mode: inline
+        surface: default
+        view: default
+        separator: //
+        fields:
+          - category: tier
+            separator: //
+          - category: caveat
+            separator: //

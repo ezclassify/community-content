@@ -1,0 +1,75 @@
+# Compact two-category scheme for the website LLM classify demo. A marked section covers
+# everything up to the next marked section.
+scheme:
+  id: llm-classify-demo-scheme
+  version: 1.0.0
+  name: LLM-classify Demo Scheme
+  description: Two categories (level / controls) for the LLM-classify demo.
+  data:
+    categories:
+      - id: level
+        label: Level
+        required: true
+        single: true
+        rollup: max
+        position: 0
+      - id: controls
+        label: Controls
+        required: false
+        single: false
+        rollup: union
+        position: 1
+    concepts:
+      - id: LOW
+        name: Low
+        views:
+          default: LOW
+          portion: L
+        categories:
+          - level
+        position: 0
+        rank: 0
+      - id: MED
+        name: Med
+        views:
+          default: MED
+          portion: M
+        categories:
+          - level
+        position: 1
+        rank: 1
+      - id: HIGH
+        name: High
+        views:
+          default: HIGH
+          portion: H
+        categories:
+          - level
+        position: 2
+        rank: 2
+      - id: CTRL-A
+        name: Control A
+        views:
+          default: CTRL-A
+        categories:
+          - controls
+        parents:
+          - HIGH
+        position: 0
+  embedded_marking:
+    - pattern: \(([^)]+)\)
+      template: '({marking}) '
+      auto_insert: every-paragraph
+  part_scope: until-next
+  render:
+    default: default
+    formats:
+      - id: default
+        mode: inline
+        surface: default
+        separator: /
+        fields:
+          - category: level
+            separator: /
+          - category: controls
+            separator: /

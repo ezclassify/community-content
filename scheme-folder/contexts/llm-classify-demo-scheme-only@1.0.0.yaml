@@ -1,0 +1,7 @@
+context:
+  id: llm-classify-demo-scheme-only
+  version: 1.0.0
+  description: Two-category demo scheme only (no guide, no access)
+  scheme:
+    id: llm-classify-demo-scheme
+    version: 1.0.0

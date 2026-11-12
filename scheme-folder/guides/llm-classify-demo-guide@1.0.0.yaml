@@ -1,0 +1,35 @@
+# Notional guide for the website LLM classify demo.
+guide:
+  id: llm-classify-demo-guide
+  version: 1.0.0
+  name: LLM-classify Demo Guide
+  description: Notional rules for the LLM-classify demo scheme.
+  categories:
+    - id: sensitive
+      label: Sensitive content
+  rules:
+    - id: restricted-keywords
+      name: Restricted keywords
+      description: Mentions of restricted handling vocabulary.
+      keywords:
+        - restricted
+        - controlled
+        - audit log
+      category: sensitive
+      outcome:
+        rendered: HIGH/CTRL-A
+      rationale: Mentions of restricted controls warrant the top tier in the demo.
+    - id: operational-data
+      name: Operational data
+      description: Operational metrics that should be tagged at least at MED.
+      keywords:
+        - operational
+        - utilization
+        - remediation
+      category: sensitive
+      outcome:
+        rendered: MED
+      rationale: Operational metrics are tagged MED in the demo policy.
+  target_schemes:
+    - id: llm-classify-demo-scheme
+      version: '*'

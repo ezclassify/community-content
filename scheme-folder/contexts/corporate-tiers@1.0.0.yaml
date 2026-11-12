@@ -1,0 +1,9 @@
+context:
+  id: corporate-tiers
+  version: 1.0.0
+  description: >-
+    Fictional corporate sensitivity tiers with handling caveats, as the website multi-scheme and
+    platform demos use them.
+  scheme:
+    id: corporate-tiers
+    version: 1.0.0

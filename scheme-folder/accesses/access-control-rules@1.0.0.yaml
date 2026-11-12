@@ -1,0 +1,30 @@
+# Access rules for the website access control demo: level, compartments, a role claim and the
+# network zone the check reads from its context argument.
+access:
+  id: access-control-rules
+  version: 1.0.0
+  rules:
+    - id: level-check
+      name: Level
+      attribute: level
+      strategy: gte
+      category: level
+    - id: compartment-check
+      name: Compartments
+      attribute: compartments
+      strategy: superset
+      category: compartment
+    - id: role-check
+      name: Analyst role
+      check:
+        user: role
+        operator: equals
+        value: analyst
+    - id: network-check
+      name: Trusted network
+      check:
+        context: networkZone
+        operator: equals
+        value: trusted
+  target_scheme:
+    id: access-control

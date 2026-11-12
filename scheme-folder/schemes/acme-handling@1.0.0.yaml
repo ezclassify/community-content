@@ -1,0 +1,54 @@
+# Fictional corporate handling vocabulary. The website cross-scheme demo translates it to TLP 2.0
+# through acme-handling-to-tlp.
+scheme:
+  id: acme-handling
+  version: 1.0.0
+  name: Acme Handling Vocabulary
+  description: Fictional source vocabulary for the cross-scheme Context demo.
+  data:
+    categories:
+      - id: handling
+        label: Corporate handling
+        required: true
+        single: true
+        rollup: max
+    concepts:
+      - id: OPEN
+        name: Open
+        views:
+          default: OPEN
+        categories:
+          - handling
+        rank: 0
+      - id: COMMUNITY
+        name: Community
+        views:
+          default: COMMUNITY
+        categories:
+          - handling
+        rank: 1
+      - id: PARTNERS
+        name: Partners
+        views:
+          default: PARTNERS
+        categories:
+          - handling
+        rank: 2
+      - id: INTERNAL
+        name: Internal
+        views:
+          default: INTERNAL
+        categories:
+          - handling
+        rank: 3
+  render:
+    default: default
+    formats:
+      - id: default
+        mode: inline
+        surface: default
+        view: default
+        separator: ' '
+        fields:
+          - category: handling
+            separator: ' '

@@ -1,0 +1,73 @@
+guide:
+  id: pet-adoption-intake
+  version: '1.0.0'
+  name: Adoption Intake Guide
+  description: >
+    Reads a foster's intake note and decides the adoption-catalog marking.
+    It scans the note for the animals named and the household signals, then
+    each fired rule contributes a portion marking the engine aggregates.
+  target_schemes:
+    - id: pet-adoption
+      version: '>=1.0.0'
+  categories:
+    - id: animals
+      label: Animals in the note
+    - id: home
+      label: Household signals
+  rules:
+    # A keyword hit (a literal word) and a shape match (a microchip id) both
+    # fire this rule. Either is enough; both contribute spans.
+    - id: note-mentions-dog
+      name: Note mentions a dog
+      category: animals
+      keywords: [dog, dogs, puppy]
+      match:
+        - type: regex
+          pattern: 'chip[- ]?\d{9,15}'
+          label: Microchip id
+      outcome:
+        concepts:
+          - { id: DOG, category: animal }
+
+    - id: note-mentions-cat
+      name: Note mentions a cat
+      category: animals
+      keywords: [cat, cats, kitten]
+      outcome:
+        concepts:
+          - { id: CAT, category: animal }
+
+    # The default household tier. A computed rule overrides it when the note
+    # carries a stronger signal.
+    - id: default-home
+      name: Default to any home
+      category: home
+      keywords: [foster, listing, intake]
+      outcome:
+        concepts:
+          - { id: ANY_HOME, category: household }
+
+    # A context-gated shape: a "lbs"/"weight" cue near a number marks a large
+    # animal. Used only as a household signal, so it has no animal outcome.
+    - id: large-animal-signal
+      name: Large-animal weight signal
+      category: home
+      match:
+        - context:
+            candidate: { type: regex, pattern: '\d{2,3}' }
+            cue: { type: regex, pattern: 'lbs|pounds|weight' }
+            within: { tokens: 3 }
+          label: Weight near a cue
+      outcome:
+        concepts:
+          - { id: EXPERIENCED_HOME, category: household }
+
+    # Computed: when the large-animal signal fires, the household needs an
+    # experienced home, so the default tier is replaced rather than added.
+    - id: needs-experienced-home
+      name: Needs an experienced home
+      when: { all: [{ has: large-animal-signal }] }
+      overrides: [default-home]
+      outcome:
+        concepts:
+          - { id: EXPERIENCED_HOME, category: household }

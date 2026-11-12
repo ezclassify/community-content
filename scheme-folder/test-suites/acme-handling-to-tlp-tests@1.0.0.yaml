@@ -1,0 +1,67 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: acme-handling-to-tlp-tests
+  version: 1.0.0
+  name: Acme handling to TLP crosswalk tests
+  description: >-
+    Each fictional acme-handling tier through acme-handling-to-tlp, as the
+    website cross-scheme demo translates it. OPEN and COMMUNITY carry to a TLP
+    label; PARTNERS and INTERNAL go to review and produce no label on their own.
+  composition:
+    scheme:
+      id: acme-handling
+      version: 1.0.0
+    crosswalks:
+      - id: acme-handling-to-tlp
+        version: 1.0.0
+  cases:
+    - id: community-round-trip
+      description: The demo's opening source marking reads in the source scheme.
+      operation: process
+      input:
+        marking: COMMUNITY
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: COMMUNITY }
+
+    - id: open-carries-to-clear
+      operation: translate
+      input:
+        translation:
+          crosswalkId: acme-handling-to-tlp
+          marking: OPEN
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - { path: [result, target, rendered], matcher: equals, value: 'TLP:CLEAR' }
+
+    - id: community-carries-to-green
+      operation: translate
+      input:
+        translation:
+          crosswalkId: acme-handling-to-tlp
+          marking: COMMUNITY
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - { path: [result, target, rendered], matcher: equals, value: 'TLP:GREEN' }
+
+    - id: partners-goes-to-review
+      description: Whether clients may receive it is the author's decision, so no label is produced.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: acme-handling-to-tlp
+          marking: PARTNERS
+      assertions:
+        - { path: [result, status], matcher: equals, value: partial }
+        - { path: [result, target, rendered], matcher: equals, value: '' }
+
+    - id: internal-goes-to-review
+      description: TLP:RED is never inferred from an internal-only corporate marking.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: acme-handling-to-tlp
+          marking: INTERNAL
+      assertions:
+        - { path: [result, status], matcher: equals, value: partial }
+        - { path: [result, target, rendered], matcher: equals, value: '' }

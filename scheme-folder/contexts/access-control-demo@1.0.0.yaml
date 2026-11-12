@@ -1,0 +1,10 @@
+context:
+  id: access-control-demo
+  version: 1.0.0
+  description: Levels and compartments with an access policy that also reads a role and the network zone.
+  scheme:
+    id: access-control
+    version: 1.0.0
+  access:
+    id: access-control-rules
+    version: 1.0.0

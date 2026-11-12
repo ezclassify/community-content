@@ -1,0 +1,21 @@
+# Notional access policy for the website LLM classify demo: each category compared with one user
+# attribute.
+access:
+  id: demo-access-policy
+  version: 1.0.0
+  name: Demo Access (Illustrative)
+  description: Notional access rules pairing each scheme category with a user attribute. Illustrative only.
+  target_scheme:
+    id: llm-classify-demo-scheme
+    version: '*'
+  rules:
+    - id: level-clearance
+      name: Marking level
+      attribute: clearance
+      category: level
+      strategy: gte
+    - id: control-membership
+      name: Handling controls
+      attribute: control_groups
+      category: controls
+      strategy: superset

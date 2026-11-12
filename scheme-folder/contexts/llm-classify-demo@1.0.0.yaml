@@ -1,0 +1,13 @@
+context:
+  id: llm-classify-demo
+  version: 1.0.0
+  description: Two-category demo scheme + notional guide + demo access policy
+  scheme:
+    id: llm-classify-demo-scheme
+    version: 1.0.0
+  guides:
+    - id: llm-classify-demo-guide
+      version: 1.0.0
+  access:
+    id: demo-access-policy
+    version: 1.0.0

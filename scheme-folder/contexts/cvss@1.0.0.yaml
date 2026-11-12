@@ -1,0 +1,14 @@
+context:
+  id: cvss
+  version: 1.0.0
+  description: >-
+    CVSS 4.0 and CVSS 3.1 with the reviewed crosswalks between them, as the website CVSS and
+    platform demos use them.
+  scheme:
+    id: cvss-v4
+    version: 4.0.0
+  crosswalks:
+    - id: cvss-31-to-40
+      version: 1.0.0
+    - id: cvss-40-to-31
+      version: 1.0.0

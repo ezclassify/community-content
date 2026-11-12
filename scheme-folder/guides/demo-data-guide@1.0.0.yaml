@@ -1,0 +1,144 @@
+# Data handling guide for the website marking guide demo. Its rules are illustrative.
+guide:
+  id: demo-data-guide
+  version: 1.0.0
+  name: Data Handling Guide
+  description: >-
+    Determine the correct marking for a paragraph based on the data elements it contains. Check all
+    applicable rules, or paste text for automatic analysis.
+  categories:
+    - id: technical
+      label: Technical Data
+    - id: location
+      label: Location Data
+    - id: personnel
+      label: Personnel Data
+  rules:
+    - id: ip_addr
+      name: IP Address
+      description: Any IP address, subnet, or CIDR block
+      keywords:
+        - ip
+        - address
+        - subnet
+        - CIDR
+      match:
+        - type: ipv4
+        - type: cidr
+        - type: ipv6
+      category: technical
+      outcome:
+        rendered: LEVEL-A
+    - id: network
+      name: Network Identifier
+      description: Named network, enclave, or segment
+      keywords:
+        - network
+        - enclave
+        - VLAN
+        - segment
+      category: technical
+      outcome:
+        rendered: LEVEL-A
+    - id: hostname
+      name: Hostname
+      description: Server or device hostname
+      keywords:
+        - hostname
+        - FQDN
+        - DNS
+      match:
+        - type: hostname
+      category: technical
+      outcome:
+        rendered: LEVEL-A
+    - id: facility
+      name: Facility Location
+      description: Physical building, campus, or datacenter
+      keywords:
+        - building
+        - facility
+        - campus
+        - datacenter
+        - rack
+      category: location
+      outcome:
+        rendered: LEVEL-B
+    - id: geo_coords
+      name: Geographic Coordinates
+      description: Latitude/longitude or grid coordinates
+      keywords:
+        - latitude
+        - longitude
+        - GPS
+        - grid
+      match:
+        - type: mgrs
+      category: location
+      outcome:
+        rendered: LEVEL-B
+    - id: employee
+      name: Employee Name
+      description: Name of an employee or contractor
+      keywords:
+        - employee
+        - personnel
+        - staff
+        - contractor
+      match:
+        - type: email
+      category: personnel
+      outcome:
+        rendered: LEVEL-A
+    - id: org_chart
+      name: Org Chart
+      description: Reporting structure or hierarchy
+      keywords:
+        - org chart
+        - organization
+        - hierarchy
+        - reporting
+      category: personnel
+      outcome:
+        rendered: LEVEL-B
+    - id: ip_network
+      name: IP + Network
+      description: Associating an IP with a specific network reveals topology
+      when:
+        all:
+          - has: ip_addr
+          - has: network
+      outcome:
+        rendered: LEVEL-C//CTRL-TOPO
+      overrides:
+        - ip_addr
+        - network
+      rationale: Combining IP with network name reveals network topology
+    - id: ip_facility
+      name: IP + Facility
+      description: Linking an IP to a physical location
+      when:
+        all:
+          - has: ip_addr
+          - has: facility
+      outcome:
+        rendered: LEVEL-C//CTRL-LOC
+      overrides:
+        - ip_addr
+        - facility
+      rationale: Combining technical and physical location data
+    - id: multi_location
+      name: Multiple Location Factors
+      when:
+        all:
+          - has: facility
+          - has: geo_coords
+      outcome:
+        rendered: LEVEL-C//CTRL-LOC
+      overrides:
+        - facility
+        - geo_coords
+      rationale: Multiple location factors increase sensitivity
+  target_schemes:
+    - id: demo-scheme
+      version: '*'

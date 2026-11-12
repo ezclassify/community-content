@@ -1,0 +1,86 @@
+# A generic scheme of levels and compartments for the website access control demo.
+scheme:
+  id: access-control
+  version: 1.0.0
+  name: Access Control
+  description: A generic access control scheme with levels and compartments
+  data:
+    concepts:
+      - id: PUBLIC
+        name: Public
+        views:
+          default: Public
+        categories:
+          - level
+        position: 0
+        rank: 0
+      - id: INTERNAL
+        name: Internal
+        views:
+          default: Internal
+        categories:
+          - level
+        position: 1
+        rank: 1
+      - id: RESTRICTED
+        name: Restricted
+        views:
+          default: Restricted
+        categories:
+          - level
+        position: 2
+        rank: 2
+      - id: CRITICAL
+        name: Critical
+        views:
+          default: Critical
+        categories:
+          - level
+        position: 3
+        rank: 3
+      - id: ALPHA
+        name: Alpha
+        views:
+          default: Alpha
+        categories:
+          - compartment
+        position: 0
+      - id: BRAVO
+        name: Bravo
+        views:
+          default: Bravo
+        categories:
+          - compartment
+        position: 1
+      - id: CHARLIE
+        name: Charlie
+        views:
+          default: Charlie
+        categories:
+          - compartment
+        position: 2
+    categories:
+      - id: level
+        label: Level
+        required: true
+        single: true
+        rollup: max
+        position: 0
+      - id: compartment
+        label: Compartment
+        required: false
+        single: false
+        rollup: union
+        position: 1
+  render:
+    default: default
+    formats:
+      - id: default
+        mode: inline
+        surface: default
+        separator: //
+        fields:
+          - category: level
+            separator: //
+          - category: compartment
+            separator: //

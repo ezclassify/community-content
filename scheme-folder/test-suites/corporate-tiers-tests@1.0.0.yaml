@@ -1,0 +1,51 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: corporate-tiers-tests
+  version: 1.0.0
+  name: Corporate tiers tests
+  description: >-
+    The markings the website multi-scheme and platform demos open on, an alias
+    a reader types, and a rollup across a tier and a caveat.
+  composition:
+    scheme:
+      id: corporate-tiers
+      version: 1.0.0
+  cases:
+    - id: confidential-round-trip
+      description: The platform demo's example marking parses and renders back unchanged.
+      operation: process
+      input:
+        marking: CONFIDENTIAL
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: CONFIDENTIAL }
+
+    - id: tier-with-caveat
+      description: A tier and a handling caveat render in category order.
+      operation: process
+      input:
+        marking: CONFIDENTIAL//NEED TO KNOW
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: CONFIDENTIAL//NEED TO KNOW }
+        - path: [assertions]
+          matcher: contains
+          value: { conceptId: NEED_TO_KNOW, categoryId: caveat }
+
+    - id: alias-reads-as-tier
+      description: The long alias reads as the INTERNAL tier.
+      operation: process
+      input:
+        marking: internal use only
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: INTERNAL }
+
+    - id: rollup-keeps-highest-tier-and-every-caveat
+      description: The tier rolls up to the highest and caveats combine by union.
+      operation: aggregate
+      input:
+        markings: [CONFIDENTIAL, INTERNAL//DO NOT FORWARD]
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: CONFIDENTIAL//DO NOT FORWARD }

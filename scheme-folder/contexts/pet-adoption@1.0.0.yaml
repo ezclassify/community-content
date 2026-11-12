@@ -1,0 +1,10 @@
+context:
+  id: pet-adoption
+  version: 1.0.0
+  description: The pet adoption scheme and its intake guide, as the developer guides use them.
+  scheme:
+    id: pet-adoption
+    version: 1.0.0
+  guides:
+    - id: pet-adoption-intake
+      version: 1.0.0
