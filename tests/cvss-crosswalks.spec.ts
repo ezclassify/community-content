@@ -14,8 +14,8 @@ import { parseDocument } from '@ezclassify/validator'
 import { schemeDocument, type SchemeDocument } from './helpers/scheme-document'
 
 interface Ref {
-  categoryId: string
-  conceptId: string
+  category: string
+  concept: string
 }
 
 interface Mapping {
@@ -37,8 +37,8 @@ interface Candidate {
 interface Crosswalk {
   id: string
   version: string
-  sourceScheme: { id: string; version: string }
-  targetScheme: { id: string; version: string }
+  source_scheme: { id: string; version: string }
+  target_scheme: { id: string; version: string }
   mappings: Mapping[]
   selections?: Array<{ id: string; candidates: Candidate[] }>
 }
@@ -98,7 +98,7 @@ function declared(scheme: SchemeDocument): Set<string> {
   )
 }
 
-const key = (ref: Ref): string => `${ref.categoryId}/${ref.conceptId}`
+const key = (ref: Ref): string => `${ref.category}/${ref.concept}`
 
 describe.each([
   {
@@ -119,8 +119,8 @@ describe.each([
   it('runs between the two CVSS schemes this folder ships', () => {
     expect(doc.id).toBe(id)
     expect(doc.version).toBe('1.0.0')
-    expect(`${doc.sourceScheme.id}@${doc.sourceScheme.version}`).toBe(source)
-    expect(`${doc.targetScheme.id}@${doc.targetScheme.version}`).toBe(target)
+    expect(`${doc.source_scheme.id}@${doc.source_scheme.version}`).toBe(source)
+    expect(`${doc.target_scheme.id}@${doc.target_scheme.version}`).toBe(target)
   })
 
   it('names only metric values its two schemes declare', () => {

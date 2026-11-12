@@ -109,28 +109,6 @@ function readEntry(file, entry) {
 }
 
 /**
- * The composition a suite runs against: its own, or the nearest ancestor's when
- * it extends a parent and names none.
- *
- * @param {Record<string, any>} suite A schema-valid suite.
- * @param {Map<string, Record<string, any>>} suites Every valid suite in the folder, by `id@version`.
- * @returns {Record<string, any> | undefined} Undefined when a parent is missing or the chain loops.
- */
-export function effectiveComposition(suite, suites) {
-    const seen = new Set();
-    let current = suite;
-    while (current) {
-        if (current.composition) return current.composition;
-        if (!current.extends) return undefined;
-        const key = `${current.extends.id}@${current.extends.version}`;
-        if (seen.has(key)) return undefined;
-        seen.add(key);
-        current = suites.get(key);
-    }
-    return undefined;
-}
-
-/**
  * Every definition a composition names, as `{kind, ref, where}`.
  *
  * Scheme layers are schemes, guide layers are guides, and access layers are

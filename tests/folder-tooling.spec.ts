@@ -123,7 +123,7 @@ describe('npm run validate', () => {
     )
     const result = run('scripts/validate-folder.mjs', [], root)
     expect(result.code).toBe(1)
-    expect(result.err).toContain('sourceScheme names scheme "cvss@3.0.0"')
+    expect(result.err).toContain('source_scheme names scheme "cvss@3.0.0"')
   })
 
   it('fails when a crosswalk runs in no test suite', () => {
@@ -252,8 +252,8 @@ describe('npm run build', () => {
     expect(Object.keys(crosswalk)).toEqual(['crosswalk'])
     expect(crosswalk.crosswalk).toMatchObject({
       id: 'cvss-40-to-31',
-      sourceScheme: { id: 'cvss-v4', version: '4.0.0' },
-      targetScheme: { id: 'cvss', version: '3.1.0' },
+      source_scheme: { id: 'cvss-v4', version: '4.0.0' },
+      target_scheme: { id: 'cvss', version: '3.1.0' },
     })
 
     const contexts = JSON.parse(fs.readFileSync(path.join(outDir, 'contexts.json'), 'utf-8'))

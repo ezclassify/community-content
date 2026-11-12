@@ -17,65 +17,65 @@ crosswalk:
   description: Carry unchanged exploitability values and expose every changed, retired, or unresolved metric.
   guidance: Preserve the 3.1 source and require an analyst to complete every review outcome before scoring v4.0.
   citation: https://www.first.org/cvss/v4.0/
-  sourceScheme:
+  source_scheme:
     id: cvss
     version: 3.1.0
-  targetScheme:
+  target_scheme:
     id: cvss-v4
     version: 4.0.0
   mappings:
     # Exploitability metrics 4.0 keeps as they were.
     - id: carry-attack_vector-AV_N
       source:
-        categoryId: attack_vector
-        conceptId: AV_N
+        category: attack_vector
+        concept: AV_N
       targets:
-        - categoryId: attack_vector
-          conceptId: AV_N
+        - category: attack_vector
+          concept: AV_N
       disposition: carry
       reason: Attack Vector retains the same four values in CVSS 4.0.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/specification-document
     - id: carry-attack_vector-AV_A
       source:
-        categoryId: attack_vector
-        conceptId: AV_A
+        category: attack_vector
+        concept: AV_A
       targets:
-        - categoryId: attack_vector
-          conceptId: AV_A
+        - category: attack_vector
+          concept: AV_A
       disposition: carry
       reason: Attack Vector retains the same four values in CVSS 4.0.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/specification-document
     - id: carry-attack_vector-AV_L
       source:
-        categoryId: attack_vector
-        conceptId: AV_L
+        category: attack_vector
+        concept: AV_L
       targets:
-        - categoryId: attack_vector
-          conceptId: AV_L
+        - category: attack_vector
+          concept: AV_L
       disposition: carry
       reason: Attack Vector retains the same four values in CVSS 4.0.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/specification-document
     - id: carry-attack_vector-AV_P
       source:
-        categoryId: attack_vector
-        conceptId: AV_P
+        category: attack_vector
+        concept: AV_P
       targets:
-        - categoryId: attack_vector
-          conceptId: AV_P
+        - category: attack_vector
+          concept: AV_P
       disposition: carry
       reason: Attack Vector retains the same four values in CVSS 4.0.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/specification-document
     - id: carry-attack_complexity-AC_L
       source:
-        categoryId: attack_complexity
-        conceptId: AC_L
+        category: attack_complexity
+        concept: AC_L
       targets:
-        - categoryId: attack_complexity
-          conceptId: AC_L
+        - category: attack_complexity
+          concept: AC_L
       disposition: carry
       reason: Low Attack Complexity can carry; the new Attack Requirements metric still needs reassessment.
       authority: EzClassify community migration policy
@@ -85,67 +85,66 @@ crosswalk:
     # Attack Requirements.
     - id: review-attack_complexity-AC_H
       source:
-        categoryId: attack_complexity
-        conceptId: AC_H
+        category: attack_complexity
+        concept: AC_H
       disposition: review
       reason: >-
-        CVSS 3.1 High complexity combines conditions that CVSS 4.0 separates into Attack Complexity and Attack
-        Requirements. Reassess both metrics.
+        CVSS 3.1 High complexity combines conditions that CVSS 4.0 separates into Attack Complexity and Attack Requirements. Reassess both metrics.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: carry-privileges_required-PR_N
       source:
-        categoryId: privileges_required
-        conceptId: PR_N
+        category: privileges_required
+        concept: PR_N
       targets:
-        - categoryId: privileges_required
-          conceptId: PR_N
+        - category: privileges_required
+          concept: PR_N
       disposition: carry
       reason: Privileges Required retains None, Low, and High.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/specification-document
     - id: carry-privileges_required-PR_L
       source:
-        categoryId: privileges_required
-        conceptId: PR_L
+        category: privileges_required
+        concept: PR_L
       targets:
-        - categoryId: privileges_required
-          conceptId: PR_L
+        - category: privileges_required
+          concept: PR_L
       disposition: carry
       reason: Privileges Required retains None, Low, and High.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/specification-document
     - id: carry-privileges_required-PR_H
       source:
-        categoryId: privileges_required
-        conceptId: PR_H
+        category: privileges_required
+        concept: PR_H
       targets:
-        - categoryId: privileges_required
-          conceptId: PR_H
+        - category: privileges_required
+          concept: PR_H
       disposition: carry
       reason: Privileges Required retains None, Low, and High.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/specification-document
     - id: carry-user-interaction-none
       source:
-        categoryId: user_interaction
-        conceptId: UI_N
+        category: user_interaction
+        concept: UI_N
       targets:
-        - categoryId: user_interaction
-          conceptId: UI_N
+        - category: user_interaction
+          concept: UI_N
       disposition: carry
       reason: No user interaction remains an explicit CVSS 4.0 value.
       authority: https://www.first.org/cvss/v4.0/specification-document
     - id: review-user-interaction-required
       source:
-        categoryId: user_interaction
-        conceptId: UI_R
+        category: user_interaction
+        concept: UI_R
       targets:
-        - categoryId: user_interaction
-          conceptId: UI_P
-        - categoryId: user_interaction
-          conceptId: UI_A
+        - category: user_interaction
+          concept: UI_P
+        - category: user_interaction
+          concept: UI_A
       disposition: review
       reason: CVSS 4.0 splits Required into Passive and Active; the 3.1 value does not identify which one applies.
       authority: https://www.first.org/cvss/v4.0/
@@ -155,8 +154,8 @@ crosswalk:
     # vector does not record.
     - id: review-scope-S_U
       source:
-        categoryId: scope
-        conceptId: S_U
+        category: scope
+        concept: S_U
       disposition: review
       reason: CVSS 4.0 retires Scope and requires separate Vulnerable System and Subsequent System impact decisions.
       authority: EzClassify community migration policy
@@ -164,8 +163,8 @@ crosswalk:
       citation: https://www.first.org/cvss/v4.0/
     - id: review-scope-S_C
       source:
-        categoryId: scope
-        conceptId: S_C
+        category: scope
+        concept: S_C
       disposition: review
       reason: CVSS 4.0 retires Scope and requires separate Vulnerable System and Subsequent System impact decisions.
       authority: EzClassify community migration policy
@@ -173,100 +172,91 @@ crosswalk:
       citation: https://www.first.org/cvss/v4.0/
     - id: review-confidentiality-C_N
       source:
-        categoryId: confidentiality
-        conceptId: C_N
+        category: confidentiality
+        concept: C_N
       disposition: review
       reason: >-
-        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent
-        System.
+        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent System.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-confidentiality-C_L
       source:
-        categoryId: confidentiality
-        conceptId: C_L
+        category: confidentiality
+        concept: C_L
       disposition: review
       reason: >-
-        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent
-        System.
+        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent System.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-confidentiality-C_H
       source:
-        categoryId: confidentiality
-        conceptId: C_H
+        category: confidentiality
+        concept: C_H
       disposition: review
       reason: >-
-        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent
-        System.
+        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent System.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-integrity-I_N
       source:
-        categoryId: integrity
-        conceptId: I_N
+        category: integrity
+        concept: I_N
       disposition: review
       reason: >-
-        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent
-        System.
+        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent System.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-integrity-I_L
       source:
-        categoryId: integrity
-        conceptId: I_L
+        category: integrity
+        concept: I_L
       disposition: review
       reason: >-
-        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent
-        System.
+        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent System.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-integrity-I_H
       source:
-        categoryId: integrity
-        conceptId: I_H
+        category: integrity
+        concept: I_H
       disposition: review
       reason: >-
-        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent
-        System.
+        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent System.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-availability-A_N
       source:
-        categoryId: availability
-        conceptId: A_N
+        category: availability
+        concept: A_N
       disposition: review
       reason: >-
-        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent
-        System.
+        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent System.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-availability-A_L
       source:
-        categoryId: availability
-        conceptId: A_L
+        category: availability
+        concept: A_L
       disposition: review
       reason: >-
-        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent
-        System.
+        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent System.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-availability-A_H
       source:
-        categoryId: availability
-        conceptId: A_H
+        category: availability
+        concept: A_H
       disposition: review
       reason: >-
-        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent
-        System.
+        A CVSS 3.1 impact value does not say whether it belongs to the Vulnerable System or a Subsequent System.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
@@ -275,126 +265,124 @@ crosswalk:
     # Maturity; Remediation Level and Report Confidence are gone.
     - id: omit-exploit-maturity-not-defined
       source:
-        categoryId: exploit_code_maturity
-        conceptId: E_X
+        category: exploit_code_maturity
+        concept: E_X
       disposition: omit
       reason: Not Defined is represented by omitting the optional CVSS 4.0 Exploit Maturity metric.
       authority: https://www.first.org/cvss/v4.0/specification-document
     - id: carry-exploit_code_maturity-E_P
       source:
-        categoryId: exploit_code_maturity
-        conceptId: E_P
+        category: exploit_code_maturity
+        concept: E_P
       targets:
-        - categoryId: exploit_maturity
-          conceptId: E_P
+        - category: exploit_maturity
+          concept: E_P
       disposition: carry
       reason: Proof-of-Concept remains an explicit CVSS 4.0 value.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/specification-document
     - id: review-exploit-maturity-unproven
       source:
-        categoryId: exploit_code_maturity
-        conceptId: E_U
+        category: exploit_code_maturity
+        concept: E_U
       targets:
-        - categoryId: exploit_maturity
-          conceptId: E_U
+        - category: exploit_maturity
+          concept: E_U
       disposition: review
       reason: >-
-        The U code changes from Unproven in 3.1 to Unreported in 4.0 and must be checked against the newer
-        criteria.
+        The U code changes from Unproven in 3.1 to Unreported in 4.0 and must be checked against the newer criteria.
       authority: https://www.first.org/cvss/v4.0/specification-document
     - id: review-exploit-maturity-functional
       source:
-        categoryId: exploit_code_maturity
-        conceptId: E_F
+        category: exploit_code_maturity
+        concept: E_F
       targets:
-        - categoryId: exploit_maturity
-          conceptId: E_P
-        - categoryId: exploit_maturity
-          conceptId: E_A
+        - category: exploit_maturity
+          concept: E_P
+        - category: exploit_maturity
+          concept: E_A
       disposition: review
       reason: CVSS 4.0 replaces Functional with evidence-based Proof-of-Concept or Attacked choices.
       authority: https://www.first.org/cvss/v4.0/specification-document
     - id: review-exploit-maturity-high
       source:
-        categoryId: exploit_code_maturity
-        conceptId: E_H
+        category: exploit_code_maturity
+        concept: E_H
       targets:
-        - categoryId: exploit_maturity
-          conceptId: E_A
+        - category: exploit_maturity
+          concept: E_A
       disposition: review
       reason: >-
-        CVSS 4.0 Attacked uses observed attack or exploitation-enablement criteria that a 3.1 High value alone
-        does not prove.
+        CVSS 4.0 Attacked uses observed attack or exploitation-enablement criteria that a 3.1 High value alone does not prove.
       authority: https://www.first.org/cvss/v4.0/specification-document
     - id: omit-remediation_level-RL_X
       source:
-        categoryId: remediation_level
-        conceptId: RL_X
+        category: remediation_level
+        concept: RL_X
       disposition: omit
       reason: CVSS 4.0 retires Remediation Level.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/
     - id: omit-remediation_level-RL_O
       source:
-        categoryId: remediation_level
-        conceptId: RL_O
+        category: remediation_level
+        concept: RL_O
       disposition: omit
       reason: CVSS 4.0 retires Remediation Level.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/
     - id: omit-remediation_level-RL_T
       source:
-        categoryId: remediation_level
-        conceptId: RL_T
+        category: remediation_level
+        concept: RL_T
       disposition: omit
       reason: CVSS 4.0 retires Remediation Level.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/
     - id: omit-remediation_level-RL_W
       source:
-        categoryId: remediation_level
-        conceptId: RL_W
+        category: remediation_level
+        concept: RL_W
       disposition: omit
       reason: CVSS 4.0 retires Remediation Level.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/
     - id: omit-remediation_level-RL_U
       source:
-        categoryId: remediation_level
-        conceptId: RL_U
+        category: remediation_level
+        concept: RL_U
       disposition: omit
       reason: CVSS 4.0 retires Remediation Level.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/
     - id: omit-report_confidence-RC_X
       source:
-        categoryId: report_confidence
-        conceptId: RC_X
+        category: report_confidence
+        concept: RC_X
       disposition: omit
       reason: CVSS 4.0 retires Report Confidence.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/
     - id: omit-report_confidence-RC_U
       source:
-        categoryId: report_confidence
-        conceptId: RC_U
+        category: report_confidence
+        concept: RC_U
       disposition: omit
       reason: CVSS 4.0 retires Report Confidence.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/
     - id: omit-report_confidence-RC_R
       source:
-        categoryId: report_confidence
-        conceptId: RC_R
+        category: report_confidence
+        concept: RC_R
       disposition: omit
       reason: CVSS 4.0 retires Report Confidence.
       authority: EzClassify community migration policy
       citation: https://www.first.org/cvss/v4.0/
     - id: omit-report_confidence-RC_C
       source:
-        categoryId: report_confidence
-        conceptId: RC_C
+        category: report_confidence
+        concept: RC_C
       disposition: omit
       reason: CVSS 4.0 retires Report Confidence.
       authority: EzClassify community migration policy
@@ -403,145 +391,121 @@ crosswalk:
     # Environmental Security Requirements.
     - id: review-confidentiality_requirement-CR_X
       source:
-        categoryId: confidentiality_requirement
-        conceptId: CR_X
+        category: confidentiality_requirement
+        concept: CR_X
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-confidentiality_requirement-CR_L
       source:
-        categoryId: confidentiality_requirement
-        conceptId: CR_L
+        category: confidentiality_requirement
+        concept: CR_L
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-confidentiality_requirement-CR_M
       source:
-        categoryId: confidentiality_requirement
-        conceptId: CR_M
+        category: confidentiality_requirement
+        concept: CR_M
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-confidentiality_requirement-CR_H
       source:
-        categoryId: confidentiality_requirement
-        conceptId: CR_H
+        category: confidentiality_requirement
+        concept: CR_H
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-integrity_requirement-IR_X
       source:
-        categoryId: integrity_requirement
-        conceptId: IR_X
+        category: integrity_requirement
+        concept: IR_X
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-integrity_requirement-IR_L
       source:
-        categoryId: integrity_requirement
-        conceptId: IR_L
+        category: integrity_requirement
+        concept: IR_L
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-integrity_requirement-IR_M
       source:
-        categoryId: integrity_requirement
-        conceptId: IR_M
+        category: integrity_requirement
+        concept: IR_M
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-integrity_requirement-IR_H
       source:
-        categoryId: integrity_requirement
-        conceptId: IR_H
+        category: integrity_requirement
+        concept: IR_H
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-availability_requirement-AR_X
       source:
-        categoryId: availability_requirement
-        conceptId: AR_X
+        category: availability_requirement
+        concept: AR_X
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-availability_requirement-AR_L
       source:
-        categoryId: availability_requirement
-        conceptId: AR_L
+        category: availability_requirement
+        concept: AR_L
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-availability_requirement-AR_M
       source:
-        categoryId: availability_requirement
-        conceptId: AR_M
+        category: availability_requirement
+        concept: AR_M
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/
     - id: review-availability_requirement-AR_H
       source:
-        categoryId: availability_requirement
-        conceptId: AR_H
+        category: availability_requirement
+        concept: AR_H
       disposition: review
       reason: >-
-        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's
-        environment and are scored beside the new Modified Base metrics, so the consumer confirms them during
-        the v4.0 assessment.
+        CVSS 4.0 keeps the Security Requirements metrics and their values, but they describe the consumer's environment and are scored beside the new Modified Base metrics, so the consumer confirms them during the v4.0 assessment.
       authority: EzClassify community migration policy
       guidance: A qualified analyst must choose the v4.0 value from current vulnerability evidence.
       citation: https://www.first.org/cvss/v4.0/

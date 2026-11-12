@@ -17,7 +17,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { FOLDER, REPO_ROOT } from './lib/scheme-folder.mjs';
-import { effectiveComposition, readTestSuites, testPolicyOf } from './lib/test-suites.mjs';
+import { readTestSuites, testPolicyOf } from './lib/test-suites.mjs';
 
 const entries = readTestSuites(FOLDER);
 const invalid = entries.filter((entry) => entry.problems.length > 0);
@@ -30,15 +30,9 @@ if (invalid.length > 0) {
     process.exit(1);
 }
 
-const suites = new Map(entries.map(({ suite }) => [`${suite.id}@${suite.version}`, suite]));
 const index = [];
-for (const { suite, fileName } of entries) {
-    const composition = effectiveComposition(suite, suites);
-    if (!composition) {
-        console.error(`[test-suites] ${fileName} extends a suite this folder does not hold`);
-        process.exit(1);
-    }
-    const testPolicy = testPolicyOf(composition);
+for (const { suite } of entries) {
+    const testPolicy = testPolicyOf(suite.composition);
     index.push({
         id: suite.id,
         version: suite.version,

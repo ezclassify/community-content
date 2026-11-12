@@ -28,7 +28,7 @@ export interface AuthoredCategory {
 }
 
 /**
- * A concept as authored under `scheme.data.concepts.inline`.
+ * A concept as authored under `scheme.data.concepts`.
  *
  * `views` is authored either as a map keyed by view name or as a plain string.
  * The string form is a schema-sanctioned shorthand for `{ default: "..." }`
@@ -102,7 +102,7 @@ export interface AuthoredScheme {
   name: string
   data: {
     categories: AuthoredCategory[]
-    concepts: { inline: AuthoredConcept[] }
+    concepts: AuthoredConcept[]
   }
   rules?: AuthoredRule[]
   render?: {
@@ -135,9 +135,9 @@ export class SchemeDocument {
     return this.scheme.data.categories.map((category) => category.id)
   }
 
-  /** Every inline concept, in authored order. */
+  /** Every concept the scheme writes by hand, in authored order. */
   get concepts(): AuthoredConcept[] {
-    return this.scheme.data.concepts.inline
+    return this.scheme.data.concepts
   }
 
   /** One category by id, or `undefined` when it is not declared. */

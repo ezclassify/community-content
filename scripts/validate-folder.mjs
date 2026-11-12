@@ -35,12 +35,7 @@ import {
     listTypeDirFiles,
     validateDefinitionFile,
 } from './lib/scheme-folder.mjs';
-import {
-    TEST_SUITES_DIRNAME,
-    compositionRefs,
-    effectiveComposition,
-    readTestSuites,
-} from './lib/test-suites.mjs';
+import { TEST_SUITES_DIRNAME, compositionRefs, readTestSuites } from './lib/test-suites.mjs';
 import { parseDocument } from '@ezclassify/validator';
 
 const manifestPath = path.join(FOLDER, MANIFEST_FILENAME);
@@ -139,7 +134,7 @@ if (!fs.existsSync(manifestPath)) {
 // A crosswalk is reviewed against two exact scheme versions. Pinning one this
 // folder does not hold would publish a translation nothing here can run.
 for (const { document, file } of crosswalks) {
-    for (const role of ['sourceScheme', 'targetScheme']) {
+    for (const role of ['source_scheme', 'target_scheme']) {
         const ref = `${document[role].id}@${document[role].version}`;
         if (!onDisk.scheme.has(ref)) {
             fail(
@@ -162,7 +157,6 @@ const suites = new Map(
         .filter((entry) => entry.suite)
         .map(({ suite, file }) => [`${suite.id}@${suite.version}`, { suite, file }]),
 );
-const bySuiteKey = new Map([...suites].map(([key, { suite }]) => [key, suite]));
 
 /** Every scheme version some suite runs against. */
 const covered = new Set();
@@ -174,22 +168,7 @@ for (const { suite, file } of suites.values()) {
         caseIds.add(id);
     }
 
-    if (suite.extends) {
-        const parent = `${suite.extends.id}@${suite.extends.version}`;
-        if (!suites.has(parent)) {
-            fail(
-                'suite_parent_unresolved',
-                `extends suite "${parent}", which ${TEST_SUITES_DIRNAME}/ does not hold`,
-                file,
-            );
-            continue;
-        }
-    }
-    const composition = effectiveComposition(suite, bySuiteKey);
-    if (!composition) {
-        fail('suite_parent_unresolved', 'its extends chain does not reach a composition', file);
-        continue;
-    }
+    const { composition } = suite;
     for (const { kind, ref, where } of compositionRefs(composition)) {
         if (!onDisk[kind]?.has(ref)) {
             fail(
