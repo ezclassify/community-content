@@ -51,7 +51,7 @@ testSuite:
 
     - id: redact-before-release-is-omitted
       name: REDACT BEFORE RELEASE is omitted
-      description: A scoring-style instruction with no meaning outside the handling profile is omitted, so the translation is complete.
+      description: The instruction to prepare a separate public version has no place in the protection profile, so it is omitted and the translation is complete.
       operation: translate
       input:
         translation:
@@ -67,7 +67,7 @@ testSuite:
             mappingId: handling-redact
             disposition: omit
             targets: []
-            reason: A scoring check means nothing outside the handling profile.
+            reason: The protection profile records who may read a copy, not how to prepare a public release.
 
     - id: keep-sealed-forbids-the-translation
       name: KEEP SEALED forbids the translation

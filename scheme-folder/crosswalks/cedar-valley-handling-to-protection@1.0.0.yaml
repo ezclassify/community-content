@@ -58,7 +58,7 @@ crosswalk:
     - id: handling-redact
       source: { category: handling, concept: REDACT_BEFORE_RELEASE }
       disposition: omit
-      reason: A scoring check means nothing outside the handling profile.
+      reason: The protection profile records who may read a copy, not how to prepare a public release.
 
     - id: handling-keep-sealed
       source: { category: handling, concept: KEEP_SEALED }
