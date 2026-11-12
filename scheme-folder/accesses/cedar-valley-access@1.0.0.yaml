@@ -16,7 +16,7 @@ access:
       when:
         data:
           category: level
-          operator: min_order
+          operator: min_rank
           value: 1
       deny_reason: The reader’s trusted clearance is below this protection level.
     - id: sensitive-content-permissions

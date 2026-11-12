@@ -18,7 +18,9 @@ const STAGES = ['cedar-valley-protection', 'cedar-valley-handling', 'cedar-valle
 
 const suites = fs
   .readdirSync(SUITES)
-  .filter((name) => name.startsWith('cedar-valley'))
+  .filter((name) =>
+    STAGES.some((stage) => new RegExp(`^${stage}(-guide|-access)?-tests@`).test(name)),
+  )
   .map((name) => (parseDocument(path.join(SUITES, name)) as { testSuite: TestSuite }).testSuite)
 
 /** The suite with this id. */

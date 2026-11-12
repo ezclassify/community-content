@@ -80,6 +80,9 @@ crosswalks:
   - id: acme-handling-to-tlp
     versions:
       - 1.0.0
+  - id: cedar-valley-handling-to-protection
+    versions:
+      - 1.0.0
   - id: cvss-31-to-40
     versions:
       - 1.0.0
@@ -94,6 +97,9 @@ contexts:
     versions:
       - 1.0.0
   - id: cedar-valley-handling
+    versions:
+      - 1.0.0
+  - id: cedar-valley-handling-to-protection
     versions:
       - 1.0.0
   - id: cedar-valley-protection
