@@ -152,7 +152,7 @@ testSuite:
 Studio exports and imports the same document, so a suite written here and a
 suite written in Studio are interchangeable.
 
-What `npm run validate` and the CLI both hold a suite to:
+What `npm run validate` and the authoring runtime both hold a suite to:
 
 - The file holds one document under a single `testSuite:` key, and it satisfies
   the published suite schema in `@ezclassify/schemas`.
