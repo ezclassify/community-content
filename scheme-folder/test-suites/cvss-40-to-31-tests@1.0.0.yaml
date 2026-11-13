@@ -65,7 +65,7 @@ testSuite:
           matcher: contains
           value:
             source: { categoryId: sc_impact, conceptId: SC_N }
-            disposition: omit
+            disposition: not-selected
             targets: []
 
     - id: subsequent-system-impact-wins-and-changes-scope
@@ -110,7 +110,7 @@ testSuite:
           matcher: contains
           value:
             source: { categoryId: vc_impact, conceptId: VC_N }
-            disposition: omit
+            disposition: not-selected
             targets: []
         - path: [result, outcomes]
           matcher: contains
