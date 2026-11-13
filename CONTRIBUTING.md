@@ -45,7 +45,7 @@ citations live under `schemes/<family>/<id>/`.
 | Format manifest | `npm run fmt`           | Rewrites [`scheme-folder/scheme-folder.yaml`](scheme-folder/scheme-folder.yaml) to index every definition on disk, and renames files to `<id>@<version>.yaml`. Run it after adding or renaming a scheme.                                                                                                        |
 | Build           | `npm run build`         | Compiles every scheme to `dist/schemes/<id>@<version>.json` plus `contexts.json`, and every test suite to `dist/test-suites/`. That `dist/` is what ships in the `@ezclassify/schemes` npm package.                                                                                                             |
 | Test            | `npm test`              | Runs Vitest across the repository specs (`npm run test:verbose` for serial verbose).                                                                                                                                                                                                                            |
-| Test suites     | `npm run test:behavior` | Sends every test suite and the definitions it composes to an EzClassify authoring runtime and reports the runtime's verdicts. Needs a licensed dev-root runtime; see below.                                                                                                                                     |
+| Test suites     | `npm run test:behavior` | Sends every test suite and the definitions it composes to an EzClassify authoring runtime and reports the runtime's verdicts. Maintainer CI runs it on a private runtime; see below.                                                                                                                            |
 | Clean           | `npm run clean`         | Remove build/test artifacts (`:cache` cache-only, `:deep` everything).                                                                                                                                                                                                                                          |
 
 ## Generated references
@@ -72,7 +72,7 @@ scheme, guides, access policy and crosswalks it composes (with their layers) to
 the runtime, and runs the suite on the result:
 
 ```bash
-# A dev-root authoring runtime that is already running:
+# An authoring runtime that is already running:
 EZCLASSIFY_AUTHORING_URL=http://127.0.0.1:3000 npm run test:behavior
 
 # Or the stage.json that the engine repository's `stage` tool printed; the lane
@@ -83,15 +83,14 @@ EZCLASSIFY_STAGE_PLAN=/path/to/stage/stage.json npm run test:behavior -- --repor
 Every suite in the folder runs. A suite the runtime refuses to read, compose or
 run counts as a failure, and so does a run in which no case passes.
 
-The authoring runtime is part of a Runtime license and is not on npm. It runs
-only as a development-root build that `stage` writes an installation for, which
-is how maintainers run this lane. The lane fails when no runtime is configured
-or reachable. Public schema and tooling checks remain runnable without Runtime.
+This lane runs in maintainer CI on a private authoring runtime, which is not on
+npm. The lane fails when no runtime is configured or reachable. As a
+contributor, run `npm run validate` and `npm test`; neither needs a runtime.
 
-### Contributing without a Runtime license
+### Getting a behavioral run
 
 You can author schemes and canonical test suites, run the public checks above,
-and open a draft PR without buying Runtime or Studio. Ask a maintainer for a
+and open a draft PR without any EzClassify license. Ask a maintainer for a
 behavioral run of your contribution.
 
 Maintainer-assisted behavioral testing is in pilot. Hosted runs are not yet
@@ -102,7 +101,7 @@ run. The intended workflow is:
    head SHA.
 2. A fixed private runner evaluates only the approved declarative data. It
    does not execute your scripts, workflows or dependency installation, and
-   does not distribute the engine or a reusable Runtime license.
+   does not distribute the engine or a license.
 3. The maintainer downloads the full canonical JSON report and approval receipt,
    checks that the PR still has the approved head, and posts both to the PR.
    The receipt identifies the commit and engine build; private artifact links
@@ -112,7 +111,7 @@ run. The intended workflow is:
 
 This pilot accepts public contributions to this repository, with self-contained
 YAML definitions and suites. Do not submit private material or licensed vendor content without the rights to make
-it public. Private and offline engine testing requires Runtime rights.
+it public.
 
 CI in this public repository runs the independent schema, tooling and package
 checks. A green public CI run does not claim that engine behavior was tested;
