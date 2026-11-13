@@ -39,14 +39,14 @@ The source of truth is the scheme folder. Each definition lives flat at
 beside it in [`scheme-folder/test-suites/`](scheme-folder/test-suites/). Each scheme's docs and
 citations live under `schemes/<family>/<id>/`.
 
-| Action          | Command                                  | What it does                                                                                                                                                                                                                                                                                                    |
-| --------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Validate        | `npm run validate`                       | Checks every definition against its published JSON Schema with `@ezclassify/validator`, checks the manifest against the files on disk, and checks every test suite against the published suite schema and against the definitions this folder holds. Shape and bookkeeping only: nothing here evaluates a rule. |
-| Format manifest | `npm run fmt`                            | Rewrites [`scheme-folder/scheme-folder.yaml`](scheme-folder/scheme-folder.yaml) to index every definition on disk, and renames files to `<id>@<version>.yaml`. Run it after adding or renaming a scheme.                                                                                                        |
-| Build           | `npm run build`                          | Compiles every scheme to `dist/schemes/<id>@<version>.json` plus `contexts.json`, and every test suite to `dist/test-suites/`. That `dist/` is what ships in the `@ezclassify/schemes` npm package.                                                                                                             |
-| Test            | `npm test`                               | Runs Vitest across the repository specs (`npm run test:verbose` for serial verbose).                                                                                                                                                                                                                            |
-| Test suites     | `ezclassify scheme test ./scheme-folder` | Runs every test suite against the real engine. Needs the EzClassify CLI; see below.                                                                                                                                                                                                                             |
-| Clean           | `npm run clean`                          | Remove build/test artifacts (`:cache` cache-only, `:deep` everything).                                                                                                                                                                                                                                          |
+| Action          | Command                 | What it does                                                                                                                                                                                                                                                                                                    |
+| --------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Validate        | `npm run validate`      | Checks every definition against its published JSON Schema with `@ezclassify/validator`, checks the manifest against the files on disk, and checks every test suite against the published suite schema and against the definitions this folder holds. Shape and bookkeeping only: nothing here evaluates a rule. |
+| Format manifest | `npm run fmt`           | Rewrites [`scheme-folder/scheme-folder.yaml`](scheme-folder/scheme-folder.yaml) to index every definition on disk, and renames files to `<id>@<version>.yaml`. Run it after adding or renaming a scheme.                                                                                                        |
+| Build           | `npm run build`         | Compiles every scheme to `dist/schemes/<id>@<version>.json` plus `contexts.json`, and every test suite to `dist/test-suites/`. That `dist/` is what ships in the `@ezclassify/schemes` npm package.                                                                                                             |
+| Test            | `npm test`              | Runs Vitest across the repository specs (`npm run test:verbose` for serial verbose).                                                                                                                                                                                                                            |
+| Test suites     | `npm run test:behavior` | Sends every test suite and the definitions it composes to an EzClassify authoring runtime and reports the runtime's verdicts. Needs a licensed dev-root runtime; see below.                                                                                                                                     |
+| Clean           | `npm run clean`         | Remove build/test artifacts (`:cache` cache-only, `:deep` everything).                                                                                                                                                                                                                                          |
 
 ## Generated references
 
@@ -66,23 +66,27 @@ required to pass.
 
 **Behavior.** How a marking parses, renders, aggregates, or trips a rule is a
 question only the engine answers. Those expectations live as test suites in
-[`scheme-folder/test-suites/`](scheme-folder/test-suites/), and the EzClassify CLI runs them:
+[`scheme-folder/test-suites/`](scheme-folder/test-suites/), and an EzClassify
+authoring runtime runs them. `npm run test:behavior` reads each suite, sends the
+scheme, guides, access policy and crosswalks it composes (with their layers) to
+the runtime, and runs the suite on the result:
 
 ```bash
-ezclassify scheme test ./scheme-folder
-ezclassify scheme test ./scheme-folder/test-suites/tlp-tests@1.0.0.yaml
-ezclassify scheme test ./scheme-folder --json --report ./test-results/schemes.json
+# A dev-root authoring runtime that is already running:
+EZCLASSIFY_AUTHORING_URL=http://127.0.0.1:3000 npm run test:behavior
+
+# Or the stage.json that the engine repository's `stage` tool printed; the lane
+# starts the runtime it plans and stops it afterward:
+EZCLASSIFY_STAGE_PLAN=/path/to/stage/stage.json npm run test:behavior -- --report ./test-results/schemes.json
 ```
 
-The first form runs every suite in the folder; the second runs the files you
-name. A run in which no case runs is a failure, not a pass.
+Every suite in the folder runs. A suite the runtime refuses to read, compose or
+run counts as a failure, and so does a run in which no case passes.
 
-A Runtime license includes the full CLI, including scheme tests, along with
-REST and MCP. Studio is optional and is not required to run the CLI. The CLI
-is proprietary and is not on npm. Licensed users can run `npm run test:behavior`
-when an executable is available on PATH or through `EZCLASSIFY_CLI`. This
-explicit local lane fails if the CLI is unavailable. Public schema and tooling
-checks remain runnable without Runtime.
+The authoring runtime is part of a Runtime license and is not on npm. It runs
+only as a development-root build that `stage` writes an installation for, which
+is how maintainers run this lane. The lane fails when no runtime is configured
+or reachable. Public schema and tooling checks remain runnable without Runtime.
 
 ### Contributing without a Runtime license
 

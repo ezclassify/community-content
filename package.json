@@ -101,8 +101,6 @@
         "format:check": "prettier --check \"scripts/**/*.mjs\" \"src/**/*.ts\" \"tests/**/*.ts\" \"schemes/**/tests/**/*.ts\" \"vitest.config.ts\" \"vite.config.ts\" \"eslint.config.mjs\" \"tsconfig*.json\" \".prettierrc.json\" \"package.json\"",
         "notices": "node scripts/generate-third-party-notices.mjs",
         "sbom": "node scripts/generate-sbom.mjs",
-        "check:cli-pin": "node scripts/check-cli-pin.mjs",
-        "resolve:cli": "node scripts/resolve-cli.mjs",
         "docs": "npm exec --yes --package=typedoc@0.28.20 --package=typescript@5.9.3 -- typedoc --options typedoc.json",
         "docs:source": "npm exec --yes --package=typedoc@0.28.20 --package=typescript@5.9.3 -- typedoc --options typedoc.source.json"
     },

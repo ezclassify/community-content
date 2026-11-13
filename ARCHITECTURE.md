@@ -68,7 +68,7 @@ material, or unsupported compliance claims into this public repository.
 
 A scheme change must include a test suite in [`scheme-folder/test-suites/`](scheme-folder/test-suites/)
 proving the data produces the intended canonical result. Suites are data; the
-EzClassify CLI evaluates them (`ezclassify scheme test ./scheme-folder`),
+EzClassify authoring runtime evaluates them (`npm run test:behavior`),
 because evaluating a marking needs the engine and this repository has none.
 `npm run validate` checks every suite against the published suite schema,
 checks that every published scheme has a suite, and checks that every suite

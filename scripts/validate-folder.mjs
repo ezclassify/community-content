@@ -18,7 +18,7 @@
  *    on disk runs in at least one suite.
  *
  * Check 3 stops at the suite's shape and its references. Whether each case's
- * input produces the outcome it asserts is what `ezclassify scheme test`
+ * input produces the outcome it asserts is what the authoring runtime
  * answers, and the runner revalidates every suite before it runs a case.
  *
  * Exits non-zero on any error (CI-able).

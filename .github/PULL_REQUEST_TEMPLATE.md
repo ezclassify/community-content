@@ -13,7 +13,7 @@
 - [ ] `npm run validate`, `npm test`, and `npm run build`
 - [ ] `npm run lint`, `npm run typecheck`, and `npm run format:check`
 - [ ] `npm run fmt` leaves [`scheme-folder/scheme-folder.yaml`](../scheme-folder/scheme-folder.yaml) unchanged
-- [ ] Behavior suites ran with `ezclassify scheme test ./scheme-folder`, or this PR asks a maintainer for a behavioral run
+- [ ] Behavior suites ran with `npm run test:behavior`, or this PR asks a maintainer for a behavioral run
 
 ## Checklist
 

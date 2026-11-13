@@ -70,8 +70,8 @@ engine, so they run on every pull request.
 - Run them from the repo root: `npm test`.
 - Assertions reference concepts by ID, not by vocabulary string. For example, assert `concept.id === 'LEVEL_HIGH'`, not `marking === 'HIGH-LABEL-TEXT'`.
 
-**Behavior.** Test suites in [`scheme-folder/test-suites/`](scheme-folder/test-suites/), run by the
-EzClassify CLI (`ezclassify scheme test ./scheme-folder`). They are
+**Behavior.** Test suites in [`scheme-folder/test-suites/`](scheme-folder/test-suites/), run by an
+EzClassify authoring runtime (`npm run test:behavior`). They are
 data, not code. Evaluating a marking needs the engine, which this repository
 does not have, so a behavior expectation belongs in a suite and never in a spec
 file.

@@ -5,8 +5,8 @@
  * document under a single `testSuite:` key. Its shape is the published
  * `TestSuite` contract, checked here with the JSON Schema from
  * `@ezclassify/schemas`. Nothing in this module runs a case: evaluating a suite
- * needs the engine, and that is the EzClassify CLI's job (`ezclassify scheme
- * test`).
+ * needs the engine, and that is an EzClassify authoring runtime's job
+ * (`scripts/behavioral-suites.mjs`).
  *
  * `validate-folder.mjs` and `bundle-test-suites.mjs` both read suites through
  * this module, so the folder check and the published package cannot disagree

@@ -58,10 +58,6 @@ function repoWithMutableFolder(): string {
   // dependency tree per case turns a fast unit test into a slow one.
   fs.symlinkSync(path.join(repoRoot, 'node_modules'), path.join(dest, 'node_modules'), 'dir')
   fs.copyFileSync(path.join(repoRoot, 'package.json'), path.join(dest, 'package.json'))
-  fs.copyFileSync(
-    path.join(repoRoot, 'ezclassify-cli.json'),
-    path.join(dest, 'ezclassify-cli.json'),
-  )
   return dest
 }
 
@@ -349,46 +345,5 @@ describe('npm run build', () => {
       expect(result.err).toContain('must be wrapped in a top-level `scheme:` key')
     }
     expect(fs.existsSync(path.join(root, 'dist', 'schemes'))).toBe(false)
-  })
-})
-
-describe('the behavioral lane', () => {
-  it('fails when no CLI is available', () => {
-    const root = repoWithMutableFolder()
-    const result = run('scripts/behavioral-suites.mjs', [], root)
-    expect(result.code).toBe(1)
-    expect(result.err).toContain('required lane cannot run')
-  })
-})
-
-describe('the CLI pin', () => {
-  it('accepts the committed pin', () => {
-    expect(run('scripts/check-cli-pin.mjs').code).toBe(0)
-  })
-
-  it('refuses a download source with no checksum', () => {
-    const root = repoWithMutableFolder()
-    fs.writeFileSync(
-      path.join(root, 'ezclassify-cli.json'),
-      JSON.stringify({
-        minimumVersion: '1.0.0',
-        testedVersion: '1.0.0',
-        archive: { url: 'https://example.invalid/cli.tar.gz', sha256: null },
-      }),
-    )
-    const result = run('scripts/check-cli-pin.mjs', [], root)
-    expect(result.code).toBe(1)
-    expect(result.err).toContain('archive.sha256')
-  })
-
-  it('refuses a tested version below the minimum', () => {
-    const root = repoWithMutableFolder()
-    fs.writeFileSync(
-      path.join(root, 'ezclassify-cli.json'),
-      JSON.stringify({ minimumVersion: '2.0.0', testedVersion: '1.0.0' }),
-    )
-    const result = run('scripts/check-cli-pin.mjs', [], root)
-    expect(result.code).toBe(1)
-    expect(result.err).toContain('below minimumVersion')
   })
 })
