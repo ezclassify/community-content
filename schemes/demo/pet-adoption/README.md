@@ -1,6 +1,6 @@
 # Pet Adoption Catalog
 
-The pet adoption scheme and its intake guide `pet-adoption-intake` that the developer guides teach with. The documents are copies of the guide snippets in the website repository, and the demo runtime serves them through the `pet-adoption` Context.
+The pet adoption scheme and its intake guide `pet-adoption-intake` that the developer guides teach with. The demo runtime serves them through the `pet-adoption` Context.
 
 **Source:** [`scheme-folder/schemes/pet-adoption@1.0.0.yaml`](../../../scheme-folder/schemes/pet-adoption@1.0.0.yaml)
 

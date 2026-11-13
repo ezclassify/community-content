@@ -75,7 +75,7 @@ the runtime, and runs the suite on the result:
 # An authoring runtime that is already running:
 EZCLASSIFY_AUTHORING_URL=http://127.0.0.1:3000 npm run test:behavior
 
-# Or the stage.json that the engine repository's `stage` tool printed; the lane
+# Or the stage.json that the runtime repository's `stage` tool printed; the lane
 # starts the runtime it plans and stops it afterward:
 EZCLASSIFY_STAGE_PLAN=/path/to/stage/stage.json npm run test:behavior -- --report ./test-results/schemes.json
 ```

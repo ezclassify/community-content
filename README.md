@@ -30,6 +30,13 @@ runs them.
 
 The npm package provides compiled JSON content for tooling:
 
+```bash
+npm install @ezclassify/schemes
+```
+
+Every scheme, guide, access policy, and crosswalk in the catalog is compiled to
+its own file, alongside a Context index:
+
 ```text
 dist/schemes/
   tlp@2.0.0.json
@@ -37,11 +44,10 @@ dist/schemes/
   cvss-v4@4.0.0.json
   cvss-31-to-40@1.0.0.crosswalk.json
   cvss-40-to-31@1.0.0.crosswalk.json
+  cedar-valley-guide@1.0.0.guide.json
+  cedar-valley-access@1.0.0.access.json
   contexts.json
-```
-
-```bash
-npm install @ezclassify/schemes
+  ...
 ```
 
 The files are plain JSON, so non-Node tools can read or copy them without
@@ -80,7 +86,7 @@ reference for package modules and scripts.
 
 ## Catalog
 
-The catalog includes public standards and three fictional Cedar Valley teaching schemes.
+The catalog includes public standards, three fictional Cedar Valley teaching schemes, and a few small demonstration schemes.
 
 ### sensitivity-marking/
 
@@ -114,6 +120,17 @@ public standards and the approved fictional Cedar Valley teaching content.
 | `cedar-valley`            | Full district example with sensitive content, school and recipient restrictions |
 
 [Cedar Valley](schemes/demo/cedar-valley/README.md) is fictional teaching content authored by EzClassify. It does not represent a real district policy or compliance standard. The three contexts include matching guides and access policies. This repository owns their canonical source; maintained examples consume copies.
+
+The other demonstration schemes are small, fictional, and each backs one worked example in the EzClassify documentation:
+
+| Scheme                     | Purpose                                                             |
+| -------------------------- | ------------------------------------------------------------------- |
+| `access-control`           | Four levels and three compartments, with an access policy           |
+| `acme-handling`            | Four corporate handling tiers, with a reviewed crosswalk to TLP 2.0 |
+| `corporate-tiers`          | Four sensitivity tiers with handling caveats                        |
+| `demo-scheme`              | Three levels and two controls, with two marking guides              |
+| `llm-classify-demo-scheme` | Two small categories, with a guide and an access policy             |
+| `pet-adoption`             | Animals and household fit, with an intake guide                     |
 
 For application integration tests, use the [scenario server](https://github.com/ezclassify/contracts/tree/main/packages/conformance-server#testing-an-application-integration). It serves a finite set of recorded Cedar Valley responses and transport failures through the normal REST contract. It requires no runtime license.
 

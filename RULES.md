@@ -55,7 +55,7 @@ Validation here checks document shape, not behavior. It does not load the scheme
 
 Existing schemes (see [`schemes/`](schemes/)) are the practical reference for how to structure a new contribution. When in doubt, copy the layout of a nearby scheme and adjust.
 
-The mapper that converts YAML to the engine's internal types is intentionally thin: it maps snake_case to camelCase with type validation only. Use the YAML key names the canonical schema defines as the authoritative reference; do not invent alternate terminology.
+Use the YAML key names the canonical schema defines; do not invent alternate terminology.
 
 ## 5. Testing
 
