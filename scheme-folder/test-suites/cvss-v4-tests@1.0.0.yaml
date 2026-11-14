@@ -68,7 +68,7 @@ testSuite:
         - { path: [valid], matcher: equals, value: false }
         - path: [errors]
           matcher: contains
-          value: { constraintId: 'required-category:sa_impact' }
+          value: { constraintId: '_required-category:sa_impact' }
         - path: [assertions]
           matcher: contains
           value: { conceptId: VC_H, categoryId: vc_impact }
@@ -172,7 +172,7 @@ testSuite:
         - { path: [valid], matcher: equals, value: false }
         - path: [errors]
           matcher: contains
-          value: { constraintId: 'required-category:attack_requirements' }
+          value: { constraintId: '_required-category:attack_requirements' }
 
     - id: worst-value-wins-per-metric
       description: >-

@@ -35,10 +35,10 @@ testSuite:
         - { path: [result, target, valid], matcher: equals, value: false }
         - path: [result, target, errors]
           matcher: contains
-          value: { constraintId: 'required-category:attack_requirements' }
+          value: { constraintId: '_required-category:attack_requirements' }
         - path: [result, target, errors]
           matcher: contains
-          value: { constraintId: 'required-category:sc_impact' }
+          value: { constraintId: '_required-category:sc_impact' }
         - path: [result, outcomes]
           matcher: contains
           value:
