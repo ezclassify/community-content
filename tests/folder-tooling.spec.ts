@@ -6,8 +6,8 @@
  * each one can actually fail. A validator that cannot go red is a validator
  * that proves nothing.
  *
- * Mutation cases copy the scheme folder into an OS temp dir. Nothing here
- * writes to the checked-in tree except `fmt`, which is asserted to be a no-op.
+ * Every case that runs a command copies the scheme folder into an OS temp dir,
+ * so nothing here writes to the checked-in tree.
  */
 import { execFileSync } from 'node:child_process'
 import * as fs from 'node:fs'
@@ -140,10 +140,20 @@ describe('npm run validate', () => {
 })
 
 describe('npm run fmt', () => {
-  it('is a no-op on the committed manifest', () => {
-    const before = fs.readFileSync(path.join(folder, 'scheme-folder.yaml'), 'utf-8')
-    expect(run('scripts/fmt-folder.mjs').code).toBe(0)
-    expect(fs.readFileSync(path.join(folder, 'scheme-folder.yaml'), 'utf-8')).toBe(before)
+  it('leaves the committed manifest untouched, bytes and modification time', () => {
+    const root = repoWithMutableFolder()
+    const manifest = path.join(root, 'scheme-folder', 'scheme-folder.yaml')
+    const committed = fs.readFileSync(path.join(folder, 'scheme-folder.yaml'), 'utf-8')
+    const past = new Date(Date.now() - 60_000)
+    fs.utimesSync(manifest, past, past)
+    const before = fs.statSync(manifest).mtimeMs
+
+    const result = run('scripts/fmt-folder.mjs', [], root)
+
+    expect(result.code).toBe(0)
+    expect(result.out).toContain('is current')
+    expect(fs.readFileSync(manifest, 'utf-8')).toBe(committed)
+    expect(fs.statSync(manifest).mtimeMs).toBe(before)
   })
 
   it('renames a misnamed definition and reindexes the manifest', () => {

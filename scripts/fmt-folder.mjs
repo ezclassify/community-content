@@ -103,9 +103,18 @@ for (const type of TYPE_DIRS) {
     manifest[type.manifestKey] = collect(type);
 }
 
-fs.writeFileSync(manifestPath, serializeManifest(manifest), 'utf-8');
-
+// An unchanged manifest is left untouched. Rewriting identical bytes would
+// still move its modification time, and build freshness reads that time as a
+// source change.
+const serialized = serializeManifest(manifest);
+const current = fs.existsSync(manifestPath) ? fs.readFileSync(manifestPath, 'utf-8') : null;
 const counts = TYPE_DIRS.map(
     ({ manifestKey }) => `${manifest[manifestKey].length} ${manifestKey}`,
 ).join(', ');
-console.log(`[fmt] rewrote ${path.relative(REPO_ROOT, manifestPath)} (${counts})`);
+const relative = path.relative(REPO_ROOT, manifestPath);
+if (current === serialized) {
+    console.log(`[fmt] ${relative} is current (${counts})`);
+} else {
+    fs.writeFileSync(manifestPath, serialized, 'utf-8');
+    console.log(`[fmt] rewrote ${relative} (${counts})`);
+}
