@@ -43,28 +43,21 @@ jobs:
             - name: Configure registry for CI
               # Registry config lives in a user-level npmrc so the tracked project
               # .npmrc (ignore-scripts) stays untouched and the clean-tree check
-              # below stays honest. Same-repository runs use the scoped Actions
-              # package reader; fork pull requests resolve @ezclassify from the
-              # public registry with no credential.
-              env:
-                  EZ_GHPKG_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (secrets.EZ_GHPKG_TOKEN || github.token) || '' }}
+              # below stays honest. @ezclassify resolves from GitHub Packages with
+              # the run's read-only github.token, for fork pull requests too: the
+              # 1.0 packages are not on public npm, so a credential-free lane
+              # cannot resolve them. The token reaches only the install step.
               run: |
                   set -euo pipefail
-                  if [ -n "$EZ_GHPKG_TOKEN" ]; then
-                    cat > "$RUNNER_TEMP/ci-npmrc" << 'NPMRC'
+                  cat > "$RUNNER_TEMP/ci-npmrc" << 'NPMRC'
                   @ezclassify:registry=https://npm.pkg.github.com
                   //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
                   NPMRC
-                    echo "Resolving @ezclassify from GitHub Packages."
-                  else
-                    echo '@ezclassify:registry=https://registry.npmjs.org' > "$RUNNER_TEMP/ci-npmrc"
-                    echo "Resolving @ezclassify from public npm, no credential."
-                  fi
                   echo "NPM_CONFIG_USERCONFIG=$RUNNER_TEMP/ci-npmrc" >> "$GITHUB_ENV"
 
             - name: Install
               env:
-                  NODE_AUTH_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (secrets.EZ_GHPKG_TOKEN || github.token) || '' }}
+                  NODE_AUTH_TOKEN: ${{ github.token }}
               uses: ezclassify/.github/actions/install-node-dependencies@a42ece80f520858a2926723d12bba2af2dca0474
               with:
                   mode: generated
@@ -132,7 +125,7 @@ jobs:
 
             - name: Install
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.EZ_GHPKG_TOKEN || github.token }}
+                  NODE_AUTH_TOKEN: ${{ github.token }}
               uses: ezclassify/.github/actions/install-node-dependencies@a42ece80f520858a2926723d12bba2af2dca0474
               with:
                   mode: generated
