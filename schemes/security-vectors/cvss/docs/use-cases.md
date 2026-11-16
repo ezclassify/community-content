@@ -100,28 +100,31 @@ patcher --> UC4
 
 ## Workflow Sequence (Text UML)
 
-The calls below are EzClassify CLI commands run against this scheme's compiled
-JSON (`--scheme dist/schemes/cvss@3.1.0.json`). Each reply is the CLI's actual output. Aggregation keeps the worst value of each metric.
+The calls below are `process` and `aggregate` requests to an EzClassify Context
+that holds this scheme. The REST API serves them at
+`POST /v1/ctx/{ctxId}/{version}/scheme/process` and `.../scheme/aggregate`, and the
+SDKs and the embedded engine offer the same operations. Each reply is the
+`rendered` marking the engine returns for that input. Aggregation keeps the worst value of each metric.
 
 ```plantuml
 @startuml
 actor "Vuln Researcher" as researcher
-participant "ezclassify CLI\n(cvss@3.1.0)" as cli
+participant "EzClassify\n(cvss@3.1.0)" as ez
 actor "Security Analyst" as analyst
 actor "Patch Manager" as patcher
 actor "CISO" as ciso
 
-researcher -> cli : process "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
-cli --> researcher : CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
+researcher -> ez : process "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+ez --> researcher : CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
 researcher -> analyst : publish advisory with vector string
 
-analyst -> cli : process "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:P/RL:U/RC:C"
-cli --> analyst : CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:P/RL:U/RC:C
+analyst -> ez : process "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:P/RL:U/RC:C"
+ez --> analyst : CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:P/RL:U/RC:C
 
-patcher -> cli : process "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:P/RL:U/RC:C/CR:H/IR:H/AR:M"
-cli --> patcher : CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:P/RL:U/RC:C/CR:H/IR:H/AR:M
+patcher -> ez : process "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:P/RL:U/RC:C/CR:H/IR:H/AR:M"
+ez --> patcher : CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:P/RL:U/RC:C/CR:H/IR:H/AR:M
 
-ciso -> cli : aggregate "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N" "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:L/A:N"
-cli --> ciso : CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N
+ciso -> ez : aggregate "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N" "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:L/A:N"
+ez --> ciso : CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N
 @enduml
 ```

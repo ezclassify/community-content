@@ -1,0 +1,10 @@
+context:
+  id: corporate-to-tlp-demo
+  version: 1.0.0
+  description: A fictional corporate handling vocabulary, TLP 2.0 and the crosswalk between them.
+  scheme:
+    id: acme-handling
+    version: 1.0.0
+  crosswalks:
+    - id: acme-handling-to-tlp
+      version: 1.0.0

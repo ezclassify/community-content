@@ -1,0 +1,104 @@
+scheme:
+  id: pet-adoption
+  version: '1.0.0'
+  name: Pet Adoption Catalog
+  description: >
+    Tags for a shelter's adoption listings. Each listing names the animals
+    it covers and the kind of household they need; rules keep the tags
+    honest, and rollup turns a foster home's listings into one
+    household-compatibility banner.
+  data:
+    categories:
+      - id: animal
+        label: Animal
+        required: true
+        rollup: union
+        position: 0
+      - id: household
+        label: Household Fit
+        required: true
+        single: true
+        rollup: max
+        position: 1
+    concepts:
+      - id: DOG
+        name: Dog
+        views: { default: DOG }
+        categories: [animal]
+        position: 0
+      - id: PUPPY
+        name: Puppy
+        views: { default: PUPPY }
+        categories: [animal]
+        position: 1
+      - id: CAT
+        name: Cat
+        views: { default: CAT }
+        categories: [animal]
+        position: 2
+      - id: KITTEN
+        name: Kitten
+        views: { default: KITTEN }
+        categories: [animal]
+        position: 3
+      - id: RABBIT
+        name: Rabbit
+        views: { default: RABBIT }
+        categories: [animal]
+        position: 4
+      - id: ANY_HOME
+        name: Any Home
+        views: { default: ANY HOME }
+        categories: [household]
+        position: 0
+        rank: 0
+      - id: QUIET_HOME
+        name: Quiet Home
+        views: { default: QUIET HOME }
+        categories: [household]
+        position: 1
+        rank: 1
+      - id: EXPERIENCED_HOME
+        name: Experienced Home
+        views: { default: EXPERIENCED HOME }
+        categories: [household]
+        position: 2
+        rank: 2
+  rules:
+    - id: puppy-implies-dog
+      when: PUPPY
+      action: require
+      target: DOG
+      category: animal
+      explanation: Every puppy is a dog, so PUPPY listings are DOG listings too.
+    - id: kitten-implies-cat
+      when: KITTEN
+      action: require
+      target: CAT
+      category: animal
+      explanation: Every kitten is a cat, so KITTEN listings are CAT listings too.
+    - id: no-dogs-with-cats
+      action: exclusive
+      target: [DOG, CAT]
+      message: >-
+        A listing covers one foster home, and this shelter does not mix
+        dogs and cats in the same home.
+    - id: exactly-one-household-fit
+      action: cardinality
+      category: household
+      min: 1
+      max: 1
+      message: Every listing needs exactly one household-fit tier.
+  render:
+    default: default
+    formats:
+      - id: default
+        mode: inline
+        surface: default
+        view: default
+        separator: ', '
+        fields:
+          - category: animal
+            separator: ', '
+          - category: household
+            separator: ', '

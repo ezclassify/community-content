@@ -9,7 +9,7 @@
  *
  * What the scheme does when it evaluates a marking is a different question
  * with a different home: the test suite
- * `scheme-folder/test-suites/cvss-v4-tests@1.0.1.yaml`, which the EzClassify
+ * `scheme-folder/test-suites/cvss-v4-tests@1.0.0.yaml`, which the EzClassify
  * CLI runs.
  */
 import {

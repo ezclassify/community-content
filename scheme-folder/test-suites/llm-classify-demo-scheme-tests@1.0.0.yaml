@@ -1,0 +1,76 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: llm-classify-demo-scheme-tests
+  version: 1.0.0
+  name: LLM classify demo tests
+  description: >-
+    The website LLM classify demo's sample document, deliberately under-marked,
+    audited with the demo guide and access policy, and the access check its
+    simulated agent runs.
+  composition:
+    scheme:
+      id: llm-classify-demo-scheme
+      version: 1.0.0
+    guides:
+      - id: llm-classify-demo-guide
+        version: 1.0.0
+    access:
+      id: demo-access-policy
+      version: 1.0.0
+  cases:
+    - id: portion-view-reads-as-level
+      operation: process
+      input:
+        marking: H
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: HIGH }
+
+    - id: rollup-keeps-control
+      operation: aggregate
+      input:
+        markings: [LOW, MED, HIGH/CTRL-A]
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: HIGH/CTRL-A }
+
+    - id: sample-banner-does-not-cover-its-sections
+      description: The banner reads MED while section 3 is marked HIGH.
+      operation: auditDocument
+      input:
+        text: |-
+          MED
+
+          (LOW) Section 1: Public Summary
+          Overall system availability is 99.8%. All public-facing services are nominal
+          and customer dashboards continue to render within target latency.
+
+          (MED) Section 2: Operational Data
+          Resource utilization is at 87% of planned allocation. Three operational
+          initiatives are tracking behind schedule; remediation plans are in progress.
+
+          (HIGH) Section 3: Restricted Audit Log
+          Access events for the audit log have been recorded. Strict distribution
+          controls apply to this section; only badged staff with restricted-handling
+          training may read it.
+        responseProfile: full
+      assertions:
+        - { path: [result, overallVerdict], matcher: equals, value: inadequate-coverage }
+        - { path: [result, wholeCoversParts, covered], matcher: equals, value: false }
+        - { path: [result, wholeCoversParts, missingLabels], matcher: equals, value: [HIGH] }
+
+    - id: control-group-member-is-granted
+      operation: checkAccess
+      input:
+        marking: HIGH/CTRL-A
+        userAttributes: { clearance: HIGH, control_groups: [CTRL-A] }
+      assertions:
+        - { path: [result, granted], matcher: equals, value: true }
+
+    - id: missing-control-group-is-denied
+      operation: checkAccess
+      input:
+        marking: HIGH/CTRL-A
+        userAttributes: { clearance: HIGH, control_groups: [] }
+      assertions:
+        - { path: [result, granted], matcher: equals, value: false }

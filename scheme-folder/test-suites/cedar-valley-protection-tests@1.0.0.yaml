@@ -1,7 +1,7 @@
 testSuite:
   apiVersion: schemes.ezclassify.com/v1
   id: cedar-valley-protection-tests
-  version: 1.0.2
+  version: 1.0.0
   name: cedar valley protection tests
   description: >-
     Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are

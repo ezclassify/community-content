@@ -40,7 +40,8 @@ Consumers who prefer the compiled wire format read the JSON under
 authored scheme; neither is a fork of the other. Test suite consumers read
 `./test-suites.json` for the policy each suite qualifies (its access policy,
 else its first guide, else its scheme) and `./test-suites/*` for the compiled
-suites. This adds no production dependency or engine behavior.
+suites. A suite that runs a crosswalk qualifies no policy, and its index entry
+carries none. This adds no production dependency or engine behavior.
 
 Shared validation or bundling behavior used by more than one scheme belongs in
 the repository scripts or test helpers, once. Scheme-local code is reserved for
@@ -67,7 +68,7 @@ material, or unsupported compliance claims into this public repository.
 
 A scheme change must include a test suite in [`scheme-folder/test-suites/`](scheme-folder/test-suites/)
 proving the data produces the intended canonical result. Suites are data; the
-EzClassify CLI evaluates them (`ezclassify scheme test ./scheme-folder`),
+EzClassify authoring runtime evaluates them (`npm run test:behavior`),
 because evaluating a marking needs the engine and this repository has none.
 `npm run validate` checks every suite against the published suite schema,
 checks that every published scheme has a suite, and checks that every suite

@@ -1,0 +1,79 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: demo-scheme-tests
+  version: 1.0.0
+  name: Marking guide demo tests
+  description: >-
+    The website marking guide demo's sample paragraph scanned with both guides,
+    and the rules the page opens on, evaluated in each guide.
+  composition:
+    scheme:
+      id: demo-scheme
+      version: 1.0.0
+    guides:
+      - id: demo-data-guide
+        version: 1.0.0
+      - id: comms-guide
+        version: 1.0.0
+  cases:
+    - id: level-and-control-round-trip
+      operation: process
+      input:
+        marking: LEVEL-C//CTRL-TOPO
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: LEVEL-C//CTRL-TOPO }
+
+    - id: sample-paragraph-finds-data-rules
+      description: The sample paragraph names an address, a facility, coordinates and an employee.
+      operation: guideScan
+      input:
+        guideId: demo-data-guide
+        text: >-
+          The server at 10.42.0.1 on the Meridian network is in Building 7. Contact employee
+          John Smith for access. GPS coordinates are 38.9072° N, 77.0369° W. Station call sign
+          ALPHA-7 operates on 352.4 MHz.
+      assertions:
+        - path: []
+          matcher: contains
+          value: { rule: { id: ip_addr } }
+        - path: []
+          matcher: contains
+          value: { rule: { id: facility } }
+        - path: []
+          matcher: contains
+          value: { rule: { id: geo_coords } }
+
+    - id: sample-paragraph-finds-comms-rules
+      operation: guideScan
+      input:
+        guideId: comms-guide
+        text: >-
+          The server at 10.42.0.1 on the Meridian network is in Building 7. Contact employee
+          John Smith for access. GPS coordinates are 38.9072° N, 77.0369° W. Station call sign
+          ALPHA-7 operates on 352.4 MHz.
+      assertions:
+        - path: []
+          matcher: contains
+          value: { rule: { id: frequency } }
+        - path: []
+          matcher: contains
+          value: { rule: { id: callsign } }
+
+    - id: opening-data-rules
+      description: The address and the facility together trip the compound data rule.
+      operation: guideEvaluate
+      input:
+        guideId: demo-data-guide
+        ruleIds: [ip_addr, facility]
+      assertions:
+        - { path: [aggregatedMarking], matcher: equals, value: LEVEL-C//CTRL-LOC }
+
+    - id: opening-comms-rules
+      description: The frequency and the call sign together trip the compound comms rule.
+      operation: guideEvaluate
+      input:
+        guideId: comms-guide
+        ruleIds: [frequency, callsign]
+      assertions:
+        - { path: [aggregatedMarking], matcher: equals, value: LEVEL-C//CTRL-TOPO }

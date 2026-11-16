@@ -8,15 +8,17 @@
  *    validator published from the `contracts` repository. It compiles the
  *    published JSON Schemas and reports where a document violates them.
  * 2. Folder bookkeeping: filenames match the `id` and `version` inside each
- *    document, and the manifest lists exactly the definitions on disk.
+ *    document, the manifest lists exactly the definitions on disk, and each
+ *    crosswalk pins a source and a target scheme version this folder holds.
  * 3. Behavior test suites: every file in `scheme-folder/test-suites/` holds
  *    one `testSuite:` document that satisfies the published suite schema from
  *    `@ezclassify/schemas`, is named `<id>@<version>.yaml` for the suite it
  *    holds, and composes only definitions this folder holds. Every scheme
- *    version on disk is the scheme of at least one suite.
+ *    version on disk is the scheme of at least one suite, and every crosswalk
+ *    on disk runs in at least one suite.
  *
  * Check 3 stops at the suite's shape and its references. Whether each case's
- * input produces the outcome it asserts is what `ezclassify scheme test`
+ * input produces the outcome it asserts is what the authoring runtime
  * answers, and the runner revalidates every suite before it runs a case.
  *
  * Exits non-zero on any error (CI-able).
@@ -33,12 +35,7 @@ import {
     listTypeDirFiles,
     validateDefinitionFile,
 } from './lib/scheme-folder.mjs';
-import {
-    TEST_SUITES_DIRNAME,
-    compositionRefs,
-    effectiveComposition,
-    readTestSuites,
-} from './lib/test-suites.mjs';
+import { TEST_SUITES_DIRNAME, compositionRefs, readTestSuites } from './lib/test-suites.mjs';
 import { parseDocument } from '@ezclassify/validator';
 
 const manifestPath = path.join(FOLDER, MANIFEST_FILENAME);
@@ -58,6 +55,9 @@ function fail(code, message, file) {
 
 /** Every `<id>@<version>` present on disk, by kind. Filled in by the folder pass. */
 const onDisk = Object.fromEntries(TYPE_DIRS.map(({ kind }) => [kind, new Set()]));
+
+/** Every valid crosswalk on disk, kept for the scheme-pin check after the folder pass. */
+const crosswalks = [];
 
 // 1 + 2: document shape and folder bookkeeping.
 
@@ -107,6 +107,7 @@ if (!fs.existsSync(manifestPath)) {
                 continue;
             }
             onDisk[kind].add(`${document.id}@${document.version}`);
+            if (kind === 'crosswalk') crosswalks.push({ document, file });
         }
 
         // Only cross-check against a manifest that parsed. An unreadable one
@@ -130,6 +131,21 @@ if (!fs.existsSync(manifestPath)) {
     }
 }
 
+// A crosswalk is reviewed against two exact scheme versions. Pinning one this
+// folder does not hold would publish a translation nothing here can run.
+for (const { document, file } of crosswalks) {
+    for (const role of ['source_scheme', 'target_scheme']) {
+        const ref = `${document[role].id}@${document[role].version}`;
+        if (!onDisk.scheme.has(ref)) {
+            fail(
+                'crosswalk_scheme_unresolved',
+                `${role} names scheme "${ref}", which this folder does not hold`,
+                file,
+            );
+        }
+    }
+}
+
 // 3: behavior test suites.
 
 const entries = readTestSuites(FOLDER);
@@ -141,7 +157,6 @@ const suites = new Map(
         .filter((entry) => entry.suite)
         .map(({ suite, file }) => [`${suite.id}@${suite.version}`, { suite, file }]),
 );
-const bySuiteKey = new Map([...suites].map(([key, { suite }]) => [key, suite]));
 
 /** Every scheme version some suite runs against. */
 const covered = new Set();
@@ -153,22 +168,7 @@ for (const { suite, file } of suites.values()) {
         caseIds.add(id);
     }
 
-    if (suite.extends) {
-        const parent = `${suite.extends.id}@${suite.extends.version}`;
-        if (!suites.has(parent)) {
-            fail(
-                'suite_parent_unresolved',
-                `extends suite "${parent}", which ${TEST_SUITES_DIRNAME}/ does not hold`,
-                file,
-            );
-            continue;
-        }
-    }
-    const composition = effectiveComposition(suite, bySuiteKey);
-    if (!composition) {
-        fail('suite_parent_unresolved', 'its extends chain does not reach a composition', file);
-        continue;
-    }
+    const { composition } = suite;
     for (const { kind, ref, where } of compositionRefs(composition)) {
         if (!onDisk[kind]?.has(ref)) {
             fail(
@@ -179,6 +179,8 @@ for (const { suite, file } of suites.values()) {
         }
     }
     covered.add(`${composition.scheme.id}@${composition.scheme.version}`);
+    for (const crosswalk of composition.crosswalks ?? [])
+        covered.add(`crosswalk:${crosswalk.id}@${crosswalk.version}`);
 }
 
 // Every published scheme carries behavior coverage. A scheme with no suite is a
@@ -188,6 +190,14 @@ for (const ref of onDisk.scheme) {
         fail(
             'scheme_uncovered',
             `scheme "${ref}" has no test suite in ${TEST_SUITES_DIRNAME}/ whose composition names it`,
+        );
+    }
+}
+for (const ref of onDisk.crosswalk) {
+    if (!covered.has(`crosswalk:${ref}`)) {
+        fail(
+            'crosswalk_uncovered',
+            `crosswalk "${ref}" has no test suite in ${TEST_SUITES_DIRNAME}/ whose composition names it`,
         );
     }
 }

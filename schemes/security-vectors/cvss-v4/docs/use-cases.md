@@ -118,27 +118,30 @@ patcher --> UC3
 
 ## Workflow Sequence (Text UML)
 
-The calls below are EzClassify CLI commands run against this scheme's compiled
-JSON (`--scheme dist/schemes/cvss-v4@4.0.0.json`). Each reply is the CLI's actual output. Aggregation keeps the worst value of each metric.
+The calls below are `process` and `aggregate` requests to an EzClassify Context
+that holds this scheme. The REST API serves them at
+`POST /v1/ctx/{ctxId}/{version}/scheme/process` and `.../scheme/aggregate`, and the
+SDKs and the embedded engine offer the same operations. Each reply is the
+`rendered` marking the engine returns for that input. Aggregation keeps the worst value of each metric.
 
 ```plantuml
 @startuml
 actor "Vuln Researcher" as researcher
-participant "ezclassify CLI\n(cvss-v4@4.0.0)" as cli
+participant "EzClassify\n(cvss-v4@4.0.0)" as ez
 actor "Security Analyst" as analyst
 actor "SOC Analyst" as soc
 actor "CISO" as ciso
 
-researcher -> cli : process "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N"
-cli --> researcher : CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N
+researcher -> ez : process "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N"
+ez --> researcher : CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N
 
-analyst -> cli : process "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N/E:A/S:P/AU:Y/R:I/RE:H"
-cli --> analyst : CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N/E:A/S:P/AU:Y/R:I/RE:H
+analyst -> ez : process "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N/E:A/S:P/AU:Y/R:I/RE:H"
+ez --> analyst : CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N/E:A/S:P/AU:Y/R:I/RE:H
 analyst -> soc : publish advisory
 
 soc -> ciso : escalate the advisory vector
 
-ciso -> cli : aggregate "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N/E:A" "CVSS:4.0/AV:L/AC:H/AT:P/PR:L/UI:P/VC:L/VI:N/VA:N/SC:N/SI:N/SA:N/E:U"
-cli --> ciso : CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N/E:A
+ciso -> ez : aggregate "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N/E:A" "CVSS:4.0/AV:L/AC:H/AT:P/PR:L/UI:P/VC:L/VI:N/VA:N/SC:N/SI:N/SA:N/E:U"
+ez --> ciso : CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N/E:A
 @enduml
 ```

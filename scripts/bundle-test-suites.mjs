@@ -8,7 +8,8 @@
  *   dist/test-suites/<id>@<version>.json   { testSuite: {...} }
  *   dist/test-suites/index.json            { testSuites: [{id, version, testPolicy, filename}] }
  *
- * `testPolicy` names the policy each suite qualifies (see `testPolicyOf`).
+ * `testPolicy` names the policy each suite qualifies (see `testPolicyOf`). A
+ * crosswalk suite qualifies no policy and its entry carries none.
  * The output directory is rebuilt from scratch on every run because it ships
  * through a wildcard export: a stale file left behind would publish.
  * @module
@@ -16,7 +17,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { FOLDER, REPO_ROOT } from './lib/scheme-folder.mjs';
-import { effectiveComposition, readTestSuites, testPolicyOf } from './lib/test-suites.mjs';
+import { readTestSuites, testPolicyOf } from './lib/test-suites.mjs';
 
 const entries = readTestSuites(FOLDER);
 const invalid = entries.filter((entry) => entry.problems.length > 0);
@@ -29,18 +30,13 @@ if (invalid.length > 0) {
     process.exit(1);
 }
 
-const suites = new Map(entries.map(({ suite }) => [`${suite.id}@${suite.version}`, suite]));
 const index = [];
-for (const { suite, fileName } of entries) {
-    const composition = effectiveComposition(suite, suites);
-    if (!composition) {
-        console.error(`[test-suites] ${fileName} extends a suite this folder does not hold`);
-        process.exit(1);
-    }
+for (const { suite } of entries) {
+    const testPolicy = testPolicyOf(suite.composition);
     index.push({
         id: suite.id,
         version: suite.version,
-        testPolicy: testPolicyOf(composition),
+        ...(testPolicy ? { testPolicy } : {}),
         filename: `${suite.id}@${suite.version}.json`,
     });
 }

@@ -1,0 +1,67 @@
+# Fictional, district-owned decisions that move a Cedar Valley handling marking to the protection
+# profile, which has the four reader levels and no handling category. Levels carry. One handling
+# instruction goes to review, one is omitted, one forbids the translation, and COLLECT_AFTER_USE has
+# no decision, so it comes back unmapped. The crosswalks guide teaches this document.
+crosswalk:
+  id: cedar-valley-handling-to-protection
+  version: 1.0.0
+  name: Cedar Valley handling to protection
+  description: >
+    Move a marking from the profile that carries handling steps to the profile
+    that only says who may read it.
+  source_scheme:
+    id: cedar-valley-handling
+    version: 1.0.0
+  target_scheme:
+    id: cedar-valley-protection
+    version: 1.0.0
+  mappings:
+    - id: level-public
+      source: { category: level, concept: PUBLIC }
+      targets: [{ category: level, concept: PUBLIC }]
+      disposition: carry
+      reason: Both profiles use the same four reader levels.
+      authority: District records office
+      citation: Cedar Valley District Files Handbook, section 2.
+
+    - id: level-internal
+      source: { category: level, concept: INTERNAL }
+      targets: [{ category: level, concept: INTERNAL }]
+      disposition: carry
+      reason: Both profiles use the same four reader levels.
+      authority: District records office
+      citation: Cedar Valley District Files Handbook, section 2.
+
+    - id: level-confidential
+      source: { category: level, concept: CONFIDENTIAL }
+      targets: [{ category: level, concept: CONFIDENTIAL }]
+      disposition: carry
+      reason: Both profiles use the same four reader levels.
+      authority: District records office
+      citation: Cedar Valley District Files Handbook, section 2.
+
+    - id: level-restricted
+      source: { category: level, concept: RESTRICTED }
+      targets: [{ category: level, concept: RESTRICTED }]
+      disposition: carry
+      reason: Both profiles use the same four reader levels.
+      authority: District records office
+      citation: Cedar Valley District Files Handbook, section 2.
+
+    - id: handling-do-not-forward
+      source: { category: handling, concept: DO_NOT_FORWARD }
+      disposition: review
+      reason: The levels profile has no handling category.
+      guidance: Ask the owner before distributing this copy further.
+      authority: District records office
+
+    - id: handling-redact
+      source: { category: handling, concept: REDACT_BEFORE_RELEASE }
+      disposition: omit
+      reason: The protection profile records who may read a copy, not how to prepare a public release.
+
+    - id: handling-keep-sealed
+      source: { category: handling, concept: KEEP_SEALED }
+      disposition: forbid
+      reason: An unreleased question may not move to a scheme that cannot say so.
+      authority: District records office

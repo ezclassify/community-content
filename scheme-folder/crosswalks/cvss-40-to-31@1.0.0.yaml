@@ -1,0 +1,1133 @@
+# CVSS 4.0 to CVSS 3.1, derived with the conversion rubric FIRST publishes in its CVSS FAQ
+# (https://www.first.org/cvss/faq). This file applies that rubric to EzClassify crosswalk
+# mappings and selections. It is not an official FIRST crosswalk, and FIRST does not
+# review or publish it.
+#
+# A complete 4.0 Base vector translates to a complete 3.1 Base vector, plus Exploit Code
+# Maturity when the 4.0 vector carries Exploit Maturity. The rubric works across fields,
+# so three selections do the cross-field work: Attack Requirements folds into Attack
+# Complexity, Scope comes from subsequent-system impact, and one impact domain, vulnerable
+# system or subsequent system, becomes the 3.1 Confidentiality, Integrity and Availability
+# set. The 4.0 Supplemental metrics have no 3.1 field and come back as omissions.
+#
+# The rubric reads no 4.0 Environmental metric, so the Security Requirements, the Modified
+# Base metrics and every explicit Not Defined (X) value come back as omissions too. Only
+# the qualitative severity rating has no rule; it comes back unmapped, which makes the
+# translation partial.
+crosswalk:
+  id: cvss-40-to-31
+  version: 1.0.0
+  name: CVSS 4.0 to 3.1 FIRST-aligned derivation
+  description: Derive a complete CVSS 3.1 Base vector from the clearer CVSS 4.0 assessment data.
+  guidance: >-
+    Apply FIRST’s published rubric programmatically: fold Attack Requirements into Attack Complexity, derive Scope from subsequent-system impact, and select one complete impact domain.
+  citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+  source_scheme:
+    id: cvss-v4
+    version: 4.0.0
+  target_scheme:
+    id: cvss
+    version: 3.1.0
+  mappings:
+    # Base metrics whose values 3.1 shares.
+    - id: carry-attack_vector-AV_N
+      source:
+        category: attack_vector
+        concept: AV_N
+      targets:
+        - category: attack_vector
+          concept: AV_N
+      disposition: carry
+      reason: Attack Vector retains the same four values in CVSS 3.1.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-attack_vector-AV_A
+      source:
+        category: attack_vector
+        concept: AV_A
+      targets:
+        - category: attack_vector
+          concept: AV_A
+      disposition: carry
+      reason: Attack Vector retains the same four values in CVSS 3.1.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-attack_vector-AV_L
+      source:
+        category: attack_vector
+        concept: AV_L
+      targets:
+        - category: attack_vector
+          concept: AV_L
+      disposition: carry
+      reason: Attack Vector retains the same four values in CVSS 3.1.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-attack_vector-AV_P
+      source:
+        category: attack_vector
+        concept: AV_P
+      targets:
+        - category: attack_vector
+          concept: AV_P
+      disposition: carry
+      reason: Attack Vector retains the same four values in CVSS 3.1.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-privileges_required-PR_N
+      source:
+        category: privileges_required
+        concept: PR_N
+      targets:
+        - category: privileges_required
+          concept: PR_N
+      disposition: carry
+      reason: Privileges Required retains None, Low, and High in CVSS 3.1.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-privileges_required-PR_L
+      source:
+        category: privileges_required
+        concept: PR_L
+      targets:
+        - category: privileges_required
+          concept: PR_L
+      disposition: carry
+      reason: Privileges Required retains None, Low, and High in CVSS 3.1.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-privileges_required-PR_H
+      source:
+        category: privileges_required
+        concept: PR_H
+      targets:
+        - category: privileges_required
+          concept: PR_H
+      disposition: carry
+      reason: Privileges Required retains None, Low, and High in CVSS 3.1.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-user-interaction-none
+      source:
+        category: user_interaction
+        concept: UI_N
+      targets:
+        - category: user_interaction
+          concept: UI_N
+      disposition: carry
+      reason: No user interaction remains an explicit CVSS 3.1 value.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-user-interaction-UI_P
+      source:
+        category: user_interaction
+        concept: UI_P
+      targets:
+        - category: user_interaction
+          concept: UI_R
+      disposition: carry
+      reason: CVSS 3.1 combines the 4.0 Passive and Active values into the broader Required value.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-user-interaction-UI_A
+      source:
+        category: user_interaction
+        concept: UI_A
+      targets:
+        - category: user_interaction
+          concept: UI_R
+      disposition: carry
+      reason: CVSS 3.1 combines the 4.0 Passive and Active values into the broader Required value.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+
+    # Threat metrics. Exploit Maturity maps back to Exploit Code Maturity.
+    - id: carry-exploit-maturity-proof-of-concept
+      source:
+        category: exploit_maturity
+        concept: E_P
+      targets:
+        - category: exploit_code_maturity
+          concept: E_P
+      disposition: carry
+      reason: Proof-of-Concept remains an explicit CVSS 3.1 value.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: carry-exploit-maturity-attacked
+      source:
+        category: exploit_maturity
+        concept: E_A
+      targets:
+        - category: exploit_code_maturity
+          concept: E_H
+      disposition: carry
+      reason: FIRST’s reverse rubric maps CVSS 4.0 Attacked to CVSS 3.1 High.
+      authority: FIRST CVSS SIG conversion rubric
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: carry-exploit-maturity-unreported
+      source:
+        category: exploit_maturity
+        concept: E_U
+      targets:
+        - category: exploit_code_maturity
+          concept: E_U
+      disposition: carry
+      reason: FIRST’s reverse rubric maps the v4.0 U value to the v3.1 U value.
+      authority: FIRST CVSS SIG conversion rubric
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+
+    # Supplemental metrics. 3.1 has no field for any of them.
+    - id: omit-safety-S_N
+      source:
+        category: safety
+        concept: S_N
+      disposition: omit
+      reason: CVSS 3.1 has no Safety supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-safety-S_P
+      source:
+        category: safety
+        concept: S_P
+      disposition: omit
+      reason: CVSS 3.1 has no Safety supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-automatable-AU_N
+      source:
+        category: automatable
+        concept: AU_N
+      disposition: omit
+      reason: CVSS 3.1 has no Automatable supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-automatable-AU_Y
+      source:
+        category: automatable
+        concept: AU_Y
+      disposition: omit
+      reason: CVSS 3.1 has no Automatable supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-recovery-R_A
+      source:
+        category: recovery
+        concept: R_A
+      disposition: omit
+      reason: CVSS 3.1 has no Recovery supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-recovery-R_U
+      source:
+        category: recovery
+        concept: R_U
+      disposition: omit
+      reason: CVSS 3.1 has no Recovery supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-recovery-R_I
+      source:
+        category: recovery
+        concept: R_I
+      disposition: omit
+      reason: CVSS 3.1 has no Recovery supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-value_density-V_D
+      source:
+        category: value_density
+        concept: V_D
+      disposition: omit
+      reason: CVSS 3.1 has no Value Density supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-value_density-V_C
+      source:
+        category: value_density
+        concept: V_C
+      disposition: omit
+      reason: CVSS 3.1 has no Value Density supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-response_effort-RE_L
+      source:
+        category: response_effort
+        concept: RE_L
+      disposition: omit
+      reason: CVSS 3.1 has no Response Effort supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-response_effort-RE_M
+      source:
+        category: response_effort
+        concept: RE_M
+      disposition: omit
+      reason: CVSS 3.1 has no Response Effort supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-response_effort-RE_H
+      source:
+        category: response_effort
+        concept: RE_H
+      disposition: omit
+      reason: CVSS 3.1 has no Response Effort supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-provider_urgency-U_CLEAR
+      source:
+        category: provider_urgency
+        concept: U_CLEAR
+      disposition: omit
+      reason: CVSS 3.1 has no Provider Urgency supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-provider_urgency-U_GREEN
+      source:
+        category: provider_urgency
+        concept: U_GREEN
+      disposition: omit
+      reason: CVSS 3.1 has no Provider Urgency supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-provider_urgency-U_AMBER
+      source:
+        category: provider_urgency
+        concept: U_AMBER
+      disposition: omit
+      reason: CVSS 3.1 has no Provider Urgency supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+    - id: omit-provider_urgency-U_RED
+      source:
+        category: provider_urgency
+        concept: U_RED
+      disposition: omit
+      reason: CVSS 3.1 has no Provider Urgency supplemental metric.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/v3.1/specification-document
+
+    # Explicit Not Defined values of the Threat and Supplemental metrics.
+    - id: omit-exploit_maturity-E_X
+      source:
+        category: exploit_maturity
+        concept: E_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-safety-S_X
+      source:
+        category: safety
+        concept: S_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-automatable-AU_X
+      source:
+        category: automatable
+        concept: AU_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-recovery-R_X
+      source:
+        category: recovery
+        concept: R_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-value_density-V_X
+      source:
+        category: value_density
+        concept: V_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-response_effort-RE_X
+      source:
+        category: response_effort
+        concept: RE_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-provider_urgency-U_X
+      source:
+        category: provider_urgency
+        concept: U_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+
+    # Environmental metrics: Security Requirements and the Modified Base metrics,
+    # including their explicit Not Defined values. The rubric reads none of them.
+    - id: omit-confidentiality_requirement-CR_X
+      source:
+        category: confidentiality_requirement
+        concept: CR_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-confidentiality_requirement-CR_H
+      source:
+        category: confidentiality_requirement
+        concept: CR_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-confidentiality_requirement-CR_M
+      source:
+        category: confidentiality_requirement
+        concept: CR_M
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-confidentiality_requirement-CR_L
+      source:
+        category: confidentiality_requirement
+        concept: CR_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-integrity_requirement-IR_X
+      source:
+        category: integrity_requirement
+        concept: IR_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-integrity_requirement-IR_H
+      source:
+        category: integrity_requirement
+        concept: IR_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-integrity_requirement-IR_M
+      source:
+        category: integrity_requirement
+        concept: IR_M
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-integrity_requirement-IR_L
+      source:
+        category: integrity_requirement
+        concept: IR_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-availability_requirement-AR_X
+      source:
+        category: availability_requirement
+        concept: AR_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-availability_requirement-AR_H
+      source:
+        category: availability_requirement
+        concept: AR_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-availability_requirement-AR_M
+      source:
+        category: availability_requirement
+        concept: AR_M
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-availability_requirement-AR_L
+      source:
+        category: availability_requirement
+        concept: AR_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_vector-MAV_X
+      source:
+        category: modified_attack_vector
+        concept: MAV_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_vector-MAV_N
+      source:
+        category: modified_attack_vector
+        concept: MAV_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_vector-MAV_A
+      source:
+        category: modified_attack_vector
+        concept: MAV_A
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_vector-MAV_L
+      source:
+        category: modified_attack_vector
+        concept: MAV_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_vector-MAV_P
+      source:
+        category: modified_attack_vector
+        concept: MAV_P
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_complexity-MAC_X
+      source:
+        category: modified_attack_complexity
+        concept: MAC_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_complexity-MAC_L
+      source:
+        category: modified_attack_complexity
+        concept: MAC_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_complexity-MAC_H
+      source:
+        category: modified_attack_complexity
+        concept: MAC_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_requirements-MAT_X
+      source:
+        category: modified_attack_requirements
+        concept: MAT_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_requirements-MAT_N
+      source:
+        category: modified_attack_requirements
+        concept: MAT_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_attack_requirements-MAT_P
+      source:
+        category: modified_attack_requirements
+        concept: MAT_P
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_privileges_required-MPR_X
+      source:
+        category: modified_privileges_required
+        concept: MPR_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_privileges_required-MPR_N
+      source:
+        category: modified_privileges_required
+        concept: MPR_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_privileges_required-MPR_L
+      source:
+        category: modified_privileges_required
+        concept: MPR_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_privileges_required-MPR_H
+      source:
+        category: modified_privileges_required
+        concept: MPR_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_user_interaction-MUI_X
+      source:
+        category: modified_user_interaction
+        concept: MUI_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_user_interaction-MUI_N
+      source:
+        category: modified_user_interaction
+        concept: MUI_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_user_interaction-MUI_P
+      source:
+        category: modified_user_interaction
+        concept: MUI_P
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_user_interaction-MUI_A
+      source:
+        category: modified_user_interaction
+        concept: MUI_A
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_vc_impact-MVC_X
+      source:
+        category: modified_vc_impact
+        concept: MVC_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_vc_impact-MVC_H
+      source:
+        category: modified_vc_impact
+        concept: MVC_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_vc_impact-MVC_L
+      source:
+        category: modified_vc_impact
+        concept: MVC_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_vc_impact-MVC_N
+      source:
+        category: modified_vc_impact
+        concept: MVC_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_vi_impact-MVI_X
+      source:
+        category: modified_vi_impact
+        concept: MVI_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_vi_impact-MVI_H
+      source:
+        category: modified_vi_impact
+        concept: MVI_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_vi_impact-MVI_L
+      source:
+        category: modified_vi_impact
+        concept: MVI_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_vi_impact-MVI_N
+      source:
+        category: modified_vi_impact
+        concept: MVI_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_va_impact-MVA_X
+      source:
+        category: modified_va_impact
+        concept: MVA_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_va_impact-MVA_H
+      source:
+        category: modified_va_impact
+        concept: MVA_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_va_impact-MVA_L
+      source:
+        category: modified_va_impact
+        concept: MVA_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_va_impact-MVA_N
+      source:
+        category: modified_va_impact
+        concept: MVA_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_sc_impact-MSC_X
+      source:
+        category: modified_sc_impact
+        concept: MSC_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_sc_impact-MSC_H
+      source:
+        category: modified_sc_impact
+        concept: MSC_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_sc_impact-MSC_L
+      source:
+        category: modified_sc_impact
+        concept: MSC_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_sc_impact-MSC_N
+      source:
+        category: modified_sc_impact
+        concept: MSC_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_si_impact-MSI_X
+      source:
+        category: modified_si_impact
+        concept: MSI_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_si_impact-MSI_S
+      source:
+        category: modified_si_impact
+        concept: MSI_S
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_si_impact-MSI_H
+      source:
+        category: modified_si_impact
+        concept: MSI_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_si_impact-MSI_L
+      source:
+        category: modified_si_impact
+        concept: MSI_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_si_impact-MSI_N
+      source:
+        category: modified_si_impact
+        concept: MSI_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_sa_impact-MSA_X
+      source:
+        category: modified_sa_impact
+        concept: MSA_X
+      disposition: omit
+      reason: Not Defined is the same as leaving the metric out, so the 3.1 vector leaves it out.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_sa_impact-MSA_S
+      source:
+        category: modified_sa_impact
+        concept: MSA_S
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_sa_impact-MSA_H
+      source:
+        category: modified_sa_impact
+        concept: MSA_H
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_sa_impact-MSA_L
+      source:
+        category: modified_sa_impact
+        concept: MSA_L
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: omit-modified_sa_impact-MSA_N
+      source:
+        category: modified_sa_impact
+        concept: MSA_N
+      disposition: omit
+      reason: FIRST's rubric derives the 3.1 vector from the 4.0 Base and Threat metrics only, so 4.0 Environmental metrics are not carried.
+      authority: EzClassify community migration policy
+      citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+  selections:
+    # Cross-field decisions from the FIRST rubric.
+    - id: derive-attack-complexity
+      strategy: first-match
+      candidates:
+        - id: high
+          when:
+            any:
+              - category: attack_complexity
+                concept: AC_H
+              - category: attack_requirements
+                concept: AT_P
+          sources:
+            - category: attack_complexity
+              concept: AC_L
+            - category: attack_complexity
+              concept: AC_H
+            - category: attack_requirements
+              concept: AT_N
+            - category: attack_requirements
+              concept: AT_P
+          targets:
+            - category: attack_complexity
+              concept: AC_H
+          reason: CVSS 3.1 Attack Complexity is High when v4.0 AC is High or Attack Requirements is Present.
+          authority: FIRST CVSS SIG conversion rubric
+          citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+        - id: low
+          sources:
+            - category: attack_complexity
+              concept: AC_L
+            - category: attack_complexity
+              concept: AC_H
+            - category: attack_requirements
+              concept: AT_N
+            - category: attack_requirements
+              concept: AT_P
+          targets:
+            - category: attack_complexity
+              concept: AC_L
+          reason: With Low v4.0 AC and no Attack Requirements, CVSS 3.1 Attack Complexity remains Low.
+          authority: FIRST CVSS SIG conversion rubric
+          citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: derive-scope
+      strategy: first-match
+      candidates:
+        - id: changed
+          when:
+            any:
+              - category: sc_impact
+                concept: SC_L
+              - category: sc_impact
+                concept: SC_H
+              - category: si_impact
+                concept: SI_L
+              - category: si_impact
+                concept: SI_H
+              - category: sa_impact
+                concept: SA_L
+              - category: sa_impact
+                concept: SA_H
+          targets:
+            - category: scope
+              concept: S_C
+          reason: Any non-None subsequent-system impact derives CVSS 3.1 Scope:Changed.
+          authority: FIRST CVSS SIG conversion rubric
+          citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+        - id: unchanged
+          targets:
+            - category: scope
+              concept: S_U
+          reason: With no subsequent-system impact, CVSS 3.1 Scope is Unchanged.
+          authority: FIRST CVSS SIG conversion rubric
+          citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+    - id: select-impact-domain
+      strategy: most-matches
+      candidates:
+        - id: vulnerable-system
+          score:
+            - category: vc_impact
+              concept: VC_H
+            - category: vi_impact
+              concept: VI_H
+            - category: va_impact
+              concept: VA_H
+          mappings:
+            - id: derive-vc_impact-VC_H
+              source:
+                category: vc_impact
+                concept: VC_H
+              targets:
+                - category: confidentiality
+                  concept: C_H
+              disposition: carry
+              reason: The vulnerable-system impact set wins the FIRST comparison; ties stay with this set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-vc_impact-VC_L
+              source:
+                category: vc_impact
+                concept: VC_L
+              targets:
+                - category: confidentiality
+                  concept: C_L
+              disposition: carry
+              reason: The vulnerable-system impact set wins the FIRST comparison; ties stay with this set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-vc_impact-VC_N
+              source:
+                category: vc_impact
+                concept: VC_N
+              targets:
+                - category: confidentiality
+                  concept: C_N
+              disposition: carry
+              reason: The vulnerable-system impact set wins the FIRST comparison; ties stay with this set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-vi_impact-VI_H
+              source:
+                category: vi_impact
+                concept: VI_H
+              targets:
+                - category: integrity
+                  concept: I_H
+              disposition: carry
+              reason: The vulnerable-system impact set wins the FIRST comparison; ties stay with this set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-vi_impact-VI_L
+              source:
+                category: vi_impact
+                concept: VI_L
+              targets:
+                - category: integrity
+                  concept: I_L
+              disposition: carry
+              reason: The vulnerable-system impact set wins the FIRST comparison; ties stay with this set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-vi_impact-VI_N
+              source:
+                category: vi_impact
+                concept: VI_N
+              targets:
+                - category: integrity
+                  concept: I_N
+              disposition: carry
+              reason: The vulnerable-system impact set wins the FIRST comparison; ties stay with this set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-va_impact-VA_H
+              source:
+                category: va_impact
+                concept: VA_H
+              targets:
+                - category: availability
+                  concept: A_H
+              disposition: carry
+              reason: The vulnerable-system impact set wins the FIRST comparison; ties stay with this set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-va_impact-VA_L
+              source:
+                category: va_impact
+                concept: VA_L
+              targets:
+                - category: availability
+                  concept: A_L
+              disposition: carry
+              reason: The vulnerable-system impact set wins the FIRST comparison; ties stay with this set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-va_impact-VA_N
+              source:
+                category: va_impact
+                concept: VA_N
+              targets:
+                - category: availability
+                  concept: A_N
+              disposition: carry
+              reason: The vulnerable-system impact set wins the FIRST comparison; ties stay with this set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+          reason: >-
+            This domain has at least as many High impacts; FIRST’s rubric breaks ties toward the vulnerable system.
+          authority: FIRST CVSS SIG conversion rubric
+          citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+        - id: subsequent-system
+          score:
+            - category: sc_impact
+              concept: SC_H
+            - category: si_impact
+              concept: SI_H
+            - category: sa_impact
+              concept: SA_H
+          mappings:
+            - id: derive-sc_impact-SC_H
+              source:
+                category: sc_impact
+                concept: SC_H
+              targets:
+                - category: confidentiality
+                  concept: C_H
+              disposition: carry
+              reason: >-
+                The subsequent-system impact set has more High impacts and is emitted as the complete 3.1 CIA set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-sc_impact-SC_L
+              source:
+                category: sc_impact
+                concept: SC_L
+              targets:
+                - category: confidentiality
+                  concept: C_L
+              disposition: carry
+              reason: >-
+                The subsequent-system impact set has more High impacts and is emitted as the complete 3.1 CIA set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-sc_impact-SC_N
+              source:
+                category: sc_impact
+                concept: SC_N
+              targets:
+                - category: confidentiality
+                  concept: C_N
+              disposition: carry
+              reason: >-
+                The subsequent-system impact set has more High impacts and is emitted as the complete 3.1 CIA set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-si_impact-SI_H
+              source:
+                category: si_impact
+                concept: SI_H
+              targets:
+                - category: integrity
+                  concept: I_H
+              disposition: carry
+              reason: >-
+                The subsequent-system impact set has more High impacts and is emitted as the complete 3.1 CIA set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-si_impact-SI_L
+              source:
+                category: si_impact
+                concept: SI_L
+              targets:
+                - category: integrity
+                  concept: I_L
+              disposition: carry
+              reason: >-
+                The subsequent-system impact set has more High impacts and is emitted as the complete 3.1 CIA set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-si_impact-SI_N
+              source:
+                category: si_impact
+                concept: SI_N
+              targets:
+                - category: integrity
+                  concept: I_N
+              disposition: carry
+              reason: >-
+                The subsequent-system impact set has more High impacts and is emitted as the complete 3.1 CIA set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-sa_impact-SA_H
+              source:
+                category: sa_impact
+                concept: SA_H
+              targets:
+                - category: availability
+                  concept: A_H
+              disposition: carry
+              reason: >-
+                The subsequent-system impact set has more High impacts and is emitted as the complete 3.1 CIA set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-sa_impact-SA_L
+              source:
+                category: sa_impact
+                concept: SA_L
+              targets:
+                - category: availability
+                  concept: A_L
+              disposition: carry
+              reason: >-
+                The subsequent-system impact set has more High impacts and is emitted as the complete 3.1 CIA set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+            - id: derive-sa_impact-SA_N
+              source:
+                category: sa_impact
+                concept: SA_N
+              targets:
+                - category: availability
+                  concept: A_N
+              disposition: carry
+              reason: >-
+                The subsequent-system impact set has more High impacts and is emitted as the complete 3.1 CIA set.
+              authority: FIRST CVSS SIG conversion rubric
+              citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors
+          reason: This domain has more High impacts than the vulnerable-system set.
+          authority: FIRST CVSS SIG conversion rubric
+          citation: https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors

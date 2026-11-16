@@ -1,0 +1,107 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: cedar-valley-handling-to-protection-tests
+  version: 1.0.0
+  name: Cedar Valley handling to protection crosswalk tests
+  description: >-
+    The fictional Cedar Valley handling markings through cedar-valley-handling-to-protection, as the
+    crosswalks guide teaches it. Levels carry, DO NOT FORWARD goes to review, REDACT BEFORE RELEASE
+    is omitted, KEEP SEALED forbids the translation, and COLLECT AFTER USE has no decision.
+  composition:
+    scheme:
+      id: cedar-valley-handling
+      version: 1.0.0
+    crosswalks:
+      - id: cedar-valley-handling-to-protection
+        version: 1.0.0
+  cases:
+    - id: level-alone-carries
+      name: A level alone carries
+      description: A level with no handling instruction carries unchanged.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cedar-valley-handling-to-protection
+          marking: RESTRICTED
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - { path: [result, target, rendered], matcher: equals, value: RESTRICTED }
+
+    - id: do-not-forward-goes-to-review
+      name: DO NOT FORWARD goes to review
+      description: The level carries and the handling instruction is left to the owner, with the reviewer's words attached.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cedar-valley-handling-to-protection
+          marking: INTERNAL//DO NOT FORWARD
+      assertions:
+        - { path: [result, status], matcher: equals, value: partial }
+        - { path: [result, target, rendered], matcher: equals, value: INTERNAL }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            source: { categoryId: handling, conceptId: DO_NOT_FORWARD }
+            mappingId: handling-do-not-forward
+            disposition: review
+            targets: []
+            reason: The levels profile has no handling category.
+            authority: District records office
+            guidance: Ask the owner before distributing this copy further.
+
+    - id: redact-before-release-is-omitted
+      name: REDACT BEFORE RELEASE is omitted
+      description: The instruction to prepare a separate public version has no place in the protection profile, so it is omitted and the translation is complete.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cedar-valley-handling-to-protection
+          marking: CONFIDENTIAL//REDACT BEFORE RELEASE
+      assertions:
+        - { path: [result, status], matcher: equals, value: complete }
+        - { path: [result, target, rendered], matcher: equals, value: CONFIDENTIAL }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            source: { categoryId: handling, conceptId: REDACT_BEFORE_RELEASE }
+            mappingId: handling-redact
+            disposition: omit
+            targets: []
+            reason: The protection profile records who may read a copy, not how to prepare a public release.
+
+    - id: keep-sealed-forbids-the-translation
+      name: KEEP SEALED forbids the translation
+      description: A forbidden instruction stops the translation and produces no target.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cedar-valley-handling-to-protection
+          marking: RESTRICTED//KEEP SEALED
+      assertions:
+        - { path: [result, status], matcher: equals, value: forbidden }
+        - path: [result, forbiddenBy]
+          matcher: contains
+          value:
+            kind: mapping
+            mappingId: handling-keep-sealed
+            source: { categoryId: handling, conceptId: KEEP_SEALED }
+            reason: An unreleased question may not move to a scheme that cannot say so.
+            authority: District records office
+
+    - id: undecided-instruction-comes-back-unmapped
+      name: COLLECT AFTER USE comes back unmapped
+      description: COLLECT AFTER USE was never reviewed, so it is returned as unmapped rather than matched by similarity.
+      operation: translate
+      input:
+        translation:
+          crosswalkId: cedar-valley-handling-to-protection
+          marking: INTERNAL//COLLECT AFTER USE
+      assertions:
+        - { path: [result, status], matcher: equals, value: partial }
+        - { path: [result, target, rendered], matcher: equals, value: INTERNAL }
+        - path: [result, outcomes]
+          matcher: contains
+          value:
+            source: { categoryId: handling, conceptId: COLLECT_AFTER_USE }
+            disposition: unmapped
+            targets: []

@@ -1,0 +1,59 @@
+# Communications guide for the website marking guide demo. Its rules are illustrative.
+guide:
+  id: comms-guide
+  version: 1.0.0
+  name: Communications Guide
+  description: Guide rules for communications and transmission data.
+  categories:
+    - id: comms
+      label: Communications
+  rules:
+    - id: frequency
+      name: Radio Frequency
+      description: Radio frequency or band allocation
+      keywords:
+        - frequency
+        - MHz
+        - GHz
+        - radio
+        - band
+      category: comms
+      outcome:
+        rendered: LEVEL-B
+    - id: callsign
+      name: Call Sign
+      description: Unit or station call sign
+      keywords:
+        - callsign
+        - call sign
+        - station
+      category: comms
+      outcome:
+        rendered: LEVEL-A
+    - id: crypto_key
+      name: Cryptographic Key
+      description: Encryption key material or key ID
+      keywords:
+        - crypto
+        - key
+        - encryption
+        - cipher
+      category: comms
+      outcome:
+        rendered: LEVEL-C
+    - id: freq_callsign
+      name: Frequency + Call Sign
+      description: Linking a frequency to a specific unit
+      when:
+        all:
+          - has: frequency
+          - has: callsign
+      outcome:
+        rendered: LEVEL-C//CTRL-TOPO
+      overrides:
+        - frequency
+        - callsign
+      rationale: Frequency-to-unit association reveals how stations are organized
+  target_schemes:
+    - id: demo-scheme
+      version: '*'

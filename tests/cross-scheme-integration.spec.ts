@@ -39,11 +39,17 @@ const discovered = discoverSchemes(schemesDir)
 // The full 1.0 community catalog. Everything this repository carries is
 // published: there is no draft or held-back tier.
 const publishedSchemes = [
-  'cedar-valley@1.0.0',
+  'access-control@1.0.0',
+  'acme-handling@1.0.0',
   'cedar-valley-handling@1.0.0',
   'cedar-valley-protection@1.0.0',
-  'cvss@3.1.0',
+  'cedar-valley@1.0.0',
+  'corporate-tiers@1.0.0',
   'cvss-v4@4.0.0',
+  'cvss@3.1.0',
+  'demo-scheme@1.0.0',
+  'llm-classify-demo-scheme@1.0.0',
+  'pet-adoption@1.0.0',
   'tlp@2.0.0',
 ]
 

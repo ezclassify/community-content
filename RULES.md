@@ -55,7 +55,7 @@ Validation here checks document shape, not behavior. It does not load the scheme
 
 Existing schemes (see [`schemes/`](schemes/)) are the practical reference for how to structure a new contribution. When in doubt, copy the layout of a nearby scheme and adjust.
 
-The mapper that converts YAML to the engine's internal types is intentionally thin: it maps snake_case to camelCase with type validation only. Use the YAML key names the canonical schema defines as the authoritative reference; do not invent alternate terminology.
+Use the YAML key names the canonical schema defines; do not invent alternate terminology.
 
 ## 5. Testing
 
@@ -70,8 +70,8 @@ engine, so they run on every pull request.
 - Run them from the repo root: `npm test`.
 - Assertions reference concepts by ID, not by vocabulary string. For example, assert `concept.id === 'LEVEL_HIGH'`, not `marking === 'HIGH-LABEL-TEXT'`.
 
-**Behavior.** Test suites in [`scheme-folder/test-suites/`](scheme-folder/test-suites/), run by the
-EzClassify CLI (`ezclassify scheme test ./scheme-folder`). They are
+**Behavior.** Test suites in [`scheme-folder/test-suites/`](scheme-folder/test-suites/), run by an
+EzClassify authoring runtime (`npm run test:behavior`). They are
 data, not code. Evaluating a marking needs the engine, which this repository
 does not have, so a behavior expectation belongs in a suite and never in a spec
 file.

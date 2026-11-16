@@ -2,7 +2,7 @@
  * Scheme-folder convention conformance.
  *
  * The sources live in a scheme folder (see scheme-folder/) per the convention:
- * schemes/ guides/ accesses/ contexts/ holding `<id>@<version>.yaml` files plus
+ * schemes/ guides/ accesses/ crosswalks/ contexts/ holding `<id>@<version>.yaml` files plus
  * a scheme-folder.yaml manifest.
  *
  * This runs the repository's own `npm run validate`, the same command a
@@ -25,6 +25,7 @@ interface Manifest {
   schemes?: Array<{ id: string; versions: string[] }>
   guides?: Array<{ id: string; versions: string[] }>
   accesses?: Array<{ id: string; versions: string[] }>
+  crosswalks?: Array<{ id: string; versions: string[] }>
   contexts?: Array<{ id: string; versions: string[] }>
 }
 
@@ -54,27 +55,55 @@ describe('scheme folder', () => {
 
   it('inventories every published scheme', () => {
     expect(refsOnDisk('schemes')).toEqual([
+      'access-control@1.0.0',
+      'acme-handling@1.0.0',
       'cedar-valley-handling@1.0.0',
       'cedar-valley-protection@1.0.0',
       'cedar-valley@1.0.0',
+      'corporate-tiers@1.0.0',
       'cvss-v4@4.0.0',
       'cvss@3.1.0',
+      'demo-scheme@1.0.0',
+      'llm-classify-demo-scheme@1.0.0',
+      'pet-adoption@1.0.0',
       'tlp@2.0.0',
     ])
     expect(refsOnDisk('guides')).toEqual([
       'cedar-valley-guide@1.0.0',
       'cedar-valley-handling-guide@1.0.0',
       'cedar-valley-protection-guide@1.0.0',
+      'comms-guide@1.0.0',
+      'demo-data-guide@1.0.0',
+      'llm-classify-demo-guide@1.0.0',
+      'pet-adoption-intake@1.0.0',
     ])
     expect(refsOnDisk('accesses')).toEqual([
+      'access-control-rules@1.0.0',
       'cedar-valley-access@1.0.0',
       'cedar-valley-handling-access@1.0.0',
       'cedar-valley-protection-access@1.0.0',
+      'demo-access-policy@1.0.0',
+    ])
+    expect(refsOnDisk('crosswalks')).toEqual([
+      'acme-handling-to-tlp@1.0.0',
+      'cedar-valley-handling-to-protection@1.0.0',
+      'cvss-31-to-40@1.0.0',
+      'cvss-40-to-31@1.0.0',
     ])
     expect(refsOnDisk('contexts')).toEqual([
+      'access-control-demo@1.0.0',
+      'cedar-valley-handling-to-protection@1.0.0',
       'cedar-valley-handling@1.0.0',
       'cedar-valley-protection@1.0.0',
       'cedar-valley@1.0.0',
+      'corporate-tiers@1.0.0',
+      'corporate-to-tlp-demo@1.0.0',
+      'cvss@1.0.0',
+      'guidebook-demo@1.0.0',
+      'llm-classify-demo-scheme-only@1.0.0',
+      'llm-classify-demo@1.0.0',
+      'pet-adoption@1.0.0',
+      'tlp@1.0.0',
     ])
   })
 
@@ -94,13 +123,18 @@ describe('scheme folder', () => {
         .sort(),
     ).toEqual(refsOnDisk('accesses'))
     expect(
+      (manifest.crosswalks ?? [])
+        .flatMap((entry) => entry.versions.map((version) => `${entry.id}@${version}`))
+        .sort(),
+    ).toEqual(refsOnDisk('crosswalks'))
+    expect(
       (manifest.contexts ?? [])
         .flatMap((entry) => entry.versions.map((version) => `${entry.id}@${version}`))
         .sort(),
     ).toEqual(refsOnDisk('contexts'))
   })
 
-  // The folder holds the four component directories, the manifest, and
+  // The folder holds the five component directories, the manifest, and
   // `test-suites/`, all of which npm run validate checks. Anything else would
   // escape the validator.
   it('holds only component directories, the manifest, and the test suites', () => {
@@ -115,6 +149,7 @@ describe('scheme folder', () => {
     expect(entries).toEqual([
       'accesses/',
       'contexts/',
+      'crosswalks/',
       'guides/',
       'scheme-folder.yaml',
       'schemes/',

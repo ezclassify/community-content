@@ -1,7 +1,7 @@
 testSuite:
   apiVersion: schemes.ezclassify.com/v1
   id: cedar-valley-tests
-  version: 1.0.2
+  version: 1.0.0
   name: cedar valley tests
   description: >-
     Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are
@@ -232,6 +232,22 @@ testSuite:
             - rendered
           matcher: equals
           value: INTERNAL
+    - id: portion-mark-ends-at-its-own-parenthesis
+      operation: schemeScan
+      input:
+        text: (C) see section (a) below.
+      name: A portion mark ends at its own closing parenthesis
+      assertions:
+        - path:
+            - results
+            - '0'
+            - marking
+          matcher: equals
+          value: (C)
+        - path:
+            - results
+            - '1'
+          matcher: absent
     - id: district-is-implicit
       operation: process
       input:

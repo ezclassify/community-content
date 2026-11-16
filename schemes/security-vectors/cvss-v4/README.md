@@ -74,12 +74,8 @@ format renders it by itself.
 ## Behavior
 
 What this scheme does is stated as data, in the test suite
-[`../../../scheme-folder/test-suites/cvss-v4-tests@1.0.1.yaml`](../../../scheme-folder/test-suites/cvss-v4-tests@1.0.1.yaml),
-and checked by running it:
-
-```bash
-ezclassify scheme test ./scheme-folder/test-suites/cvss-v4-tests@1.0.1.yaml
-```
+[`../../../scheme-folder/test-suites/cvss-v4-tests@1.0.0.yaml`](../../../scheme-folder/test-suites/cvss-v4-tests@1.0.0.yaml),
+and a maintainer checks it by running it against the engine.
 
 A few of the cases, in prose:
 
@@ -93,6 +89,50 @@ A few of the cases, in prose:
 - An undefined metric value, such as `AT:Z`, is refused.
 - A lowercase vector normalizes to the canonical uppercase form, and the
   correction is recorded rather than silently applied.
+
+## Crosswalks
+
+[`cvss-40-to-31`](../../../scheme-folder/crosswalks/cvss-40-to-31@1.0.0.yaml)
+derives a CVSS 3.1 vector from a 4.0 vector using the conversion rubric FIRST
+publishes in its
+[CVSS FAQ](https://www.first.org/cvss/faq#How-can-CVSS-v31-vectors-be-derived-from-v40-vectors).
+The crosswalk applies that rubric. It is not an official FIRST crosswalk, and
+FIRST does not review it.
+
+What it carries:
+
+- Attack Vector, Privileges Required, and no User Interaction, unchanged.
+  Passive and Active User Interaction both become Required.
+- 3.1 Attack Complexity is High when 4.0 Attack Complexity is High or Attack
+  Requirements is Present, and Low otherwise.
+- Scope is Changed when any subsequent-system impact is Low or High, and
+  Unchanged otherwise.
+- One impact set becomes the 3.1 Confidentiality, Integrity, and Availability
+  values: the subsequent-system set when it has more High values, otherwise the
+  vulnerable-system set. A tie goes to the vulnerable system. The set that
+  loses is omitted.
+- Exploit Maturity: Attacked becomes High, Proof-of-Concept stays
+  Proof-of-Concept, and Unreported becomes U.
+
+What it does not carry:
+
+- The Supplemental metrics are omitted, because 3.1 has no field for them.
+- The Environmental metrics, both the Security Requirements and the Modified
+  Base metrics, are omitted, because the rubric derives the 3.1 vector from
+  the Base and Threat metrics only.
+- Explicit Not Defined (`X`) values are omitted, since writing `X` means the
+  same as leaving the metric out.
+- The qualitative severity rating has no rule. A translation that includes it
+  comes back unmapped for that value, which makes it partial.
+
+A complete 4.0 Base vector gives a complete, valid 3.1 Base vector, whatever
+optional metrics it also carries. Every omitted metric is listed in the
+result. The suite
+[`cvss-40-to-31-tests@1.0.0.yaml`](../../../scheme-folder/test-suites/cvss-40-to-31-tests@1.0.0.yaml)
+states the behavior.
+
+`cvss-31-to-40` goes the other way, and it is partial: most 4.0 metrics need an
+analyst. See the [`cvss` README](../cvss/README.md#crosswalks).
 
 ## Further reading
 

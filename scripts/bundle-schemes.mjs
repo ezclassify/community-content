@@ -10,6 +10,7 @@
  *   dist/schemes/<id>@<version>.json         { scheme: {...} }
  *   dist/schemes/<id>@<version>.guide.json   { guide: {...} }
  *   dist/schemes/<id>@<version>.access.json  { access: {...} }
+ *   dist/schemes/<id>@<version>.crosswalk.json  { crosswalk: {...} }
  *   dist/schemes/contexts.json               { contexts: [...] } incl. latest aliases
  *
  * Every document is validated against its published JSON Schema first, so a
@@ -63,14 +64,14 @@ if (errors.length > 0) {
 const toJson = (value) => `${JSON.stringify(value, null, 2)}\n`;
 
 /** Filename suffix per kind; schemes carry none. */
-const SUFFIX = { scheme: '', guide: '.guide', access: '.access' };
+const SUFFIX = { scheme: '', guide: '.guide', access: '.access', crosswalk: '.crosswalk' };
 
 fs.rmSync(outDir, { recursive: true, force: true });
 fs.mkdirSync(outDir, { recursive: true });
 
 const written = [];
 
-for (const kind of ['scheme', 'guide', 'access']) {
+for (const kind of Object.keys(SUFFIX)) {
     for (const def of definitions[kind]) {
         const name = `${def.id}@${def.version}${SUFFIX[kind]}.json`;
         fs.writeFileSync(path.join(outDir, name), toJson(def.document), 'utf-8');

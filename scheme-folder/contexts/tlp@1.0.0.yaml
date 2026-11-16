@@ -1,0 +1,9 @@
+context:
+  id: tlp
+  version: 1.0.0
+  description: >-
+    Traffic Light Protocol 2.0 on its own, as the website TLP, multi-scheme and platform demos use
+    it.
+  scheme:
+    id: tlp
+    version: 2.0.0

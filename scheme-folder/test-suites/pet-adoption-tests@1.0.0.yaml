@@ -1,0 +1,46 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: pet-adoption-tests
+  version: 1.0.0
+  name: Pet adoption tests
+  description: >-
+    The listings, rollup and intake note the developer guides show, run through
+    the pet adoption scheme and its intake guide.
+  composition:
+    scheme:
+      id: pet-adoption
+      version: 1.0.0
+    guides:
+      - id: pet-adoption-intake
+        version: 1.0.0
+  cases:
+    - id: puppy-implies-dog
+      description: A puppy listing is also a dog listing.
+      operation: process
+      input:
+        marking: PUPPY, ANY HOME
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'DOG, PUPPY, ANY HOME' }
+
+    - id: foster-banner
+      description: Animals combine by union and the household fit rolls up to the most demanding.
+      operation: aggregate
+      input:
+        markings: ['PUPPY, ANY HOME', 'RABBIT, EXPERIENCED HOME', 'DOG, QUIET HOME']
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: 'DOG, PUPPY, RABBIT, EXPERIENCED HOME' }
+
+    - id: intake-note
+      operation: guideScan
+      input:
+        guideId: pet-adoption-intake
+        text: 'Intake: friendly dog, chip-90210123456, foster home ready. About 70 lbs.'
+      assertions:
+        - path: []
+          matcher: contains
+          value: { rule: { id: note-mentions-dog } }
+        - path: []
+          matcher: contains
+          value: { rule: { id: large-animal-signal } }

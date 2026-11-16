@@ -1,0 +1,12 @@
+context:
+  id: cedar-valley-handling-to-protection
+  version: 1.0.0
+  description: >-
+    Cedar Valley protection and handling markings, with the reviewed crosswalk that moves them to
+    the protection levels alone.
+  scheme:
+    id: cedar-valley-handling
+    version: 1.0.0
+  crosswalks:
+    - id: cedar-valley-handling-to-protection
+      version: 1.0.0

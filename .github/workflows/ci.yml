@@ -83,12 +83,6 @@ jobs:
               # (and a license review) into the same PR.
               run: npm run notices && git diff --exit-code THIRD-PARTY-NOTICES.md
 
-            - name: CLI pin is well-formed
-              # Licensed maintainers may resolve a CLI locally. Its optional pin
-              # must name a checksummed artifact or no source; this public job never
-              # downloads the proprietary engine or runs behavioral suites.
-              run: npm run check:cli-pin
-
             - name: No dependency or import escapes the repo
               # Static half of the independence check: no file:/link:/workspace:
               # dependency protocols in the published manifest, and no relative

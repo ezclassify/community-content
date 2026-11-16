@@ -69,7 +69,7 @@ testSuite:
         - { path: [rendered], matcher: equals, value: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H' }
         - path: [errors]
           matcher: contains
-          value: { constraintId: 'required-category:availability' }
+          value: { constraintId: '_required-category:availability' }
         - path: [assertions]
           matcher: contains
           value: { conceptId: C_H, categoryId: confidentiality }

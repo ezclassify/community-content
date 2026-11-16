@@ -1,0 +1,12 @@
+context:
+  id: guidebook-demo
+  version: 1.0.0
+  description: A generic two-category scheme with two marking guides.
+  scheme:
+    id: demo-scheme
+    version: 1.0.0
+  guides:
+    - id: demo-data-guide
+      version: 1.0.0
+    - id: comms-guide
+      version: 1.0.0

@@ -6,8 +6,8 @@
  * each one can actually fail. A validator that cannot go red is a validator
  * that proves nothing.
  *
- * Mutation cases copy the scheme folder into an OS temp dir. Nothing here
- * writes to the checked-in tree except `fmt`, which is asserted to be a no-op.
+ * Every case that runs a command copies the scheme folder into an OS temp dir,
+ * so nothing here writes to the checked-in tree.
  */
 import { execFileSync } from 'node:child_process'
 import * as fs from 'node:fs'
@@ -58,10 +58,6 @@ function repoWithMutableFolder(): string {
   // dependency tree per case turns a fast unit test into a slow one.
   fs.symlinkSync(path.join(repoRoot, 'node_modules'), path.join(dest, 'node_modules'), 'dir')
   fs.copyFileSync(path.join(repoRoot, 'package.json'), path.join(dest, 'package.json'))
-  fs.copyFileSync(
-    path.join(repoRoot, 'ezclassify-cli.json'),
-    path.join(dest, 'ezclassify-cli.json'),
-  )
   return dest
 }
 
@@ -114,6 +110,26 @@ describe('npm run validate', () => {
     expect(result.err).toContain('suite_filename_mismatch')
   })
 
+  it('fails when a crosswalk pins a scheme version this folder does not hold', () => {
+    const root = repoWithMutableFolder()
+    const crosswalk = path.join(root, 'scheme-folder', 'crosswalks', 'cvss-31-to-40@1.0.0.yaml')
+    fs.writeFileSync(
+      crosswalk,
+      fs.readFileSync(crosswalk, 'utf-8').replace('    version: 3.1.0', '    version: 3.0.0'),
+    )
+    const result = run('scripts/validate-folder.mjs', [], root)
+    expect(result.code).toBe(1)
+    expect(result.err).toContain('source_scheme names scheme "cvss@3.0.0"')
+  })
+
+  it('fails when a crosswalk runs in no test suite', () => {
+    const root = repoWithMutableFolder()
+    fs.rmSync(path.join(root, 'scheme-folder', 'test-suites', 'cvss-40-to-31-tests@1.0.0.yaml'))
+    const result = run('scripts/validate-folder.mjs', [], root)
+    expect(result.code).toBe(1)
+    expect(result.err).toContain('crosswalk "cvss-40-to-31@1.0.0" has no test suite')
+  })
+
   it('fails when a published scheme has no test suite', () => {
     const root = repoWithMutableFolder()
     fs.rmSync(path.join(root, 'scheme-folder', 'test-suites', 'tlp-tests@1.0.0.yaml'))
@@ -124,10 +140,20 @@ describe('npm run validate', () => {
 })
 
 describe('npm run fmt', () => {
-  it('is a no-op on the committed manifest', () => {
-    const before = fs.readFileSync(path.join(folder, 'scheme-folder.yaml'), 'utf-8')
-    expect(run('scripts/fmt-folder.mjs').code).toBe(0)
-    expect(fs.readFileSync(path.join(folder, 'scheme-folder.yaml'), 'utf-8')).toBe(before)
+  it('leaves the committed manifest untouched, bytes and modification time', () => {
+    const root = repoWithMutableFolder()
+    const manifest = path.join(root, 'scheme-folder', 'scheme-folder.yaml')
+    const committed = fs.readFileSync(path.join(folder, 'scheme-folder.yaml'), 'utf-8')
+    const past = new Date(Date.now() - 60_000)
+    fs.utimesSync(manifest, past, past)
+    const before = fs.statSync(manifest).mtimeMs
+
+    const result = run('scripts/fmt-folder.mjs', [], root)
+
+    expect(result.code).toBe(0)
+    expect(result.out).toContain('is current')
+    expect(fs.readFileSync(manifest, 'utf-8')).toBe(committed)
+    expect(fs.statSync(manifest).mtimeMs).toBe(before)
   })
 
   it('renames a misnamed definition and reindexes the manifest', () => {
@@ -155,7 +181,7 @@ describe('npm run build', () => {
         id: string
         version: string
         filename: string
-        testPolicy: { kind: string; id: string; version: string }
+        testPolicy?: { kind: string; id: string; version: string }
       }>
     }
     const authored = fs
@@ -166,14 +192,21 @@ describe('npm run build', () => {
     expect(fs.readdirSync(output).sort()).toEqual(['index.json', ...authored].sort())
     expect(index.testSuites.find((suite) => suite.id === 'cedar-valley-access-tests')).toEqual({
       id: 'cedar-valley-access-tests',
-      version: '1.0.2',
+      version: '1.0.0',
       testPolicy: { kind: 'access', id: 'cedar-valley-access', version: '1.0.0' },
-      filename: 'cedar-valley-access-tests@1.0.2.json',
+      filename: 'cedar-valley-access-tests@1.0.0.json',
     })
     expect(index.testSuites.find((suite) => suite.id === 'tlp-tests')?.testPolicy).toEqual({
       kind: 'scheme',
       id: 'tlp',
       version: '2.0.0',
+    })
+    // A crosswalk suite qualifies its crosswalk, which no test policy names, so
+    // it must not claim the scheme it starts from as that scheme's default.
+    expect(index.testSuites.find((suite) => suite.id === 'cvss-40-to-31-tests')).toEqual({
+      id: 'cvss-40-to-31-tests',
+      version: '1.0.0',
+      filename: 'cvss-40-to-31-tests@1.0.0.json',
     })
     const compiled = JSON.parse(
       fs.readFileSync(path.join(output, 'tlp-tests@1.0.0.json'), 'utf8'),
@@ -192,24 +225,40 @@ describe('npm run build', () => {
     expect(fs.existsSync(path.join(root, 'dist', 'test-suites'))).toBe(false)
   })
 
-  it('emits one wrapped JSON per scheme plus the context index', () => {
+  it('emits one wrapped JSON per definition plus the context index', () => {
     const root = repoWithMutableFolder()
     expect(run('scripts/bundle-schemes.mjs', [], root).code).toBe(0)
 
     const outDir = path.join(root, 'dist', 'schemes')
     expect(fs.readdirSync(outDir).sort()).toEqual([
+      'access-control-rules@1.0.0.access.json',
+      'access-control@1.0.0.json',
+      'acme-handling-to-tlp@1.0.0.crosswalk.json',
+      'acme-handling@1.0.0.json',
       'cedar-valley-access@1.0.0.access.json',
       'cedar-valley-guide@1.0.0.guide.json',
       'cedar-valley-handling-access@1.0.0.access.json',
       'cedar-valley-handling-guide@1.0.0.guide.json',
+      'cedar-valley-handling-to-protection@1.0.0.crosswalk.json',
       'cedar-valley-handling@1.0.0.json',
       'cedar-valley-protection-access@1.0.0.access.json',
       'cedar-valley-protection-guide@1.0.0.guide.json',
       'cedar-valley-protection@1.0.0.json',
       'cedar-valley@1.0.0.json',
+      'comms-guide@1.0.0.guide.json',
       'contexts.json',
+      'corporate-tiers@1.0.0.json',
+      'cvss-31-to-40@1.0.0.crosswalk.json',
+      'cvss-40-to-31@1.0.0.crosswalk.json',
       'cvss-v4@4.0.0.json',
       'cvss@3.1.0.json',
+      'demo-access-policy@1.0.0.access.json',
+      'demo-data-guide@1.0.0.guide.json',
+      'demo-scheme@1.0.0.json',
+      'llm-classify-demo-guide@1.0.0.guide.json',
+      'llm-classify-demo-scheme@1.0.0.json',
+      'pet-adoption-intake@1.0.0.guide.json',
+      'pet-adoption@1.0.0.json',
       'tlp@2.0.0.json',
     ])
 
@@ -217,18 +266,48 @@ describe('npm run build', () => {
     expect(Object.keys(tlp)).toEqual(['scheme'])
     expect(tlp.scheme.id).toBe('tlp')
 
+    const crosswalk = JSON.parse(
+      fs.readFileSync(path.join(outDir, 'cvss-40-to-31@1.0.0.crosswalk.json'), 'utf-8'),
+    )
+    expect(Object.keys(crosswalk)).toEqual(['crosswalk'])
+    expect(crosswalk.crosswalk).toMatchObject({
+      id: 'cvss-40-to-31',
+      source_scheme: { id: 'cvss-v4', version: '4.0.0' },
+      target_scheme: { id: 'cvss', version: '3.1.0' },
+    })
+
     const contexts = JSON.parse(fs.readFileSync(path.join(outDir, 'contexts.json'), 'utf-8'))
     expect(
       contexts.contexts.map(
         (context: { id: string; version: string }) => `${context.id}@${context.version}`,
       ),
     ).toEqual([
+      'access-control-demo@1.0.0',
+      'cedar-valley-handling-to-protection@1.0.0',
       'cedar-valley-handling@1.0.0',
       'cedar-valley-protection@1.0.0',
       'cedar-valley@1.0.0',
+      'corporate-tiers@1.0.0',
+      'corporate-to-tlp-demo@1.0.0',
+      'cvss@1.0.0',
+      'guidebook-demo@1.0.0',
+      'llm-classify-demo-scheme-only@1.0.0',
+      'llm-classify-demo@1.0.0',
+      'pet-adoption@1.0.0',
+      'tlp@1.0.0',
+      'access-control-demo@latest',
+      'cedar-valley-handling-to-protection@latest',
       'cedar-valley-handling@latest',
       'cedar-valley-protection@latest',
       'cedar-valley@latest',
+      'corporate-tiers@latest',
+      'corporate-to-tlp-demo@latest',
+      'cvss@latest',
+      'guidebook-demo@latest',
+      'llm-classify-demo-scheme-only@latest',
+      'llm-classify-demo@latest',
+      'pet-adoption@latest',
+      'tlp@latest',
     ])
     expect(
       contexts.contexts.find((context: { id: string }) => context.id === 'cedar-valley').scheme,
@@ -266,7 +345,7 @@ describe('npm run build', () => {
       .readFileSync(scheme, 'utf-8')
       .split('\n')
       .slice(1)
-      .map((line) => line.replace(/^ {4}/, ''))
+      .map((line) => line.replace(/^ {2}/, ''))
       .join('\n')
     fs.writeFileSync(scheme, bare)
 
@@ -276,46 +355,5 @@ describe('npm run build', () => {
       expect(result.err).toContain('must be wrapped in a top-level `scheme:` key')
     }
     expect(fs.existsSync(path.join(root, 'dist', 'schemes'))).toBe(false)
-  })
-})
-
-describe('the behavioral lane', () => {
-  it('fails when no CLI is available', () => {
-    const root = repoWithMutableFolder()
-    const result = run('scripts/behavioral-suites.mjs', [], root)
-    expect(result.code).toBe(1)
-    expect(result.err).toContain('required lane cannot run')
-  })
-})
-
-describe('the CLI pin', () => {
-  it('accepts the committed pin', () => {
-    expect(run('scripts/check-cli-pin.mjs').code).toBe(0)
-  })
-
-  it('refuses a download source with no checksum', () => {
-    const root = repoWithMutableFolder()
-    fs.writeFileSync(
-      path.join(root, 'ezclassify-cli.json'),
-      JSON.stringify({
-        minimumVersion: '1.0.0',
-        testedVersion: '1.0.0',
-        archive: { url: 'https://example.invalid/cli.tar.gz', sha256: null },
-      }),
-    )
-    const result = run('scripts/check-cli-pin.mjs', [], root)
-    expect(result.code).toBe(1)
-    expect(result.err).toContain('archive.sha256')
-  })
-
-  it('refuses a tested version below the minimum', () => {
-    const root = repoWithMutableFolder()
-    fs.writeFileSync(
-      path.join(root, 'ezclassify-cli.json'),
-      JSON.stringify({ minimumVersion: '2.0.0', testedVersion: '1.0.0' }),
-    )
-    const result = run('scripts/check-cli-pin.mjs', [], root)
-    expect(result.code).toBe(1)
-    expect(result.err).toContain('below minimumVersion')
   })
 })

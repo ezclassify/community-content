@@ -1,92 +1,78 @@
 #!/usr/bin/env node
 /**
- * Run authored behavior suites with a caller-provided or installed CLI.
+ * Run the folder's behavior suites on an EzClassify authoring runtime.
  *
- * This explicit integration lane requires a licensed runtime executable. A
- * missing CLI fails; schema validation remains the independent public lane.
+ * This explicit lane needs a licensed dev-root authoring runtime, which `stage`
+ * in the engine repository writes an installation for. Name a running one with
+ * `EZCLASSIFY_AUTHORING_URL`, or hand over the `stage.json` plan with
+ * `EZCLASSIFY_STAGE_PLAN` and this script starts the planned runtime for the
+ * length of the run. A missing or unreachable runtime fails; schema validation
+ * remains the independent public lane.
  * @module
  */
-import { execFileSync, spawnSync } from 'node:child_process';
 import * as fs from 'node:fs';
-import * as path from 'node:path';
+import yaml from 'js-yaml';
 
-import { CliPinError, declaredSources, readPin } from './lib/cli-pin.mjs';
-import { FOLDER, REPO_ROOT } from './lib/scheme-folder.mjs';
+import {
+    LaneError,
+    launchStaged,
+    passed,
+    runFolderSuites,
+    summarize,
+} from './lib/behavior-run.mjs';
+import { FOLDER } from './lib/scheme-folder.mjs';
 
 const args = process.argv.slice(2);
 const reportFlagIndex = args.indexOf('--report');
 const reportPath = reportFlagIndex === -1 ? undefined : args[reportFlagIndex + 1];
-// `--report` with nothing after it, or with the next flag after it, would
-// otherwise be taken as a filename and write the report somewhere nobody asked
-// for. The lane's whole point is an honest outcome, so a malformed invocation
-// stops here rather than producing a plausible-looking run.
+// A `--report` with nothing after it, or another flag after it, would otherwise
+// be taken as a filename and write the report somewhere nobody asked for.
 if (reportFlagIndex !== -1 && (reportPath === undefined || reportPath.startsWith('--'))) {
     console.error('[behavior] --report needs a file path, for example --report ./results.json');
     process.exit(1);
 }
 
-// The pin decides what this lane may do, so an unreadable one is a
-// configuration failure with a message, not a stack trace.
-let pin;
-try {
-    pin = readPin();
-} catch (error) {
-    if (!(error instanceof CliPinError)) throw error;
-    console.error(`[behavior] ${error.message}`);
-    process.exit(1);
-}
-
-/**
- * Locate a runnable CLI.
- *
- * @returns {string | undefined} The executable, or undefined when there is none.
- */
-function findCli() {
-    const explicit = process.env['EZCLASSIFY_CLI'];
-    if (explicit) {
-        if (!fs.existsSync(explicit)) {
-            console.error(`[behavior] EZCLASSIFY_CLI points at ${explicit}, which does not exist.`);
-            process.exit(1);
-        }
-        return explicit;
-    }
-    const probe = spawnSync('ezclassify', ['--version'], { encoding: 'utf-8' });
-    return probe.status === 0 ? 'ezclassify' : undefined;
-}
-
-// Record failure before prerequisite checks too, so CI cannot label a failed
-// or unavailable executable as a skipped behavioral run.
+// Record failure before any prerequisite check, so CI cannot label an
+// unavailable runtime as a skipped behavioral run.
 if (process.env['GITHUB_OUTPUT']) {
     fs.appendFileSync(process.env['GITHUB_OUTPUT'], 'status=failed\n');
 }
 
-const cli = findCli();
-if (!cli) {
-    const reason =
-        declaredSources(pin).length > 0
-            ? 'no CLI on PATH; resolve the pinned artifact with scripts/resolve-cli.mjs'
-            : 'no EzClassify CLI available; ezclassify-cli.json declares no verified public download';
-    console.error(`[behavior] required lane cannot run: ${reason}`);
+const url = process.env['EZCLASSIFY_AUTHORING_URL'];
+const plan = process.env['EZCLASSIFY_STAGE_PLAN'];
+if (Boolean(url) === Boolean(plan)) {
+    console.error(
+        '[behavior] required lane cannot run: set exactly one of EZCLASSIFY_AUTHORING_URL ' +
+            '(a running dev-root authoring runtime) or EZCLASSIFY_STAGE_PLAN (the stage.json from `stage`).',
+    );
     process.exit(1);
 }
 
-// A packaged CLI is an executable; a CLI built from a checkout is a .js entry
-// point with no exec bit. Run the latter through the current node so pointing
-// EZCLASSIFY_CLI at a local build works without a wrapper script.
-const isScript = /\.[cm]?js$/.test(cli);
-const command = isScript ? process.execPath : cli;
-const cliArgs = [...(isScript ? [cli] : []), 'scheme', 'test', path.relative(REPO_ROOT, FOLDER)];
-if (reportPath) cliArgs.push('--report', reportPath);
-
-console.log(`[behavior] running: ${command} ${cliArgs.join(' ')}`);
+let staged;
+let result;
 try {
-    execFileSync(command, cliArgs, { cwd: REPO_ROOT, stdio: 'inherit' });
+    staged = plan ? await launchStaged(plan) : undefined;
+    result = await runFolderSuites({
+        folder: FOLDER,
+        baseUrl: staged?.baseUrl ?? url,
+        parse: (text) => yaml.load(text),
+    });
 } catch (error) {
-    if (process.env['GITHUB_OUTPUT']) {
-        fs.appendFileSync(process.env['GITHUB_OUTPUT'], 'status=failed\n');
-    }
-    process.exit(error.status ?? 1);
+    if (!(error instanceof LaneError)) throw error;
+    console.error(`[behavior] ${error.message}`);
+    process.exit(1);
+} finally {
+    await staged?.stop();
 }
+
+for (const run of result.runs) console.log(`[behavior] ${summarize(run)}`);
+if (reportPath) fs.writeFileSync(reportPath, `${JSON.stringify(result, null, 2)}\n`);
+
+const ok = result.runs.length > 0 && result.runs.every(passed);
+console.log(
+    `[behavior] engine ${result.engineVersion}: ${result.runs.filter(passed).length} of ${result.runs.length} suites passed`,
+);
 if (process.env['GITHUB_OUTPUT']) {
-    fs.appendFileSync(process.env['GITHUB_OUTPUT'], 'status=passed\n');
+    fs.appendFileSync(process.env['GITHUB_OUTPUT'], `status=${ok ? 'passed' : 'failed'}\n`);
 }
+process.exit(ok ? 0 : 1);

@@ -1,0 +1,69 @@
+# Fictional, organization-owned decisions that carry acme-handling markings to TLP 2.0, or send
+# them to review. The website cross-scheme demo runs it.
+crosswalk:
+  id: acme-handling-to-tlp
+  version: 1.0.0
+  name: Acme handling to TLP 2.0
+  description: Fictional, organization-owned decisions for this demo.
+  guidance: Carry only mappings Acme approved; route review outcomes to the information owner.
+  citation: https://www.first.org/tlp/
+  mappings:
+    - id: open-clear
+      source:
+        category: handling
+        concept: OPEN
+      targets:
+        - category: tlp_level
+          concept: TLP_CLEAR
+      disposition: carry
+      reason: Acme policy defines OPEN as releasable without a handling restriction.
+      authority: Acme information-sharing policy (fictional)
+      guidance: No additional TLP decision is required after normal public-release approval.
+      citation: https://www.first.org/tlp/
+    - id: community-green
+      source:
+        category: handling
+        concept: COMMUNITY
+      targets:
+        - category: tlp_level
+          concept: TLP_GREEN
+      disposition: carry
+      reason: Acme defines COMMUNITY as shareable inside the participating community.
+      authority: Acme information-sharing policy (fictional)
+      citation: https://www.first.org/tlp/
+    - id: partners-review
+      source:
+        category: handling
+        concept: PARTNERS
+      targets:
+        - category: tlp_level
+          concept: TLP_AMBER
+        - category: tlp_level
+          concept: TLP_AMBER_STRICT
+      disposition: review
+      reason: >-
+        The author must decide whether clients may receive it or only the recipient organization
+        may.
+      authority: Acme information-sharing policy (fictional)
+      guidance: Confirm whether the permitted audience includes clients before selecting a target.
+      citation: https://www.first.org/tlp/
+    - id: internal-review
+      source:
+        category: handling
+        concept: INTERNAL
+      targets:
+        - category: tlp_level
+          concept: TLP_RED
+      disposition: review
+      reason: >-
+        Internal is an organizational boundary; TLP:RED is an individual-recipient boundary, so it
+        cannot be inferred.
+      authority: Acme information-sharing policy (fictional)
+      guidance: Do not infer TLP:RED from an internal-only corporate marking.
+      citation: https://www.first.org/tlp/
+  source_scheme:
+    id: acme-handling
+    version: 1.0.0
+  target_scheme:
+    id: tlp
+    version: 2.0.0

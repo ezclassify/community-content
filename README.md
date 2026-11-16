@@ -18,9 +18,8 @@ anyone writing scheme-specific code.
 
 This repository holds the schemes. It does not hold an engine. The EzClassify
 engine is proprietary and runs inside EzClassify applications. Authoring,
-building, and schema validation here use public tools. A Runtime license includes
-the full CLI and its local scheme tests, along with REST and MCP. Studio is
-optional. Contributors without Runtime can submit suites and request a
+building, and schema validation here use public tools. Behavior tests run
+against the engine inside EzClassify. Contributors submit suites and request a
 maintainer-assisted behavioral run. Hosted pilot runs are not yet available;
 confirm availability with a maintainer. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -29,24 +28,30 @@ confirm availability with a maintainer. See [CONTRIBUTING.md](CONTRIBUTING.md).
 Schemes are content. They go into an EzClassify application, which is what
 runs them.
 
-The npm package provides compiled JSON content for tooling and local document
-workflows:
+The npm package provides compiled JSON content for tooling:
+
+```bash
+npm install @ezclassify/schemes
+```
+
+Every scheme, guide, access policy, and crosswalk in the catalog is compiled to
+its own file, alongside a Context index:
 
 ```text
 dist/schemes/
   tlp@2.0.0.json
   cvss@3.1.0.json
   cvss-v4@4.0.0.json
+  cvss-31-to-40@1.0.0.crosswalk.json
+  cvss-40-to-31@1.0.0.crosswalk.json
+  cedar-valley-guide@1.0.0.guide.json
+  cedar-valley-access@1.0.0.access.json
   contexts.json
-```
-
-```bash
-npm install @ezclassify/schemes
+  ...
 ```
 
 The files are plain JSON, so non-Node tools can read or copy them without
-executing JavaScript. The licensed [CLI's document commands](https://ezclassify.com/docs/cli) can read
-this component directory through `SCHEME_DIR`.
+executing JavaScript.
 
 For production REST and MCP deployments, an administrator installs verified
 artifacts in the runtime's artifact repository and supplies a published Context
@@ -81,7 +86,7 @@ reference for package modules and scripts.
 
 ## Catalog
 
-The catalog includes public standards and three fictional Cedar Valley teaching schemes.
+The catalog includes public standards, three fictional Cedar Valley teaching schemes, and a few small demonstration schemes.
 
 ### sensitivity-marking/
 
@@ -95,6 +100,12 @@ The catalog includes public standards and three fictional Cedar Valley teaching 
 | --------- | ------------------------ |
 | `cvss`    | CVSS v3.1 vector strings |
 | `cvss-v4` | CVSS v4.0 vector strings |
+
+Two crosswalks translate between them: `cvss-40-to-31` derives a 3.1 vector
+with FIRST's published rubric, and `cvss-31-to-40` is a partial migration aid
+that leaves most 4.0 metrics to an analyst. The [`cvss`](schemes/security-vectors/cvss/README.md#crosswalks)
+and [`cvss-v4`](schemes/security-vectors/cvss-v4/README.md#crosswalks) READMEs
+say what each one carries.
 
 Maintained schemes for IC Classification and Control Markings (CAPCO), CUI,
 and NATO are part of the licensed EzClassify catalog. This repository contains
@@ -110,6 +121,17 @@ public standards and the approved fictional Cedar Valley teaching content.
 
 [Cedar Valley](schemes/demo/cedar-valley/README.md) is fictional teaching content authored by EzClassify. It does not represent a real district policy or compliance standard. The three contexts include matching guides and access policies. This repository owns their canonical source; maintained examples consume copies.
 
+The other demonstration schemes are small, fictional, and each backs one worked example in the EzClassify documentation:
+
+| Scheme                     | Purpose                                                             |
+| -------------------------- | ------------------------------------------------------------------- |
+| `access-control`           | Four levels and three compartments, with an access policy           |
+| `acme-handling`            | Four corporate handling tiers, with a reviewed crosswalk to TLP 2.0 |
+| `corporate-tiers`          | Four sensitivity tiers with handling caveats                        |
+| `demo-scheme`              | Three levels and two controls, with two marking guides              |
+| `llm-classify-demo-scheme` | Two small categories, with a guide and an access policy             |
+| `pet-adoption`             | Animals and household fit, with an intake guide                     |
+
 For application integration tests, use the [scenario server](https://github.com/ezclassify/contracts/tree/main/packages/conformance-server#testing-an-application-integration). It serves a finite set of recorded Cedar Valley responses and transport failures through the normal REST contract. It requires no runtime license.
 
 ## How a scheme here is checked
@@ -123,15 +145,10 @@ with nothing installed but this repository's own dependencies.
 
 **Behavior.** Each scheme carries test suites in [`scheme-folder/test-suites/`](scheme-folder/test-suites/),
 stating inputs and the outcomes they must produce. They are data, not code.
-The EzClassify CLI runs them:
+A maintainer runs them against the engine.
 
-```bash
-ezclassify scheme test ./scheme-folder
-```
-
-Running the suites locally requires a Runtime license. Authoring a scheme,
-validating it, and opening a pull request do not. Contributors can request the
-maintainer-assisted pilot described in [CONTRIBUTING.md](CONTRIBUTING.md), which
+Authoring a scheme, validating it, and opening a pull request need no EzClassify
+license. Contributors can request the maintainer-assisted pilot described in [CONTRIBUTING.md](CONTRIBUTING.md), which
 also explains its current availability and the independent public CI checks.
 
 ## Contributing a scheme

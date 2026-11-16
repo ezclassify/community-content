@@ -2,6 +2,12 @@ name: community-content
 format: 1
 description: Public standards and explicitly fictional teaching schemes for EzClassify.
 schemes:
+  - id: access-control
+    versions:
+      - 1.0.0
+  - id: acme-handling
+    versions:
+      - 1.0.0
   - id: cedar-valley
     versions:
       - 1.0.0
@@ -11,12 +17,24 @@ schemes:
   - id: cedar-valley-protection
     versions:
       - 1.0.0
+  - id: corporate-tiers
+    versions:
+      - 1.0.0
   - id: cvss
     versions:
       - 3.1.0
   - id: cvss-v4
     versions:
       - 4.0.0
+  - id: demo-scheme
+    versions:
+      - 1.0.0
+  - id: llm-classify-demo-scheme
+    versions:
+      - 1.0.0
+  - id: pet-adoption
+    versions:
+      - 1.0.0
   - id: tlp
     versions:
       - 2.0.0
@@ -30,7 +48,22 @@ guides:
   - id: cedar-valley-protection-guide
     versions:
       - 1.0.0
+  - id: comms-guide
+    versions:
+      - 1.0.0
+  - id: demo-data-guide
+    versions:
+      - 1.0.0
+  - id: llm-classify-demo-guide
+    versions:
+      - 1.0.0
+  - id: pet-adoption-intake
+    versions:
+      - 1.0.0
 accesses:
+  - id: access-control-rules
+    versions:
+      - 1.0.0
   - id: cedar-valley-access
     versions:
       - 1.0.0
@@ -40,13 +73,59 @@ accesses:
   - id: cedar-valley-protection-access
     versions:
       - 1.0.0
+  - id: demo-access-policy
+    versions:
+      - 1.0.0
+crosswalks:
+  - id: acme-handling-to-tlp
+    versions:
+      - 1.0.0
+  - id: cedar-valley-handling-to-protection
+    versions:
+      - 1.0.0
+  - id: cvss-31-to-40
+    versions:
+      - 1.0.0
+  - id: cvss-40-to-31
+    versions:
+      - 1.0.0
 contexts:
+  - id: access-control-demo
+    versions:
+      - 1.0.0
   - id: cedar-valley
     versions:
       - 1.0.0
   - id: cedar-valley-handling
     versions:
       - 1.0.0
+  - id: cedar-valley-handling-to-protection
+    versions:
+      - 1.0.0
   - id: cedar-valley-protection
+    versions:
+      - 1.0.0
+  - id: corporate-tiers
+    versions:
+      - 1.0.0
+  - id: corporate-to-tlp-demo
+    versions:
+      - 1.0.0
+  - id: cvss
+    versions:
+      - 1.0.0
+  - id: guidebook-demo
+    versions:
+      - 1.0.0
+  - id: llm-classify-demo
+    versions:
+      - 1.0.0
+  - id: llm-classify-demo-scheme-only
+    versions:
+      - 1.0.0
+  - id: pet-adoption
+    versions:
+      - 1.0.0
+  - id: tlp
     versions:
       - 1.0.0

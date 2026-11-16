@@ -1,0 +1,81 @@
+testSuite:
+  apiVersion: schemes.ezclassify.com/v1
+  id: access-control-tests
+  version: 1.0.0
+  name: Access control tests
+  description: >-
+    The website access control demo's opening check and one denial for each
+    rule: level, compartments, the analyst role and the trusted network zone.
+  composition:
+    scheme:
+      id: access-control
+      version: 1.0.0
+    access:
+      id: access-control-rules
+      version: 1.0.0
+  cases:
+    - id: level-and-compartment-round-trip
+      operation: process
+      input:
+        marking: Internal//Bravo
+      assertions:
+        - { path: [valid], matcher: equals, value: true }
+        - { path: [rendered], matcher: equals, value: Internal//Bravo }
+
+    - id: opening-check-is-granted
+      description: The demo opens on an analyst cleared above the data, on the trusted network.
+      operation: checkAccess
+      input:
+        marking: Internal//Bravo
+        userAttributes: { level: RESTRICTED, compartments: [BRAVO], role: analyst }
+        context: { networkZone: trusted }
+      assertions:
+        - { path: [result, granted], matcher: equals, value: true }
+
+    - id: level-below-data-is-denied
+      operation: checkAccess
+      input:
+        marking: Restricted//Bravo
+        userAttributes: { level: INTERNAL, compartments: [BRAVO], role: analyst }
+        context: { networkZone: trusted }
+      assertions:
+        - { path: [result, granted], matcher: equals, value: false }
+        - path: [result, rules, '0']
+          matcher: contains
+          value: { granted: false, name: Level }
+
+    - id: missing-compartment-is-denied
+      operation: checkAccess
+      input:
+        marking: Internal//Alpha//Bravo
+        userAttributes: { level: RESTRICTED, compartments: [BRAVO], role: analyst }
+        context: { networkZone: trusted }
+      assertions:
+        - { path: [result, granted], matcher: equals, value: false }
+        - path: [result, rules, '1']
+          matcher: contains
+          value: { granted: false, name: Compartments }
+
+    - id: other-role-is-denied
+      operation: checkAccess
+      input:
+        marking: Internal//Bravo
+        userAttributes: { level: RESTRICTED, compartments: [BRAVO], role: viewer }
+        context: { networkZone: trusted }
+      assertions:
+        - { path: [result, granted], matcher: equals, value: false }
+        - path: [result, rules, '2']
+          matcher: contains
+          value: { granted: false, name: Analyst role }
+
+    - id: public-network-is-denied
+      operation: checkAccess
+      input:
+        marking: Internal//Bravo
+        userAttributes: { level: RESTRICTED, compartments: [BRAVO], role: analyst }
+        context: { networkZone: public }
+      assertions:
+        - { path: [result, granted], matcher: equals, value: false }
+        - path: [result, rules, '3']
+          matcher: contains
+          value: { granted: false, name: Trusted network }

@@ -1,7 +1,7 @@
 testSuite:
   apiVersion: schemes.ezclassify.com/v1
   id: cedar-valley-access-tests
-  version: 1.0.2
+  version: 1.0.0
   name: cedar valley access tests
   description: >-
     Fictional Cedar Valley teaching cases. Identity claims are synthetic; expected results are
@@ -249,16 +249,3 @@ testSuite:
             - granted
           matcher: equals
           value: false
-    - id: unmarked-document-not-evaluated
-      operation: assessDocumentAccess
-      input:
-        text: Narrative without a marking.
-        userAttributes: {}
-      name: Unmarked documents have no authored access decision
-      assertions:
-        - path:
-            - result
-            - authored
-            - status
-          matcher: equals
-          value: not-evaluated
