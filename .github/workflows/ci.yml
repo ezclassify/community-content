@@ -30,7 +30,7 @@ jobs:
               with:
                   persist-credentials: false
 
-            - uses: ezclassify/.github/actions/setup-node-npm@a42ece80f520858a2926723d12bba2af2dca0474
+            - uses: ezclassify/.github/actions/setup-node-npm@da1e243029be7e724f808cca11e385e6d79eee8b
               with:
                   node-version: '22'
 
@@ -58,7 +58,7 @@ jobs:
             - name: Install
               env:
                   NODE_AUTH_TOKEN: ${{ github.token }}
-              uses: ezclassify/.github/actions/install-node-dependencies@a42ece80f520858a2926723d12bba2af2dca0474
+              uses: ezclassify/.github/actions/install-node-dependencies@da1e243029be7e724f808cca11e385e6d79eee8b
               with:
                   mode: generated
                   relock-installs: 'false'
@@ -108,7 +108,7 @@ jobs:
               with:
                   persist-credentials: false
 
-            - uses: ezclassify/.github/actions/setup-node-npm@a42ece80f520858a2926723d12bba2af2dca0474
+            - uses: ezclassify/.github/actions/setup-node-npm@da1e243029be7e724f808cca11e385e6d79eee8b
               with:
                   node-version: ${{ matrix.node-version }}
 
@@ -126,7 +126,7 @@ jobs:
             - name: Install
               env:
                   NODE_AUTH_TOKEN: ${{ github.token }}
-              uses: ezclassify/.github/actions/install-node-dependencies@a42ece80f520858a2926723d12bba2af2dca0474
+              uses: ezclassify/.github/actions/install-node-dependencies@da1e243029be7e724f808cca11e385e6d79eee8b
               with:
                   mode: generated
                   relock-installs: 'false'
