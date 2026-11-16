@@ -34,16 +34,10 @@ jobs:
               with:
                   node-version: '22'
 
-            # These two read only the tree and need no installed dependencies.
-            - name: CLI pin is well-formed
-              # Licensed maintainers may resolve a CLI locally. Its optional pin
-              # must name a checksummed artifact or no source; this public job never
-              # downloads the proprietary engine or runs behavioral suites.
-              run: npm run check:cli-pin
-
             - name: No dependency or import escapes the repo
-              # No file:/link:/workspace: dependency protocols in the published
-              # manifest, and no relative import that resolves above the repo root.
+              # Reads only the tree, so it runs before install. No file:/link:/
+              # workspace: protocols in the published manifest, and no relative
+              # import that resolves above the repo root.
               run: npm run check:no-escape
 
             - name: Configure registry for CI
@@ -126,8 +120,8 @@ jobs:
                   node-version: ${{ matrix.node-version }}
 
             - name: Configure registry for CI
-              env:
-                  EZ_GHPKG_TOKEN: ${{ secrets.EZ_GHPKG_TOKEN || github.token }}
+              # Dispatch runs are always same-repository, so only the package
+              # registry lane applies. The token reaches only the install step.
               run: |
                   set -euo pipefail
                   cat > "$RUNNER_TEMP/ci-npmrc" << 'NPMRC'
@@ -146,7 +140,12 @@ jobs:
 
             - run: npm test
 
+            - run: npm run validate
+
             - run: npm run build
+
+            - name: README quickstart runs against the built bundle
+              run: node scripts/readme-quickstart.mjs
 
             - name: Pack and consume the package from its tarball
               # npm-pack @ezclassify/schemes, install the tarball into a scratch
