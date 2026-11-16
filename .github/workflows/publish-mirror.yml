@@ -1,6 +1,6 @@
 name: Publish mirror (GitHub Packages)
 
-# Nightly publish of @ezclassify/schemes to the GitHub Packages development
+# Manual publish of @ezclassify/schemes to the GitHub Packages development
 # mirror, so a consumer building against unreleased first-party packages gets
 # a real artifact from the same registry as its other @ezclassify/* packages.
 # Gated on "did a commit land in the last 24h" so idle days publish nothing.
@@ -8,8 +8,6 @@ name: Publish mirror (GitHub Packages)
 # them.
 
 on:
-  schedule:
-    - cron: '45 6 * * *' # 06:45 UTC nightly, after the first-party packages this repository builds against
   workflow_dispatch:
     inputs:
       force:
@@ -35,6 +33,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Gate on a commit in the last 24h
         id: gate
