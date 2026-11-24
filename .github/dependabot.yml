@@ -7,8 +7,9 @@ updates:
     - package-ecosystem: npm
       directory: /
       schedule:
-          interval: weekly
-          day: monday
+          interval: cron
+          cronjob: '17 3 * * *'
+          timezone: America/New_York
       # No production group: the published package declares no `dependencies`,
       # so a production group would never match anything.
       cooldown:
@@ -25,7 +26,7 @@ updates:
                   - patch
       ignore:
           - dependency-name: '@ezclassify/*'
-      open-pull-requests-limit: 0
+      open-pull-requests-limit: 1
       labels:
           - dependencies
       allow:
@@ -38,8 +39,9 @@ updates:
     - package-ecosystem: github-actions
       directory: /
       schedule:
-          interval: weekly
-          day: monday
+          interval: cron
+          cronjob: '17 3 * * *'
+          timezone: America/New_York
       cooldown:
           default-days: 7
       groups:
@@ -57,4 +59,4 @@ updates:
             update-types:
                 - version-update:semver-minor
                 - version-update:semver-patch
-      open-pull-requests-limit: 0
+      open-pull-requests-limit: 1
