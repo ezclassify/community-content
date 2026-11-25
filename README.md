@@ -5,7 +5,15 @@
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Node.js 22 | 24](https://img.shields.io/badge/node-22%20%7C%2024-339933.svg)](package.json)
 
-Open-source marking schemes for EzClassify. Apache-2.0 licensed.
+Open marking schemes and crosswalks for EzClassify, Apache-2.0 licensed. They
+cover Traffic Light Protocol (TLP) 2.0, Common Vulnerability Scoring System
+(CVSS) 3.1 and 4.0 with crosswalks between the two, and worked examples for
+writing your own scheme. Running a scheme needs an
+EzClassify runtime; this package holds content and no engine.
+
+The free developer runtime also carries demo subsets of IC Classification and
+Control Markings (CAPCO) and Controlled Unclassified Information (CUI). The
+full CAPCO and CUI schemes are licensed content and are not in this package.
 
 ## What's a scheme?
 
@@ -107,8 +115,8 @@ that leaves most 4.0 metrics to an analyst. The [`cvss`](schemes/security-vector
 and [`cvss-v4`](schemes/security-vectors/cvss-v4/README.md#crosswalks) READMEs
 say what each one carries.
 
-Maintained schemes for IC Classification and Control Markings (CAPCO), CUI,
-and NATO are part of the licensed EzClassify catalog. This repository contains
+Maintained schemes for IC Classification and Control Markings (CAPCO) and CUI
+are part of the licensed EzClassify catalog. This repository contains
 public standards and the approved fictional Cedar Valley teaching content.
 
 ### demo/
