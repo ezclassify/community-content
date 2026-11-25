@@ -8,7 +8,7 @@
 Open marking schemes and crosswalks for EzClassify, Apache-2.0 licensed. They
 cover Traffic Light Protocol (TLP) 2.0, Common Vulnerability Scoring System
 (CVSS) 3.1 and 4.0 with crosswalks between the two, and worked examples for
-writing your own scheme. The data is Apache-2.0. Running a scheme needs an
+writing your own scheme. Running a scheme needs an
 EzClassify runtime; this package holds content and no engine.
 
 The free developer runtime also carries demo subsets of IC Classification and
