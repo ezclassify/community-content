@@ -115,8 +115,8 @@ that leaves most 4.0 metrics to an analyst. The [`cvss`](schemes/security-vector
 and [`cvss-v4`](schemes/security-vectors/cvss-v4/README.md#crosswalks) READMEs
 say what each one carries.
 
-Maintained schemes for IC Classification and Control Markings (CAPCO), CUI,
-and NATO are part of the licensed EzClassify catalog. This repository contains
+Maintained schemes for IC Classification and Control Markings (CAPCO) and CUI
+are part of the licensed EzClassify catalog. This repository contains
 public standards and the approved fictional Cedar Valley teaching content.
 
 ### demo/
