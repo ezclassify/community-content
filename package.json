@@ -21,7 +21,7 @@
         "crosswalk",
         "custom-scheme"
     ],
-    "homepage": "https://ezclassify.com/docs/authoring-schemes",
+    "homepage": "https://ezclassify.com/",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/ezclassify/community-content.git"
