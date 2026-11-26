@@ -16,6 +16,7 @@ scheme:
         required: true
         single: true
         rollup: max
+        sort: position
         position: 0
     concepts:
       - id: TLP_RED
@@ -164,36 +165,3 @@ scheme:
   scopes:
     - id: default
       label: Default
-
-  ui:
-    label_presets:
-      - id: tlp-clear
-        label: 'TLP:CLEAR'
-        marking: 'TLP:CLEAR'
-        description: No restriction on disclosure
-        tags:
-          - common
-      - id: tlp-green
-        label: 'TLP:GREEN'
-        marking: 'TLP:GREEN'
-        description: 'Community-wide, no public posting'
-        tags:
-          - common
-      - id: tlp-amber
-        label: 'TLP:AMBER'
-        marking: 'TLP:AMBER'
-        description: Limited to organization and clients
-        tags:
-          - common
-      - id: tlp-amber-strict
-        label: 'TLP:AMBER+STRICT'
-        marking: 'TLP:AMBER+STRICT'
-        description: Limited to organization only
-        tags:
-          - common
-      - id: tlp-red
-        label: 'TLP:RED'
-        marking: 'TLP:RED'
-        description: 'Personal recipients only, not for further disclosure'
-        tags:
-          - common
