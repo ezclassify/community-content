@@ -31,11 +31,11 @@ describe('TLP scheme document', () => {
     expect(tlp.category('tlp_level')?.single).toBe(true)
     expect(tlp.category('tlp_level')?.rollup).toBe('max')
     expect(tlp.defaultViewsIn('tlp_level')).toEqual([
-      'TLP:RED',
-      'TLP:AMBER+STRICT',
-      'TLP:AMBER',
-      'TLP:GREEN',
       'TLP:CLEAR',
+      'TLP:GREEN',
+      'TLP:AMBER',
+      'TLP:AMBER+STRICT',
+      'TLP:RED',
     ])
   })
 
@@ -53,14 +53,14 @@ describe('TLP scheme document', () => {
     )
   })
 
-  it('ranks the levels from RED down to CLEAR', () => {
+  it('ranks the levels from CLEAR up to RED', () => {
     const ranks = tlp.conceptsIn('tlp_level').map((concept) => [concept.id, concept.rank])
     expect(ranks).toEqual([
-      ['TLP_RED', 4],
-      ['TLP_AMBER_STRICT', 3],
-      ['TLP_AMBER', 2],
-      ['TLP_GREEN', 1],
       ['TLP_CLEAR', 0],
+      ['TLP_GREEN', 1],
+      ['TLP_AMBER', 2],
+      ['TLP_AMBER_STRICT', 3],
+      ['TLP_RED', 4],
     ])
   })
 
@@ -89,25 +89,11 @@ describe('TLP scheme document', () => {
     }))
     expect(sourced).toEqual([
       {
-        id: 'TLP_RED',
+        id: 'TLP_CLEAR',
         definition:
-          'The recipient may not pass the material on. It stops with the people who received it directly.',
+          'The recipient may share the material with anyone. There is no limit on disclosure.',
         citation:
-          'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:RED), https://www.first.org/tlp/',
-      },
-      {
-        id: 'TLP_AMBER_STRICT',
-        definition:
-          'The recipient may share within its own organization on a need-to-know basis, and no further.',
-        citation:
-          'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:AMBER+STRICT), https://www.first.org/tlp/',
-      },
-      {
-        id: 'TLP_AMBER',
-        definition:
-          "The recipient may share within its own organization and with that organization's clients, on a need-to-know basis.",
-        citation:
-          'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:AMBER), https://www.first.org/tlp/',
+          'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:CLEAR), https://www.first.org/tlp/',
       },
       {
         id: 'TLP_GREEN',
@@ -117,11 +103,25 @@ describe('TLP scheme document', () => {
           'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:GREEN), https://www.first.org/tlp/',
       },
       {
-        id: 'TLP_CLEAR',
+        id: 'TLP_AMBER',
         definition:
-          'The recipient may share the material with anyone. There is no limit on disclosure.',
+          "The recipient may share within its own organization and with that organization's clients, on a need-to-know basis.",
         citation:
-          'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:CLEAR), https://www.first.org/tlp/',
+          'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:AMBER), https://www.first.org/tlp/',
+      },
+      {
+        id: 'TLP_AMBER_STRICT',
+        definition:
+          'The recipient may share within its own organization on a need-to-know basis, and no further.',
+        citation:
+          'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:AMBER+STRICT), https://www.first.org/tlp/',
+      },
+      {
+        id: 'TLP_RED',
+        definition:
+          'The recipient may not pass the material on. It stops with the people who received it directly.',
+        citation:
+          'FIRST Traffic Light Protocol v2.0, TLP Definitions (TLP:RED), https://www.first.org/tlp/',
       },
     ])
   })
