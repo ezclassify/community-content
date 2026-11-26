@@ -16,6 +16,7 @@ scheme:
         required: true
         single: true
         rollup: max
+        sort: position
         position: 0
     concepts:
       - id: TLP_RED
